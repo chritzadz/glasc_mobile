@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "glascapp",
     "name": "glasc_mobile",
     "slug": "glasc_mobile",
     "version": "1.0.0",
@@ -25,6 +26,9 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }

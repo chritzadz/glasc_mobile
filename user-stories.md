@@ -3,7 +3,7 @@
 ## Project Overview
 **Project:** Glasc Mobile Skincare App
 **Timeline:** 1 month
-**Deliverables:** Mobile app, Web app, API integration
+**Deliverables:** Mobile app, API integration
 
 ---
 
