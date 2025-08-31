@@ -1,6 +1,6 @@
 export async function POST(request: Request) {
     try {
-        const response = await fetch('/api/users', {
+        const response = await fetch('https://glasc-api.netlify.app/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
