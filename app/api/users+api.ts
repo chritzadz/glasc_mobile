@@ -1,7 +1,5 @@
-import { Text, View, Button } from 'react-native'
-
-const Home = () => {
-    const testAPI = async () => {
+export async function POST(request: Request) {
+    try {
         const response = await fetch('/api/users', {
             method: 'POST',
             headers: {
@@ -15,14 +13,9 @@ const Home = () => {
         });
         const data = await response.json();
         console.log(data);
-    };
-
-    return (
-        <View className='flex-1 justify-center items-center'>
-            <Text className='text-red-500'>Home</Text>
-            <Button title="Test API" onPress={testAPI} />
-        </View>
-    )
+        
+        return Response.json(data);
+    } catch (error) {
+        return Response.json({ error: (error as Error).message }, { status: 500 });
+    }
 }
-
-export default Home;
