@@ -12,13 +12,11 @@ export default function App() {
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
+    requestPermission();
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
+        <View>
+        </View>
+    )
   }
 
   function toggleCameraFacing() {
@@ -26,12 +24,15 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-          <Text style={styles.text}>Flip Camera</Text>
-        </TouchableOpacity>
+    <View className="bg-amber-300 h-full w-full">
+      <View className="w-full h-full p-4 relative">
+        <View className="rounded-2xl w-full h-full overflow-hidden">
+            <CameraView className="" facing={facing} />
+        </View>
+        <View className="fixed -translate-x-1/2 bottom-16 left-1/2 w-1/2 flex flex-row gap-4 rounded-full bg-slate-500 justify-center items-center">
+            <Text>Scan</Text>
+            <Text>Search</Text>
+        </View>
       </View>
     </View>
   );
