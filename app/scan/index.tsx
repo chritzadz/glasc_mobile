@@ -1,28 +1,69 @@
-import { Text, View, Button } from 'react-native'
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { useState } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const Scan = () => {
-    const testAPI = async () => {
-        const response = await fetch('/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: 'John Doe',
-                email: 'john@example.com',
-                password: 'password123'
-            })
-        });
-        const data = await response.json();
-        console.log(data);
-    };
+export default function App() {
+  const [facing, setFacing] = useState<CameraType>('back');
+  const [permission, requestPermission] = useCameraPermissions();
 
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
     return (
-        <View className='flex-1 justify-center items-center'>
-            <Text className='text-red-500'>Scan</Text>
-            <Button title="Test API" onPress={testAPI} />
-        </View>
-    )
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
+  function toggleCameraFacing() {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
+  }
+
+  return (
+    <View style={styles.container}>
+      <CameraView style={styles.camera} facing={facing} />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+          <Text style={styles.text}>Flip Camera</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
-export default Scan;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  message: {
+    textAlign: 'center',
+    paddingBottom: 10,
+  },
+  camera: {
+    flex: 1,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 64,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    width: '100%',
+    paddingHorizontal: 64,
+  },
+  button: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+});
