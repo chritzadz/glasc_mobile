@@ -1,8 +1,6 @@
-import { useRouter } from 'expo-router';
 import { Text, View, Button } from 'react-native'
 
-const Home = () => {
-    const router = useRouter();
+const Scan = () => {
     const testAPI = async () => {
         const response = await fetch('/api/users', {
             method: 'POST',
@@ -21,10 +19,10 @@ const Home = () => {
 
     return (
         <View className='flex-1 justify-center items-center'>
-            <Text className='text-red-500'>Home</Text>
-            <Button title="Test API" onPress={() => router.push('/scan')} />
+            <Text className='text-red-500'>Scan</Text>
+            <Button title="Test API" onPress={testAPI} />
         </View>
     )
 }
 
-export default Home;
+export default Scan;
