@@ -1,7 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView } from 'react-native';
 
 const Home = () => {
     const router = useRouter();
@@ -29,11 +28,13 @@ const Home = () => {
     <SafeAreaView style={styles.container}>
         <Text style={styles.greeting}>Welcome!</Text>
         <Text style={styles.formTitle}>Create your account</Text>
+
         <View style={styles.inputContainer}>
             <Text style={styles.inputTitle}>Name</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Enter your name"
+
                 placeholderTextColor={'#6A7E97'}
                 value={username}
                 onChangeText={setUsername}
@@ -57,6 +58,7 @@ const Home = () => {
             />
             <View>
                 <Pressable
+                onPress={() => router.replace('PersonalFormScreen')}
                 style={({ pressed }) => [
                     styles.button,
                     {
