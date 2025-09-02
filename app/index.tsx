@@ -1,12 +1,39 @@
 import { useRouter } from 'expo-router';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView } from 'react-native';
+
+import validation from './util/validation';
 
 const Home = () => {
     const router = useRouter();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const handleSignUpButon = async () => {
+        if (!username || !email || !password){
+          Alert.alert('Empty Field', 'All field must be filled');
+          return;
+        }
+
+        if (!validation.validateEmail(email)){
+          Alert.alert('Invalid Email', 'Email format is invalid');
+          return;
+        }
+
+        const success = await testAPI();
+        console.log(success); 
+        if (success){
+            Alert.alert('Success', 'User successfully signed up');
+            router.replace('PersonalFormScreen');
+        }
+        else {
+            Alert.alert('Error', 'Failed to sign up. Please try again.');
+          }
+    };
 
     const testAPI = async () => {
         const response = await fetch('/api/users', {
@@ -15,13 +42,24 @@ const Home = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: 'John Doe',
-                email: 'john@example.com',
-                password: 'password123'
+                name: username,
+                email: email,
+                password: password
             })
         });
         const data = await response.json();
         console.log(data);
+        console.log(response.status);
+        if (response.ok) {
+            //const userId = response.data.id; 
+            // await AsyncStorage.setItem('userId', userId);
+            // await AsyncStorage.setItem('name', username);
+            // await AsyncStorage.setItem('email', email);
+            return true;
+          }
+          else {
+            return false;
+          }
     };
 
     return (
@@ -58,7 +96,7 @@ const Home = () => {
             />
             <View>
                 <Pressable
-                onPress={() => router.replace('PersonalFormScreen')}
+                onPress={handleSignUpButon}
                 style={({ pressed }) => [
                     styles.button,
                     {
@@ -87,7 +125,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-start',
         backgroundColor: '#bf7641',
-        padding: '3%',
     },
     greeting: {
         paddingHorizontal: '7%',
