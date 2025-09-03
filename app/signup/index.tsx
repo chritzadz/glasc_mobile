@@ -1,51 +1,90 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, Pressable, Text, View, TextInput, Alert, SafeAreaView } from 'react-native';
 
-import { User } from '../../model/User';
-import CurrentUser from '../../model/CurrentUser';
+import validation from '../../util/validation';
 
-const Login = () => {
+const Signup = () => {
     const router = useRouter();
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [userId, setUserId] = useState("");
 
-    const userExist = (users: User[]): User | null => {
-        const found = users.find((user: User) => user.email === email && user.password === password)
-        return found ? found : null;
-    }
+    const handleSignUpButton = async () => {
+        if (!areFieldsFilled()) return;
+        if (!isEmailValid()) return;
 
-    const handleLogInButton = async () => {
-        if (!email || !password){
+        const success = await saveCredential();
+        console.log(success);
+        handleSignUpResponse(success); 
+    };
+
+    const areFieldsFilled = (): boolean => {
+        if (!username || !email || !password){
             Alert.alert('Empty Field', 'All field must be filled');
-            return;
+            return false;
         }
-        
+        return true;
+    };
+
+    const isEmailValid = (): boolean => {
+        if (!validation.validateEmail(email)){
+            Alert.alert('Invalid Email', 'Email format is invalid');
+            return false;
+        }
+        return true;
+    };
+
+    const handleSignUpResponse = (success: boolean): void => {
+        if (success) {
+            Alert.alert('Success', 'User successfully signed up');
+            router.replace('personal_form');
+        } else {
+            Alert.alert('Error', 'Failed to sign up. Please try again.');
+        }
+    };
+
+    const saveCredential = async () => {
         const response = await fetch('/api/users', {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            body: JSON.stringify({
+                name: username,
+                email: email,
+                password: password
+            })
         });
-
-
         const data = await response.json();
-        const users: User[] = data;
+        
+        console.log(data);
+        console.log(response.status);
 
-        const currUser: User | null = userExist(users);
-        if (currUser != null){
-            CurrentUser.getInstance().setId(currUser.id);
-            Alert.alert('Success', 'User successfully logged in');
-            router.push('/scan');
-        }        
+        if (response.ok) {
+            return true;
+          }
+          else {
+            return false;
+          }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.greeting}>Log In</Text>
-            <Text style={styles.formTitle}>Hello, welcome back!</Text>
+            <Text style={styles.greeting}>Welcome!</Text>
+            <Text style={styles.formTitle}>Create your account</Text>
 
             <View style={styles.inputContainer}>
+                <Text style={styles.inputTitle}>Name</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter your name"
+
+                    placeholderTextColor={'#6A7E97'}
+                    value={username}
+                    onChangeText={setUsername}
+                />
                 <Text style={styles.inputTitle}>Email Address</Text>
                 <TextInput
                     style={styles.input}
@@ -65,23 +104,23 @@ const Login = () => {
                 />
                 <View>
                     <Pressable
-                    onPress={handleLogInButton}
+                    onPress={handleSignUpButton}
                     style={({ pressed }) => [
                         styles.button,
                         {
                         backgroundColor : 'white',
                         },
                     ]}>
-                    <Text style={styles.buttonText}>Log In</Text>
+                    <Text style={styles.buttonText}>Sign Up</Text>
                     </Pressable>
                 </View>
                 <Text style={{marginTop: 10, color: 'white'}}>
-                    Do not have an account? {' '}
+                    Already having an account? {' '}
                     <Text
-                        onPress={() => router.replace('/')}
+                        onPress={() => router.push('/login')}
                         style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
                     >
-                        Sign Up
+                    Log In
                     </Text>
                 </Text>
             </View>
@@ -149,4 +188,4 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 })
-export default Login;
+export default Signup;
