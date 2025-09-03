@@ -6,70 +6,22 @@ import validation from './util/validation';
 
 const Home = () => {
     const router = useRouter();
-    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSignUpButton = async () => {
-        if (!username || !email || !password){
-          Alert.alert('Empty Field', 'All field must be filled');
-          return;
+    const handleLogInButton = async () => {
+        if (!email || !password){
+            Alert.alert('Empty Field', 'All field must be filled');
+            return;
         }
-
-        if (!validation.validateEmail(email)){
-          Alert.alert('Invalid Email', 'Email format is invalid');
-          return;
-        }
-
-        const success = await saveCredential();
-        console.log(success); 
-        if (success){
-            Alert.alert('Success', 'User successfully signed up');
-            router.replace('PersonalFormScreen');
-        }
-        else {
-            Alert.alert('Error', 'Failed to sign up. Please try again.');
-          }
-    };
-
-    const saveCredential = async () => {
-        const response = await fetch('/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: username,
-                email: email,
-                password: password
-            })
-        });
-        const data = await response.json();
-        console.log(data);
-        console.log(response.status);
-        if (response.ok) {
-            return true;
-          }
-          else {
-            return false;
-          }
     };
 
     return (
     <SafeAreaView style={styles.container}>
-        <Text style={styles.greeting}>Welcome!</Text>
-        <Text style={styles.formTitle}>Create your account</Text>
+        <Text style={styles.greeting}>Log In</Text>
+        <Text style={styles.formTitle}>Hello, welcome back!</Text>
 
         <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Name</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter your name"
-
-                placeholderTextColor={'#6A7E97'}
-                value={username}
-                onChangeText={setUsername}
-            />
             <Text style={styles.inputTitle}>Email Address</Text>
             <TextInput
                 style={styles.input}
@@ -89,23 +41,23 @@ const Home = () => {
             />
             <View>
                 <Pressable
-                onPress={handleSignUpButton}
+                onPress={handleLogInButton}
                 style={({ pressed }) => [
                     styles.button,
                     {
                     backgroundColor : 'white',
                     },
                 ]}>
-                <Text style={styles.buttonText}>Sign Up</Text>
+                <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
             </View>
             <Text style={{marginTop: 10, color: 'white'}}>
-                Already having an account? {' '}
+                Do not have an account? {' '}
                 <Text
-                    onPress={() => router.replace('LoginScreen')}
+                    onPress={() => router.replace('/')}
                     style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
                 >
-                Log In
+                    Sign Up
                 </Text>
             </Text>
         </View>
