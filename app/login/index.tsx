@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView } from 'react-native';
 
-import validation from './util/validation';
+import validation from '../util/validation';
 
 const Home = () => {
     const router = useRouter();
@@ -14,6 +14,9 @@ const Home = () => {
             Alert.alert('Empty Field', 'All field must be filled');
             return;
         }
+
+        Alert.alert('Success', 'User successfully logged in');
+        router.replace('scan');
     };
 
     return (

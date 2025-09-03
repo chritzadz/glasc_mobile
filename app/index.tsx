@@ -9,27 +9,40 @@ const Home = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [userId, setUserId] = useState("");
 
     const handleSignUpButton = async () => {
-        if (!username || !email || !password){
-          Alert.alert('Empty Field', 'All field must be filled');
-          return;
-        }
-
-        if (!validation.validateEmail(email)){
-          Alert.alert('Invalid Email', 'Email format is invalid');
-          return;
-        }
+        if (!areFieldsFilled()) return;
+        if (!isEmailValid()) return;
 
         const success = await saveCredential();
-        console.log(success); 
-        if (success){
-            Alert.alert('Success', 'User successfully signed up');
-            router.replace('PersonalFormScreen');
+        console.log(success);
+        handleSignUpResponse(success); 
+    };
+
+    const areFieldsFilled = (): boolean => {
+        if (!username || !email || !password){
+            Alert.alert('Empty Field', 'All field must be filled');
+            return false;
         }
-        else {
+        return true;
+    };
+
+    const isEmailValid = (): boolean => {
+        if (!validation.validateEmail(email)){
+            Alert.alert('Invalid Email', 'Email format is invalid');
+            return false;
+        }
+        return true;
+    };
+
+    const handleSignUpResponse = (success: boolean): void => {
+        if (success) {
+            Alert.alert('Success', 'User successfully signed up');
+            router.replace('personal_form');
+        } else {
             Alert.alert('Error', 'Failed to sign up. Please try again.');
-          }
+        }
     };
 
     const saveCredential = async () => {
@@ -102,7 +115,7 @@ const Home = () => {
             <Text style={{marginTop: 10, color: 'white'}}>
                 Already having an account? {' '}
                 <Text
-                    onPress={() => router.replace('LoginScreen')}
+                    onPress={() => router.replace('login')}
                     style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
                 >
                 Log In
