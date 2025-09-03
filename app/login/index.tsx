@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView } from 'react-native';
 
+import validation from '../../util/validation';
 import { User } from '../../model/User';
 import CurrentUser from '../../model/CurrentUser';
 
@@ -16,28 +17,52 @@ const Login = () => {
     }
 
     const handleLogInButton = async () => {
-        if (!email || !password){
-            Alert.alert('Empty Field', 'All field must be filled');
-            return;
-        }
-        
-        const response = await fetch('/api/users', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-
-        const data = await response.json();
-        const users: User[] = data;
-
-        const currUser: User | null = userExist(users);
-        if (currUser != null){
+        if (!areFieldsFilled()) return;
+        if (!isEmailValid()) return;
+    
+        const currUser = await getUser();
+        if (currUser) {
             CurrentUser.getInstance().setId(currUser.id);
             Alert.alert('Success', 'User successfully logged in');
             router.push('/scan');
-        }        
+        } else {
+            Alert.alert('Error', 'User not found. Please check your email and try again.');
+        }
+    };
+
+    const getUser = async (): Promise<User | null> => {
+        try {
+            const response = await fetch('/api/users', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const data = await response.json();
+            const users: User[] = data;
+    
+            return userExist(users); // Return the current user or null
+        } catch (error) {
+            Alert.alert('Error', 'Failed to fetch users. Please try again later.');
+            return null; // Return null in case of an error
+        }
+    };
+
+    const areFieldsFilled = (): boolean => {
+        if (!email || !password){
+            Alert.alert('Empty Field', 'All field must be filled');
+            return false;
+        }
+        return true;
+    };
+
+    const isEmailValid = (): boolean => {
+        if (!validation.validateEmail(email)){
+            Alert.alert('Invalid Email', 'Email format is invalid');
+            return false;
+        }
+        return true;
     };
 
     return (

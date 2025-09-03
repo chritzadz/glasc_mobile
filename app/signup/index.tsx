@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Pressable, Text, View, TextInput, Alert, SafeAreaView } from 'react-native';
 
 import validation from '../../util/validation';
+import { User } from '../../model/User';
+import CurrentUser from '../../model/CurrentUser';
 
 const Signup = () => {
     const router = useRouter();
@@ -10,6 +12,11 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [userId, setUserId] = useState("");
+
+    const userExist = (users: User[]): User | null => {
+        const found = users.find((user: User) => user.email === email && user.password === password)
+        return found ? found : null;
+    }
 
     const handleSignUpButton = async () => {
         if (!areFieldsFilled()) return;
@@ -38,6 +45,7 @@ const Signup = () => {
 
     const handleSignUpResponse = (success: boolean): void => {
         if (success) {
+            
             Alert.alert('Success', 'User successfully signed up');
             router.replace('personal_form');
         } else {
@@ -64,11 +72,30 @@ const Signup = () => {
 
         if (response.ok) {
             return true;
-          }
-          else {
+        }
+        else {
             return false;
-          }
+        }
     };
+
+    const getCurrentUser = async () => {
+        const response = await fetch('/api/users', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const data = await response.json();
+        const users: User[] = data;
+
+        const currUser: User | null = userExist(users);
+        if (currUser != null){
+            CurrentUser.getInstance().setId(currUser.id);
+            Alert.alert('Success', 'User successfully logged in');
+            router.push('/scan');
+        }   
+    }
 
     return (
         <SafeAreaView style={styles.container}>
