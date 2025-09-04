@@ -1,8 +1,8 @@
-import { View, Text } from "lucide-react-native";
+import { View, Text } from "react-native";
 
 const Search = () => {
     return(
-        <View>
+        <View className="w-screen h-screen">
             <Text>Search screen</Text>
         </View>
     );
