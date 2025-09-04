@@ -103,7 +103,7 @@ const Login = () => {
                 <Text style={{marginTop: 10, color: 'white'}}>
                     Do not have an account? {' '}
                     <Text
-                        onPress={() => router.replace('/')}
+                        onPress={() => router.push('/signup')}
                         style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
                     >
                         Sign Up

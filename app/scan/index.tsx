@@ -1,17 +1,48 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Scan, Search } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 
 export default function App() {
 	const [facing, setFacing] = useState<CameraType>('back');
+	const screenHeight = Dimensions.get('window').height;
 	const [permission, requestPermission] = useCameraPermissions();
-	const [selectedOption, setSelectedOption] = useState("search");
+	const [selectedOption, setSelectedOption] = useState("scan");
+	const slideAnim = useRef(new Animated.Value(-screenHeight)).current;
+
+	const showSearch = () => {
+		Animated.timing(slideAnim, {
+		toValue: 0,
+		duration: 1000,
+		useNativeDriver: true,
+		}).start(() => {
+			router.push('/search');
+    });
+	};
+
+	const hideSearch = () => {
+		Animated.timing(slideAnim, {
+		toValue: -screenHeight,
+		duration: 1000,
+		useNativeDriver: true,
+		}).start();
+	};
+
+	const panResponder = useRef(
+		PanResponder.create({
+		onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy < -10,
+		onPanResponderMove: (_, gestureState) => {
+			if (gestureState.dy < -30) hideSearch();
+		},
+		})
+	).current;
 
 	const handlePress = () => {
 		if (selectedOption === "scan") {
 			setSelectedOption("search");
+			showSearch();
 		} else {
 			setSelectedOption("scan");
 		}
@@ -30,12 +61,21 @@ export default function App() {
 		)
 	}
 
-	function toggleCameraFacing() {
-		setFacing(current => (current === 'back' ? 'front' : 'back'));
-	}
-
 	return (
 		<View className="bg-[#F7F4EA] justify-center p-5 flex-1 relative">
+			<Animated.View
+				style={{
+					position: 'absolute',
+					height: screenHeight,
+					top: 0,
+					left: 0,
+					right: 0,
+					backgroundColor: '#F7F4EA',
+					transform: [{ translateY: slideAnim }],
+					zIndex: 10,
+				}}
+				{...panResponder.panHandlers}
+			></Animated.View>
 			<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
 				<CameraView style={styles.flex} facing={facing} />
 			</View>
