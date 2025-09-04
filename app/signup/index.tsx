@@ -45,7 +45,7 @@ const Signup = () => {
 
     const handleSignUpResponse = (success: boolean): void => {
         if (success) {
-            
+            getCurrentUser();
             Alert.alert('Success', 'User successfully signed up');
             router.replace('personal_form');
         } else {
@@ -91,10 +91,9 @@ const Signup = () => {
 
         const currUser: User | null = userExist(users);
         if (currUser != null){
+            console.log(`Current user id is: ${currUser.id}`);
             CurrentUser.getInstance().setId(currUser.id);
-            Alert.alert('Success', 'User successfully logged in');
-            router.push('/scan');
-        }   
+        }
     }
 
     return (
