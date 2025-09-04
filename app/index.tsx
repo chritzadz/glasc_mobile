@@ -1,30 +1,16 @@
 import { useRouter } from 'expo-router';
-import { Text, View, Button } from 'react-native'
+import { useEffect } from 'react';
+import { View} from 'react-native';
 
-const Home = () => {
-    const router = useRouter();
-    const testAPI = async () => {
-        const response = await fetch('/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: 'John Doe',
-                email: 'john@example.com',
-                password: 'password123'
-            })
-        });
-        const data = await response.json();
-        console.log(data);
-    };
+export default function Root() {
+  const router = useRouter();
 
-    return (
-        <View className='flex-1 justify-center items-center'>
-            <Text className='text-red-500'>Home</Text>
-            <Button title="Test API" onPress={() => router.push('/scan')} />
-        </View>
-    )
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      router.push('/signup');
+    }, 0);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return <View />;
 }
-
-export default Home;
