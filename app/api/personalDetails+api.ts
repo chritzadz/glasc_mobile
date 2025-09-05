@@ -1,6 +1,6 @@
 export async function POST(request: Request) {
     try {
-        const body = await request.json(); 
+        const body = await request.json();
         const response = await fetch('https://glasc-api.netlify.app/api/personalDetails', {
             method: 'POST',
             headers: {

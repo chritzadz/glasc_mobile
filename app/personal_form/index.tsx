@@ -122,13 +122,13 @@ const Home = () => {
                 birth_date: birthDate.toISOString().split('T')[0],
                 gender: gender,
                 skin_type: skinType,
-                ... skinConcerns,
+                skin_concerns: skinConcerns,
                 allergies: allergies,
                 exercise_frequency: exerciseFreq,
                 sleep_duration: sleepDuration,
                 climate: climate,
                 sun_exposure: sunExposure,
-                ... skinGoals,
+                skin_goals: skinGoals,
             })
         });
         const data = await response.json();
