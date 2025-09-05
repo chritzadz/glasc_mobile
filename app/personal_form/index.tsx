@@ -31,7 +31,6 @@ type SkinGoals = {
 
 const Home = () => {
     const router = useRouter();
-    const [userId, setUserId] = useState<number | undefined>(undefined);;
     const [birthDate, setBirthDate] = useState(new Date());
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
@@ -65,15 +64,6 @@ const Home = () => {
     const showDatepicker = () => {
         setShow(true);
     };
-    
-    const getUserId = () => {
-        setUserId(CurrentUser.getInstance().getId());
-        console.log(`Current user id: ${userId}`);
-    };
-
-    useEffect(() => {
-        getUserId();
-    }, []);
 
     const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         // Check if the event is a change event
@@ -89,7 +79,7 @@ const Home = () => {
     const handleSkinConcernChange = (concern: keyof typeof skinConcerns) => {
         setSkinConcerns((prev: typeof skinConcerns)  => ({
             ...prev,
-            [concern]: !prev[concern], 
+            [concern]: !prev[concern],
         }));
     };
 
@@ -121,13 +111,14 @@ const Home = () => {
     }
 
     const savePersonalInfo = async () => {
+        console.log("currUser id: " + CurrentUser.getInstance().getId());
         const response = await fetch('/api/personalDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                user_id: userId,
+                user_id: CurrentUser.getInstance().getId(),
                 birth_date: birthDate.toISOString().split('T')[0],
                 gender: gender,
                 skin_type: skinType,
@@ -156,8 +147,8 @@ const Home = () => {
     return (
     <TouchableWithoutFeedback
         onPress={() => {
-            setShow(false);   
-            Keyboard.dismiss(); 
+            setShow(false);
+            Keyboard.dismiss();
         }}
     >
         <ScrollView contentContainerStyle={styles.container}>
@@ -169,7 +160,7 @@ const Home = () => {
                 {show && (
                 <DateTimePicker
                     value={birthDate}
-                    mode="date"  
+                    mode="date"
                     display="spinner"
                     onChange={onChange}
                 />

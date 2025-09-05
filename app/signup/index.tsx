@@ -24,7 +24,7 @@ const Signup = () => {
 
         const success = await saveCredential();
         console.log(success);
-        handleSignUpResponse(success); 
+        handleSignUpResponse(success);
     };
 
     const areFieldsFilled = (): boolean => {
@@ -47,7 +47,7 @@ const Signup = () => {
         if (success) {
             getCurrentUser();
             Alert.alert('Success', 'User successfully signed up');
-            router.replace('personal_form');
+            router.push('/personal_form');
         } else {
             Alert.alert('Error', 'Failed to sign up. Please try again.');
         }
@@ -91,7 +91,7 @@ const Signup = () => {
 
         const currUser: User | null = userExist(users);
         if (currUser != null){
-            console.log(`Current user id is: ${currUser.id}`);
+            console.log(`Current user id signup is: ${currUser.id}`);
             CurrentUser.getInstance().setId(currUser.id);
         }
     }
