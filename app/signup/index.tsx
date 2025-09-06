@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Pressable, Text, View, TextInput, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, Pressable, Text, View, TextInput, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
 
 import validation from '../../util/validation';
 import { User } from '../../model/User';
@@ -12,6 +12,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [userId, setUserId] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const userExist = (users: User[]): User | null => {
         const found = users.find((user: User) => user.email === email && user.password === password)
@@ -21,6 +22,8 @@ const Signup = () => {
     const handleSignUpButton = async () => {
         if (!areFieldsFilled()) return;
         if (!isEmailValid()) return;
+
+        setIsSubmitting(true);
 
         const success = await saveCredential();
         console.log(success);
@@ -97,121 +100,64 @@ const Signup = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.greeting}>Welcome!</Text>
-            <Text style={styles.formTitle}>Create your account</Text>
+        
+        <SafeAreaView className="bg-[#B87C4C] flex-1 items-center justify-center">
+            <View className="flex justify-center items-center">
+                <Text className="text-4xl text-white">Create your account</Text>
+            </View>
 
-            <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>Name</Text>
+            <View className="w-full items-center px-7 mt-10">
+                <Text className="self-start text-white font-bold mb-2">Name</Text>
                 <TextInput
-                    style={styles.input}
+                    className="w-full h-12 px-3 my-1 text-lg border border-[#bf7641] rounded-lg mb-5 bg-white"
                     placeholder="Enter your name"
-
                     placeholderTextColor={'#6A7E97'}
                     value={username}
                     onChangeText={setUsername}
                 />
-                <Text style={styles.inputTitle}>Email Address</Text>
+                <Text className="self-start text-white font-bold mb-2">Email Address</Text>
                 <TextInput
-                    style={styles.input}
+                    className="w-full h-12 px-3 my-1 text-lg border border-[#bf7641] rounded-lg mb-5 bg-white"
                     placeholder="Enter Email"
                     placeholderTextColor={'#6A7E97'}
                     value={email}
                     onChangeText={setEmail}
                 />
-                <Text style={styles.inputTitle}>Password</Text>
+                <Text className="self-start text-white font-bold mb-2">Password</Text>
                 <TextInput
-                    style={styles.input}
+                    className="w-full h-12 px-3 my-1 text-lg border border-[#bf7641] rounded-lg mb-5 bg-white"
                     placeholder="Enter Password"
                     placeholderTextColor={'#6A7E97'}
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry={true}
                 />
-                <View>
-                    <Pressable
-                    onPress={handleSignUpButton}
-                    style={({ pressed }) => [
-                        styles.button,
-                        {
-                        backgroundColor : 'white',
-                        },
-                    ]}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                    </Pressable>
+                <View className="w-full">
+                    {isSubmitting? 
+                        (
+                            <ActivityIndicator size="small" color="#fffff" />
+                        ) : (
+                        <Pressable
+                            onPress={handleSignUpButton}
+                            className="mt-10 py-3 px-5 rounded-lg items-center bg-white"
+                            >
+                            <Text className="font-bold text-lg text-[#bf7641]">Sign Up</Text>
+                        </Pressable>
+                        )
+                    }
                 </View>
-                <Text style={{marginTop: 10, color: 'white'}}>
-                    Already having an account? {' '}
+                <Text className="mt-10 text-white text-center">
+                    Already have an account?{' '}
                     <Text
-                        onPress={() => router.push('/login')}
-                        style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
+                    onPress={() => router.push('/login')}
+                    className="text-white underline font-bold"
                     >
                     Log In
                     </Text>
                 </Text>
-            </View>
+                </View>
         </SafeAreaView>
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'flex-start',
-        backgroundColor: '#bf7641',
-    },
-    greeting: {
-        paddingHorizontal: '7%',
-        marginTop: 60,
-        fontSize: 35,
-        textAlign: 'center',
-        fontWeight: 'bold',
-        color:  'white',
-    },
-    formTitle: {
-        paddingHorizontal: '7%',
-        marginTop: 10,
-        fontSize: 25,
-        textAlign: 'center',
-        color:  'white',
-    },
-    inputContainer: {
-        width: '100%',
-        alignItems: 'center', 
-        paddingHorizontal: '7%',
-        marginTop: 40,
-        
-    }, 
-    inputTitle: {
-        alignSelf: 'flex-start',
-        color:  'white',
-        fontWeight: 'bold'
-    },
-    input: {
-        justifyContent: 'center',
-        width: '100%',
-        height: 50,
-        padding: '3%',
-        margin: 5,
-        fontSize: 17,
-        borderWidth: 1,           
-        borderColor: '#bf7641',     
-        borderRadius: 8,
-        marginBottom: 20,
-        backgroundColor: 'white',
-    },
-    button: {
-        marginTop: 40,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        marginVertical: 8,
-        alignItems: 'center',
-    },
-    buttonText: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: 'white',
-    },
-})
 export default Signup;

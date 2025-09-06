@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
 
 import validation from '../../util/validation';
 import { User } from '../../model/User';
@@ -10,6 +10,7 @@ const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const userExist = (users: User[]): User | null => {
         const found = users.find((user: User) => user.email === email && user.password === password)
@@ -19,6 +20,8 @@ const Login = () => {
     const handleLogInButton = async () => {
         if (!areFieldsFilled()) return;
         if (!isEmailValid()) return;
+
+        setIsSubmitting(true);
     
         const currUser = await getUser();
         if (currUser) {
@@ -66,45 +69,47 @@ const Login = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.greeting}>Log In</Text>
-            <Text style={styles.formTitle}>Hello, welcome back!</Text>
+        <SafeAreaView className="bg-[#B87C4C] flex-1 items-center">
+            <Text className="px-7 mt-16 text-4xl text-center font-bold text-white">Log In</Text>
+            <Text className="px-7 mt-2 text-2xl text-center text-white">Hello, welcome back!</Text>
 
-            <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>Email Address</Text>
+            <View className="w-full items-center px-7 mt-10">
+                <Text className="self-start text-white font-bold mb-2">Email Address</Text>
                 <TextInput
-                    style={styles.input}
+                    className="w-full h-12 px-3 my-1 text-lg border border-white rounded-lg mb-5 bg-white"
                     placeholder="Enter Email"
                     placeholderTextColor={'#6A7E97'}
                     value={email}
                     onChangeText={setEmail}
                 />
-                <Text style={styles.inputTitle}>Password</Text>
+                <Text className="self-start text-white font-bold mb-2">Password</Text>
                 <TextInput
-                    style={styles.input}
+                    className="w-full h-12 px-3 my-1 text-lg border border-white rounded-lg mb-5 bg-white"
                     placeholder="Enter Password"
                     placeholderTextColor={'#6A7E97'}
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry={true}
                 />
-                <View>
-                    <Pressable
-                    onPress={handleLogInButton}
-                    style={({ pressed }) => [
-                        styles.button,
-                        {
-                        backgroundColor : 'white',
-                        },
-                    ]}>
-                    <Text style={styles.buttonText}>Log In</Text>
-                    </Pressable>
+                <View className="w-full">
+                    {isSubmitting?
+                        (
+                            <ActivityIndicator size="small" color="#fffff" />
+                        ) : (
+                        <Pressable
+                            onPress={handleLogInButton}
+                            className="mt-10 py-3 px-5 rounded-lg items-center bg-white"
+                        >
+                            <Text className="font-bold text-lg text-[#bf7641]">Log In</Text>
+                        </Pressable>
+                        )
+                    }
                 </View>
-                <Text style={{marginTop: 10, color: 'white'}}>
-                    Do not have an account? {' '}
+                <Text className="mt-10 text-white text-center">
+                    Do not have an account?{' '}
                     <Text
                         onPress={() => router.push('/signup')}
-                        style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
+                        className="text-white underline font-bold"
                     >
                         Sign Up
                     </Text>
@@ -114,64 +119,4 @@ const Login = () => {
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'flex-start',
-        backgroundColor: '#bf7641',
-    },
-    greeting: {
-        paddingHorizontal: '7%',
-        marginTop: 60,
-        fontSize: 35,
-        textAlign: 'center',
-        fontWeight: 'bold',
-        color:  'white',
-    },
-    formTitle: {
-        paddingHorizontal: '7%',
-        marginTop: 10,
-        fontSize: 25,
-        textAlign: 'center',
-        color:  'white',
-    },
-    inputContainer: {
-        width: '100%',
-        alignItems: 'center', 
-        paddingHorizontal: '7%',
-        marginTop: 40,
-        
-    }, 
-    inputTitle: {
-        alignSelf: 'flex-start',
-        color:  'white',
-        fontWeight: 'bold'
-    },
-    input: {
-        justifyContent: 'center',
-        width: '100%',
-        height: 50,
-        padding: '3%',
-        margin: 5,
-        fontSize: 17,
-        borderWidth: 1,           
-        borderColor: '#bf7641',     
-        borderRadius: 8,
-        marginBottom: 20,
-        backgroundColor: 'white',
-    },
-    button: {
-        marginTop: 40,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        marginVertical: 8,
-        alignItems: 'center',
-    },
-    buttonText: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: 'white',
-    },
-})
 export default Login;
