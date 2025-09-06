@@ -2,6 +2,7 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useRef, useState } from 'react';
 import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Scan, Search } from 'lucide-react-native';
+import SearchScreen from './search.index';
 import { router } from 'expo-router';
 
 
@@ -17,9 +18,7 @@ export default function App() {
 		toValue: 0,
 		duration: 1000,
 		useNativeDriver: true,
-		}).start(() => {
-			router.push('/search');
-    });
+		}).start(() => {});
 	};
 
 	const hideSearch = () => {
@@ -75,7 +74,9 @@ export default function App() {
 					zIndex: 10,
 				}}
 				{...panResponder.panHandlers}
-			></Animated.View>
+			>
+				<SearchScreen onClose={() => { setSelectedOption('scan'); hideSearch(); }} />
+			</Animated.View>
 			<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
 				<CameraView style={styles.flex} facing={facing} />
 			</View>

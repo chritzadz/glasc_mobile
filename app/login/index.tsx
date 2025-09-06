@@ -29,6 +29,7 @@ const Login = () => {
             Alert.alert('Success', 'User successfully logged in');
             router.push('/scan');
         } else {
+            setIsSubmitting(false);
             Alert.alert('Error', 'User not found. Please check your email and try again.');
         }
     };
