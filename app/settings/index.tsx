@@ -2,6 +2,7 @@ import { View, Text, Pressable } from 'react-native';
 import { User, ListChecks, LogOut, ChevronLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { ScrollView } from 'react-native';
+import CurrentUser from '../../model/CurrentUser';
 
 export default function Settings() {
     const router = useRouter();
@@ -44,7 +45,10 @@ export default function Settings() {
                 <View className="mb-4">
                     <Pressable
                         className="flex-row items-center rounded-2xl bg-[#B87C4C] p-4 justify-start"
-                        onPress={() => {/* handle logout here */}}
+                        onPress={() => {
+                            CurrentUser.getInstance().setId(-1);
+                            router.push('/login');
+                        }}
                     >
                         <LogOut size={28} color="#fff" />
                         <Text className="ml-4 text-lg font-semibold text-white">Logout</Text>
