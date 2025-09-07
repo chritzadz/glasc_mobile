@@ -1,9 +1,11 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Scan, Search, Users } from 'lucide-react-native';
 import SearchScreen from './search.index';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 
 export default function App() {
@@ -12,8 +14,20 @@ export default function App() {
 	const [permission, requestPermission] = useCameraPermissions();
 	const [selectedOption, setSelectedOption] = useState("scan");
 	const slideAnim = useRef(new Animated.Value(-screenHeight)).current;
+	const [showCamera, setShowCamera] = useState(true);
+
+	useFocusEffect(
+		useCallback(() => {
+			setShowCamera(true);
+
+			return () => {
+				setShowCamera(false);
+			};
+		}, [])
+	);
 
 	const showSearch = () => {
+		setShowCamera(false);
 		Animated.timing(slideAnim, {
 		toValue: 0,
 		duration: 600,
@@ -22,6 +36,7 @@ export default function App() {
 	};
 
 	const hideSearch = () => {
+		setShowCamera(true);
 		Animated.timing(slideAnim, {
 		toValue: -screenHeight,
 		duration: 600,
@@ -39,6 +54,7 @@ export default function App() {
 	}
 
 	const handleSettingPress = () => {
+		setShowCamera(false);
 		router.push('/settings');
 	}
 
@@ -74,7 +90,7 @@ export default function App() {
 			</Animated.View>
 			<View className="bg-[#F7F4EA] w-full justify-center p-5 flex-1 relative">
 				<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
-					<CameraView style={styles.flex} facing={facing} />
+					{showCamera && <CameraView style={styles.flex} facing={facing} />}
 				</View>
 				<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-14 border-2 border-[#B87C4C]">
 					<Users size={32} color="#B87C4C"></Users>
