@@ -97,12 +97,12 @@ const Login = () => {
                         (
                             <ActivityIndicator size="small" color="#fffff" />
                         ) : (
-                        <Pressable
-                            onPress={handleLogInButton}
-                            className="mt-10 py-3 px-5 rounded-lg items-center bg-white"
-                        >
-                            <Text className="font-bold text-lg text-[#bf7641]">Log In</Text>
-                        </Pressable>
+                            <Pressable
+                                onPress={handleLogInButton}
+                                className="mt-10 py-3 px-5 rounded-lg items-center bg-white"
+                            >
+                                <Text className="font-bold text-lg text-[#bf7641]">Log In</Text>
+                            </Pressable>
                         )
                     }
                 </View>

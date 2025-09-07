@@ -1,7 +1,7 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useRef, useState } from 'react';
 import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Scan, Search } from 'lucide-react-native';
+import { Scan, Search, Users } from 'lucide-react-native';
 import SearchScreen from './search.index';
 import { router } from 'expo-router';
 
@@ -16,7 +16,7 @@ export default function App() {
 	const showSearch = () => {
 		Animated.timing(slideAnim, {
 		toValue: 0,
-		duration: 1000,
+		duration: 600,
 		useNativeDriver: true,
 		}).start(() => {});
 	};
@@ -24,7 +24,7 @@ export default function App() {
 	const hideSearch = () => {
 		Animated.timing(slideAnim, {
 		toValue: -screenHeight,
-		duration: 1000,
+		duration: 600,
 		useNativeDriver: true,
 		}).start();
 	};
@@ -36,6 +36,10 @@ export default function App() {
 		} else {
 			setSelectedOption("scan");
 		}
+	}
+
+	const handleSettingPress = () => {
+		router.push('/settings');
 	}
 
 	if (!permission) {
@@ -72,6 +76,9 @@ export default function App() {
 				<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
 					<CameraView style={styles.flex} facing={facing} />
 				</View>
+				<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-14 border-2 border-[#B87C4C]">
+					<Users size={32} color="#B87C4C"></Users>
+				</TouchableOpacity>
 				{ selectedOption === "scan" &&
 					<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
 						<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
