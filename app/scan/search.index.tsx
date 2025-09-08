@@ -89,7 +89,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                 <View className="items-center w-[20px] p-2 flex justify-center">
                     <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
                 </View>
-                <View className="rounded-2xl border-2 items-center border-[#B87C4C] flex-1 p-2 flex flex-row gap-2">
+                <View className="rounded-2xl border-2 items-center border-[#B87C4C] flex-1 px-2 flex flex-row gap-2">
                     <SearchIcon color="#B87C4C" />
                     <TextInput
                         placeholder="Search your products here..."

@@ -10,9 +10,9 @@ import { useCallback } from 'react';
 
 export default function App() {
 	const [facing, setFacing] = useState<CameraType>('back');
-	const screenHeight = Dimensions.get('window').height;
 	const [permission, requestPermission] = useCameraPermissions();
 	const [selectedOption, setSelectedOption] = useState("scan");
+	const screenHeight = Dimensions.get('window').height;
 	const slideAnim = useRef(new Animated.Value(-screenHeight)).current;
 	const [showCamera, setShowCamera] = useState(true);
 
@@ -74,7 +74,7 @@ export default function App() {
 	return (
 		<View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
 			<Animated.View
-				className="w-full pb-20"
+				className="w-full"
 				style={{
 					position: 'absolute',
 					height: screenHeight,
@@ -84,6 +84,7 @@ export default function App() {
 					backgroundColor: '#F7F4EA',
 					transform: [{ translateY: slideAnim }],
 					zIndex: 10,
+					overflow: 'hidden'
 				}}
 			>
 				<SearchScreen onClose={() => { setSelectedOption('scan'); hideSearch(); }} />
