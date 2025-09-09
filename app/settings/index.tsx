@@ -4,15 +4,11 @@ import { useRouter } from 'expo-router';
 import { ScrollView } from 'react-native';
 import CurrentUser from '../../model/CurrentUser';
 
-export default function Settings() {
+export default function Settings({ onClose }: { onClose?: () => void }) {
     const router = useRouter();
 
-    const onClose = () => {
-        router.back();
-    }
-
     return (
-        <View className="bg-[#F7F4EA] flex-1 w-full px-6 pt-16">
+        <View className="bg-[#F7F4EA] flex-1 w-full px-6 pt-16 rounded-b-2xl relative">
             <View className="w-full flex flex-row gap-5 mb-8">
                 <View className="items-center w-[20px] p-2 flex justify-center">
                     <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
