@@ -20,14 +20,15 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     try {
         const url = new URL(request.url);
-        const paths = url.pathname.split('/');
-        const userId = paths[paths.length - 1];
+        const userId = url.searchParams.get('user_id');
+        
+        console.log(`https://glasc-api.netlify.app/api/personalDetails?user_id=${userId}`);
 
-        const response = await fetch(`https://glasc-api.netlify.app/api/personalDetails/${userId}`, {
-            method: 'POST',
+        const response = await fetch(`https://glasc-api.netlify.app/api/personalDetails?user_id=${userId}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }
         });
         
         const data = await response.json();

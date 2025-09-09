@@ -85,7 +85,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
 
     return (
         <View className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5 pt-14">
-            <View className="w-full flex flex-row gap-2"> {/* Search bar */}
+            <View className="w-full flex flex-row gap-2">
                 <View className="items-center w-[20px] p-2 flex justify-center">
                     <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
                 </View>
