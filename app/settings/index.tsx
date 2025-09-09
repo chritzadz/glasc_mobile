@@ -25,7 +25,7 @@ export default function Settings() {
                 <View className="mb-4">
                     <Pressable
                         className="flex-row items-center rounded-2xl bg-white p-4"
-                        onPress={() => router.push('/personal_form')}
+                        onPress={() => router.push('/edit_personal_form')}
                     >
                         <User size={28} color="#B87C4C" />
                         <Text className="ml-4 text-lg font-semibold text-[#B87C4C]">Personal Details</Text>
