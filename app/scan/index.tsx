@@ -6,13 +6,14 @@ import SearchScreen from './search.index';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import Settings from '../settings';
 
 
 export default function App() {
 	const [facing, setFacing] = useState<CameraType>('back');
 	const [permission, requestPermission] = useCameraPermissions();
 	const [selectedOption, setSelectedOption] = useState("scan");
-	const screenHeight = Dimensions.get('window').height;
+	const screenHeight = Dimensions.get('window').height - 50;
 	const slideAnim = useRef(new Animated.Value(-screenHeight)).current;
 	const [showCamera, setShowCamera] = useState(true);
 
@@ -44,10 +45,27 @@ export default function App() {
 		}).start();
 	};
 
+	const showSettings = () => {
+		setShowCamera(false);
+		Animated.timing(slideAnim, {
+		toValue: 0,
+		duration: 600,
+		useNativeDriver: true,
+		}).start(() => {});
+	};
+
+	const hideSettings = () => {
+		setShowCamera(true);
+		Animated.timing(slideAnim, {
+		toValue: -screenHeight,
+		duration: 600,
+		useNativeDriver: true,
+		}).start();
+	};
+
 	const handlePress = () => {
 		if (selectedOption === "scan") {
 			setSelectedOption("search");
-			showSearch();
 		} else {
 			setSelectedOption("scan");
 		}
@@ -72,68 +90,79 @@ export default function App() {
 	}
 
 	return (
-		<View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
-			<Animated.View
-				className="w-full"
-				style={{
-					position: 'absolute',
-					height: screenHeight,
-					top: 0,
-					left: 0,
-					right: 0,
-					backgroundColor: '#F7F4EA',
-					transform: [{ translateY: slideAnim }],
-					zIndex: 10,
-					overflow: 'hidden'
-				}}
-			>
-				<SearchScreen onClose={() => { setSelectedOption('scan'); hideSearch(); }} />
-			</Animated.View>
-			<View className="bg-[#F7F4EA] w-full justify-center p-5 flex-1 relative">
-				<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
-					{showCamera && <CameraView style={styles.flex} facing={facing} />}
+		<>
+			{
+				(selectedOption === "scan") ? (
+					<View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
+						<Animated.View
+							className="w-full"
+							style={{
+								position: 'absolute',
+								height: screenHeight,
+								top: 0,
+								left: 0,
+								right: 0,
+								backgroundColor: '#F7F4EA',
+								transform: [{ translateY: slideAnim }],
+								zIndex: 10,
+								overflow: 'hidden'
+							}}
+						>
+							<View className="mb-2 z-[0] w-full absolute h-full pb-2">
+								<Settings onClose={() => { hideSettings(); }} />
+							</View>
+							<View className="bg-[#B87C4C] flex-1 w-full absolute h-full rounded-2xl z-[-20]"></View>
+						</Animated.View>
+						<View className="bg-[#F7F4EA] w-full justify-center p-5 flex-1 relative">
+							<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
+								{showCamera && <CameraView style={styles.flex} facing={facing} />}
+							</View>
+							<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-14 border-2 border-[#B87C4C]">
+								<Users size={32} color="#B87C4C" onPress={showSettings}></Users>
+							</TouchableOpacity>
+						</View>
+					</View>
+				) : (
+					<SearchScreen onClose={() => {}}></SearchScreen>
+				)
+			}
+			{ selectedOption === "scan" &&
+				<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
+					<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
+						<View className="flex flex-row items-center justify-center gap-2">
+							<Scan className='text-[#B87C4C]' size={24} color="#B87C4C"/>
+							<Text className='font-bold text-2xl m-0 text-[#B87C4C]'>Scan</Text>
+						</View>
+					</View>
+					<TouchableOpacity onPress={handlePress}>
+						<View className="bg-transparent rounded-full px-4 py-2">
+							<View className="flex flex-row items-center justify-center gap-2">
+								<Search className='text-[#F7F4EA]' size={24} color="#F7F4EA"/>
+								<Text className='font-bold text-2xl m-0 text-[#F7F4EA]'>Search</Text>
+							</View>
+						</View>
+					</TouchableOpacity>
 				</View>
-				<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-14 border-2 border-[#B87C4C]">
-					<Users size={32} color="#B87C4C"></Users>
-				</TouchableOpacity>
-				{ selectedOption === "scan" &&
-					<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
-						<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
+			}
+			{ selectedOption === "search" &&
+				<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
+					<TouchableOpacity onPress={handlePress}>
+						<View className="bg-transparent rounded-full px-4 py-2">
 							<View className="flex flex-row items-center justify-center gap-2">
-								<Scan className='text-[#B87C4C]' size={24} color="#B87C4C"/>
-								<Text className='font-bold text-2xl m-0 text-[#B87C4C]'>Scan</Text>
+								<Scan className='text-[#F7F4EA]' size={24} color="#F7F4EA"/>
+								<Text className='font-bold text-2xl m-0 text-[#F7F4EA]'>Scan</Text>
 							</View>
 						</View>
-						<TouchableOpacity onPress={handlePress}>
-							<View className="bg-transparent rounded-full px-4 py-2">
-								<View className="flex flex-row items-center justify-center gap-2">
-									<Search className='text-[#F7F4EA]' size={24} color="#F7F4EA"/>
-									<Text className='font-bold text-2xl m-0 text-[#F7F4EA]'>Search</Text>
-								</View>
-							</View>
-						</TouchableOpacity>
-					</View>
-				}
-				{ selectedOption === "search" &&
-					<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
-						<TouchableOpacity onPress={handlePress}>
-							<View className="bg-transparent rounded-full px-4 py-2">
-								<View className="flex flex-row items-center justify-center gap-2">
-									<Scan className='text-[#F7F4EA]' size={24} color="#F7F4EA"/>
-									<Text className='font-bold text-2xl m-0 text-[#F7F4EA]'>Scan</Text>
-								</View>
-							</View>
-						</TouchableOpacity>
-						<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
-							<View className="flex flex-row items-center justify-center gap-2">
-								<Search className='text-[#B87C4C]' size={24} color="#B87C4C"/>
-								<Text className='font-bold text-2xl m-0 text-[#B87C4C]'>Search</Text>
-							</View>
+					</TouchableOpacity>
+					<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
+						<View className="flex flex-row items-center justify-center gap-2">
+							<Search className='text-[#B87C4C]' size={24} color="#B87C4C"/>
+							<Text className='font-bold text-2xl m-0 text-[#B87C4C]'>Search</Text>
 						</View>
 					</View>
-				}
-			</View>
-		</View>
+				</View>
+			}
+		</>
 	);
 }
 

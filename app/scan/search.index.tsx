@@ -86,10 +86,10 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     return (
         <View className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5 pt-14">
             <View className="w-full flex flex-row gap-2">
-                <View className="items-center w-[20px] p-2 flex justify-center">
+                {/* <View className="items-center w-[20px] p-2 flex justify-center">
                     <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
-                </View>
-                <View className="rounded-2xl border-2 items-center border-[#B87C4C] flex-1 px-2 flex flex-row gap-2">
+                </View> */}
+                <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] flex-1 px-2 flex flex-row gap-2">
                     <SearchIcon color="#B87C4C" />
                     <TextInput
                         placeholder="Search your products here..."
@@ -100,16 +100,26 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                 </View>
             </View>
             <ScrollView className="flex flex-col gap-2 w-full">
-                {
-                    mockProducts.map((product, index) => (
+                {Array.from({ length: Math.ceil(mockProducts.length / 2) }).map((_, rowIdx) => (
+                    <View key={rowIdx} className="flex flex-row gap-2 mb-2">
+                    <View className="flex-1">
                         <ProductItemBox
-                            key={index}
-                            imageUrl={product.imageUrl}
-                            name={product.name}
-                            description={product.description}
+                        imageUrl={mockProducts[rowIdx * 2]?.imageUrl}
+                        name={mockProducts[rowIdx * 2]?.name}
+                        description={mockProducts[rowIdx * 2]?.description}
                         />
-                    ))
-                }
+                    </View>
+                    {mockProducts[rowIdx * 2 + 1] && (
+                        <View className="flex-1">
+                        <ProductItemBox
+                            imageUrl={mockProducts[rowIdx * 2 + 1]?.imageUrl}
+                            name={mockProducts[rowIdx * 2 + 1]?.name}
+                            description={mockProducts[rowIdx * 2 + 1]?.description}
+                        />
+                        </View>
+                    )}
+                    </View>
+                ))}
             </ScrollView>
         </View>
     );
