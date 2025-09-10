@@ -1,12 +1,14 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Scan, Search, Users } from 'lucide-react-native';
+import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
+import { Scan, Search, Users, Camera } from 'lucide-react-native';
 import SearchScreen from './search.index';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Settings from '../settings';
+import ProcessPhoto from '../process_photo';
 
 
 export default function App() {
@@ -16,6 +18,8 @@ export default function App() {
 	const screenHeight = Dimensions.get('window').height - 50;
 	const slideAnim = useRef(new Animated.Value(-screenHeight)).current;
 	const [showCamera, setShowCamera] = useState(true);
+	const cameraRef = useRef<CameraView>(null);
+	const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -76,6 +80,22 @@ export default function App() {
 		router.push('/settings');
 	}
 
+	const handleTakePhoto = async () => {
+		if (cameraRef.current) {
+			try {
+				const photo = await cameraRef.current.takePictureAsync({
+					quality: 0.8,
+					base64: true,
+				});
+				
+				await AsyncStorage.setItem('skinPhoto', photo.uri);
+				setCapturedPhoto(photo.uri);
+			} catch (error) {
+				Alert.alert('Error', 'Failed to capture photo');
+			}
+		}
+	};
+
 	if (!permission) {
 		return <View />;
 	}
@@ -92,7 +112,9 @@ export default function App() {
 	return (
 		<>
 			{
-				(selectedOption === "scan") ? (
+				(capturedPhoto) ? (
+					<ProcessPhoto uri={capturedPhoto} onBack={() => setCapturedPhoto(null)} />
+				) : (selectedOption === "scan") ? (
 					<View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
 						<Animated.View
 							className="w-full"
@@ -115,7 +137,9 @@ export default function App() {
 						</Animated.View>
 						<View className="bg-[#F7F4EA] w-full justify-center p-5 flex-1 relative">
 							<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
-								{showCamera && <CameraView style={styles.flex} facing={facing} />}
+								{
+									showCamera && <CameraView ref={cameraRef} style={styles.flex} facing={facing} />
+								}
 							</View>
 							<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-14 border-2 border-[#B87C4C]">
 								<Users size={32} color="#B87C4C" onPress={showSettings}></Users>
@@ -126,8 +150,12 @@ export default function App() {
 					<SearchScreen onClose={() => {}}></SearchScreen>
 				)
 			}
-			{ selectedOption === "scan" &&
-				<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
+			{ selectedOption === "scan" && !capturedPhoto &&
+				<>
+					<TouchableOpacity onPress={handleTakePhoto} className="absolute self-center bottom-44 bg-[#B87C4C] rounded-full p-4 border-4 border-[#F7F4EA]">
+						<Camera size={32} color="#F7F4EA" />
+					</TouchableOpacity>
+					<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
 					<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
 						<View className="flex flex-row items-center justify-center gap-2">
 							<Scan className='text-[#B87C4C]' size={24} color="#B87C4C"/>
@@ -142,9 +170,10 @@ export default function App() {
 							</View>
 						</View>
 					</TouchableOpacity>
-				</View>
+					</View>
+				</>
 			}
-			{ selectedOption === "search" &&
+			{ selectedOption === "search" && !capturedPhoto &&
 				<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
 					<TouchableOpacity onPress={handlePress}>
 						<View className="bg-transparent rounded-full px-4 py-2">
