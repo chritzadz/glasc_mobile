@@ -1,11 +1,15 @@
 import { View, Text, Pressable } from 'react-native';
 import { User, ListChecks, LogOut, ChevronLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { ScrollView } from 'react-native';
+import { ScrollView, Alert } from 'react-native';
 import CurrentUser from '../../model/CurrentUser';
 
 export default function Settings({ onClose }: { onClose?: () => void }) {
     const router = useRouter();
+
+    const displayLogoutAlert = () => {
+        Alert.alert('Success', 'You have successfully logged out.');
+    };
 
     return (
         <View className="bg-[#F7F4EA] flex-1 w-full px-6 pt-16 rounded-b-2xl relative">
@@ -43,6 +47,7 @@ export default function Settings({ onClose }: { onClose?: () => void }) {
                         className="flex-row items-center rounded-2xl bg-[#B87C4C] p-4 justify-start"
                         onPress={() => {
                             CurrentUser.getInstance().setId(-1);
+                            displayLogoutAlert();
                             router.push('/login');
                         }}
                     >
