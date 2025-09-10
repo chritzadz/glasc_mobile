@@ -158,7 +158,7 @@ const EditPersonalForm = () => {
     const updatePersonalInfo = async () => {
         try {
             const response = await fetch('/api/personalDetails', {
-                method: 'POST',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
