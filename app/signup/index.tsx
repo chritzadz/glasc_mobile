@@ -100,7 +100,6 @@ const Signup = () => {
     }
 
     return (
-        
         <SafeAreaView className="bg-[#B87C4C] flex-1 items-center justify-center">
             <View className="flex justify-center items-center">
                 <Text className="text-4xl text-white">Create your account</Text>

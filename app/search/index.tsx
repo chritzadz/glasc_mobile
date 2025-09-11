@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { SafeAreaView } from 'react-native';
 import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const Search = () => {
@@ -24,7 +25,7 @@ const Search = () => {
 
 
     return(
-        <View className="w-screen h-screen">
+        <SafeAreaView className="w-screen h-screen">
             <Animated.View
                 style={{
                     position: 'absolute',
@@ -39,7 +40,7 @@ const Search = () => {
                 {...panResponder.panHandlers}
             ></Animated.View>
             <Text>Search screen</Text>
-        </View>
+        </SafeAreaView>
     );
 }
 

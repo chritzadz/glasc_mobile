@@ -9,6 +9,7 @@ import { useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Settings from '../settings';
 import ProcessPhoto from '../process_photo';
+import { SafeAreaView } from 'react-native';
 
 
 export default function App() {
@@ -50,7 +51,6 @@ export default function App() {
 	};
 
 	const showSettings = () => {
-		setShowCamera(false);
 		Animated.timing(slideAnim, {
 		toValue: 0,
 		duration: 600,
@@ -59,7 +59,6 @@ export default function App() {
 	};
 
 	const hideSettings = () => {
-		setShowCamera(true);
 		Animated.timing(slideAnim, {
 		toValue: -screenHeight,
 		duration: 600,
@@ -115,7 +114,7 @@ export default function App() {
 				(capturedPhoto) ? (
 					<ProcessPhoto uri={capturedPhoto} onBack={() => setCapturedPhoto(null)} />
 				) : (selectedOption === "scan") ? (
-					<View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
+					<SafeAreaView className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
 						<Animated.View
 							className="w-full"
 							style={{
@@ -135,17 +134,17 @@ export default function App() {
 							</View>
 							<View className="bg-[#B87C4C] flex-1 w-full absolute h-full rounded-2xl z-[-20]"></View>
 						</Animated.View>
-						<View className="bg-[#F7F4EA] w-full justify-center p-5 flex-1 relative">
+						<View className="bg-[#F7F4EA] w-full justify-center px-5 flex-1 relative">
 							<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
 								{
 									showCamera && <CameraView ref={cameraRef} style={styles.flex} facing={facing} />
 								}
 							</View>
-							<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-14 border-2 border-[#B87C4C]">
+							<TouchableOpacity onPress={handleSettingPress} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-8 border-2 border-[#B87C4C]">
 								<Users size={32} color="#B87C4C" onPress={showSettings}></Users>
 							</TouchableOpacity>
 						</View>
-					</View>
+					</SafeAreaView>
 				) : (
 					<SearchScreen onClose={() => {}}></SearchScreen>
 				)

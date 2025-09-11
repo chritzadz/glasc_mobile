@@ -3,6 +3,7 @@ import { SearchIcon, ChevronLeft } from 'lucide-react-native';
 import { TextInput } from 'react-native';
 import { ScrollView } from 'react-native';
 import ProductItemBox from '../../components/ProductItemBox';
+import { SafeAreaView } from 'react-native';
 
 const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     const mockProducts = [
@@ -84,44 +85,47 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     ];
 
     return (
-        <View className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5 pt-14">
-            <View className="w-full flex flex-row gap-2">
-                {/* <View className="items-center w-[20px] p-2 flex justify-center">
-                    <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
-                </View> */}
-                <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] flex-1 px-2 flex flex-row gap-2">
-                    <SearchIcon color="#B87C4C" />
-                    <TextInput
-                        placeholder="Search your products here..."
-                        value={""}
-                        onChangeText={() => {}}
-                        className="text-[#b69982] w-full text-lg border-0"
-                        />
+        <View className="px-5">
+            <SafeAreaView className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5">
+                <View className="w-full flex flex-row gap-2">
+                    {/* <View className="items-center w-[20px] p-2 flex justify-center">
+                        <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
+                    </View> */}
+                    <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] flex-1 px-2 flex flex-row gap-2">
+                        <SearchIcon color="#B87C4C" />
+                        <TextInput
+                            placeholder="Search your products here..."
+                            value={""}
+                            onChangeText={() => {}}
+                            className="text-[#b69982] w-full text-lg border-0"
+                            />
+                    </View>
                 </View>
-            </View>
-            <ScrollView className="flex flex-col gap-2 w-full">
-                {Array.from({ length: Math.ceil(mockProducts.length / 2) }).map((_, rowIdx) => (
-                    <View key={rowIdx} className="flex flex-row gap-2 mb-2">
-                    <View className="flex-1">
-                        <ProductItemBox
-                        imageUrl={mockProducts[rowIdx * 2]?.imageUrl}
-                        name={mockProducts[rowIdx * 2]?.name}
-                        description={mockProducts[rowIdx * 2]?.description}
-                        />
-                    </View>
-                    {mockProducts[rowIdx * 2 + 1] && (
+                <ScrollView className="flex flex-col gap-2 w-full">
+                    {Array.from({ length: Math.ceil(mockProducts.length / 2) }).map((_, rowIdx) => (
+                        <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                         <View className="flex-1">
-                        <ProductItemBox
-                            imageUrl={mockProducts[rowIdx * 2 + 1]?.imageUrl}
-                            name={mockProducts[rowIdx * 2 + 1]?.name}
-                            description={mockProducts[rowIdx * 2 + 1]?.description}
-                        />
+                            <ProductItemBox
+                            imageUrl={mockProducts[rowIdx * 2]?.imageUrl}
+                            name={mockProducts[rowIdx * 2]?.name}
+                            description={mockProducts[rowIdx * 2]?.description}
+                            />
                         </View>
-                    )}
-                    </View>
-                ))}
-            </ScrollView>
+                        {mockProducts[rowIdx * 2 + 1] && (
+                            <View className="flex-1">
+                            <ProductItemBox
+                                imageUrl={mockProducts[rowIdx * 2 + 1]?.imageUrl}
+                                name={mockProducts[rowIdx * 2 + 1]?.name}
+                                description={mockProducts[rowIdx * 2 + 1]?.description}
+                            />
+                            </View>
+                        )}
+                        </View>
+                    ))}
+                </ScrollView>
+            </SafeAreaView>
         </View>
+        
     );
 };
 
