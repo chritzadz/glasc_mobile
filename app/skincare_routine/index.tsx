@@ -5,7 +5,8 @@ import { ScrollView } from 'react-native';
 import ProductItemBox from '../../components/ProductItemBox';
 
 const SkincareRoutine = ({ onClose }: { onClose?: () => void }) => {
-    
+
+
     return (
         <View className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5 pt-14">
             <Text className="text-4xl font-bold text-[#B87C4C]" >My Skincare Routine</Text>
@@ -29,3 +30,4 @@ const SkincareRoutine = ({ onClose }: { onClose?: () => void }) => {
 };
 
 export default SkincareRoutine;
+
