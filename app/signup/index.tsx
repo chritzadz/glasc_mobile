@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Pressable, Text, View, TextInput, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Pressable, Text, View, TextInput, Alert, ActivityIndicator } from 'react-native';
 
 import validation from '../../util/validation';
 import { User } from '../../model/User';
@@ -100,7 +101,6 @@ const Signup = () => {
     }
 
     return (
-        
         <SafeAreaView className="bg-[#B87C4C] flex-1 items-center justify-center">
             <View className="flex justify-center items-center">
                 <Text className="text-4xl text-white">Create your account</Text>
