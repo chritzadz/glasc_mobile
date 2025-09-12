@@ -27,6 +27,7 @@ export default function App() {
 	const [showCamera, setShowCamera] = useState(true);
 	const cameraRef = useRef<CameraView>(null);
 	const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+	const [settingOpen, setSettingOpen] = useState(false);
 
 	const slideStyle = useAnimatedStyle(() => ({
 		transform: [{ translateY: withTiming(slideAnim.value, { duration: 600 }) }],
@@ -43,10 +44,12 @@ export default function App() {
 	);
 
 	const showSettings = () => {
+		setSettingOpen(true);
 		slideAnim.value = 0;
 	};
 
 	const hideSettings = () => {
+		setSettingOpen(false);
 		slideAnim.value = -screenHeight;
 	};
 
@@ -110,7 +113,7 @@ export default function App() {
 							slideStyle
 						]}
 						>
-							<View className="mb-2 z-[100] w-full absolute h-full pb-2">
+							<View className="mb-2 z-[0] w-full absolute h-full pb-2">
 								<Settings onClose={() => { hideSettings(); }} />
 							</View>
 							<View className="bg-[#B87C4C] flex-1 w-full absolute h-full rounded-2xl z-[-20]"></View>
@@ -118,7 +121,7 @@ export default function App() {
 						<View className="bg-[#F7F4EA] w-full justify-center px-5 flex-1 relative">
 							<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
 								{
-									showCamera && <CameraView ref={cameraRef} style={styles.flex} facing={facing} />
+									showCamera && <CameraView ref={cameraRef} style={styles.cameraStyle} facing={facing} />
 								}
 							</View>
 							<TouchableOpacity onPress={showSettings} className="absolute bg-[#F7F4EA] rounded-full p-2 self-center top-8 border-2 border-[#B87C4C]">
@@ -130,12 +133,12 @@ export default function App() {
 					<SearchScreen onClose={() => {}}></SearchScreen>
 				)
 			}
-			{ selectedOption === "scan" && !capturedPhoto &&
+			{ selectedOption === "scan" && !capturedPhoto && !settingOpen &&
 				<>
-					<TouchableOpacity onPress={handleTakePhoto} className="absolute z-[-10] self-center bottom-44 bg-[#B87C4C] rounded-full p-4 border-4 border-[#F7F4EA]">
+					<TouchableOpacity onPress={handleTakePhoto} className="absolute z-[0] self-center bottom-44 bg-[#B87C4C] rounded-full p-4 border-4 border-[#F7F4EA]">
 						<Camera size={32} color="#F7F4EA" />
 					</TouchableOpacity>
-					<View className="absolute z-[-10] self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
+					<View className="absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
 					<View className="bg-[#F7F4EA] rounded-full px-4 py-2">
 						<View className="flex flex-row items-center justify-center gap-2">
 							<Scan className='text-[#B87C4C]' size={24} color="#B87C4C"/>
@@ -143,7 +146,7 @@ export default function App() {
 						</View>
 					</View>
 					<TouchableOpacity onPress={handlePress}>
-						<View className="bg-transparent z-[-10] rounded-full px-4 py-2">
+						<View className="bg-transparent z-[0] rounded-full px-4 py-2">
 							<View className="flex flex-row items-center justify-center gap-2">
 								<Search className='text-[#F7F4EA]' size={24} color="#F7F4EA"/>
 								<Text className='font-bold text-2xl m-0 text-[#F7F4EA]'>Search</Text>
@@ -153,8 +156,8 @@ export default function App() {
 					</View>
 				</>
 			}
-			{ selectedOption === "search" && !capturedPhoto && 
-				<View className="z-[-10] absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
+			{ selectedOption === "search" && !capturedPhoto && !settingOpen &&
+				<View className="z-[0] absolute self-center bottom-24 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2">
 					<TouchableOpacity onPress={handlePress}>
 						<View className="bg-transparent rounded-full px-4 py-2">
 							<View className="flex flex-row items-center justify-center gap-2">
@@ -163,7 +166,7 @@ export default function App() {
 							</View>
 						</View>
 					</TouchableOpacity>
-					<View className="z-[-10] bg-[#F7F4EA] rounded-full px-4 py-2">
+					<View className="z-[0] bg-[#F7F4EA] rounded-full px-4 py-2">
 						<View className="flex flex-row items-center justify-center gap-2">
 							<Search className='text-[#B87C4C]' size={24} color="#B87C4C"/>
 							<Text className='font-bold text-2xl m-0 text-[#B87C4C]'>Search</Text>
@@ -206,5 +209,9 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		fontWeight: 'bold',
 		color: 'white',
+	},
+	cameraStyle:{
+		flex: 1,
+		zIndex: 5
 	},
 });

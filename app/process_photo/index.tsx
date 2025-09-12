@@ -121,7 +121,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 			</TouchableOpacity>
 
 			{ analysis != null &&
-				<View className="absolute right-5 top-1/2">
+				<View className="absolute right-5 top-1/2 w-4/5">
 					<DetailBox
 						productName="Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml"
 						analysis={analysis}
