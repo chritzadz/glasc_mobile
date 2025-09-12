@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Pressable, Text, View, TextInput, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Pressable, Text, View, TextInput, Alert, ActivityIndicator } from 'react-native';
 
 import validation from '../../util/validation';
 import { User } from '../../model/User';

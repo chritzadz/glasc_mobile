@@ -3,7 +3,7 @@ import { SearchIcon, ChevronLeft } from 'lucide-react-native';
 import { TextInput } from 'react-native';
 import { ScrollView } from 'react-native';
 import ProductItemBox from '../../components/ProductItemBox';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     const mockProducts = [

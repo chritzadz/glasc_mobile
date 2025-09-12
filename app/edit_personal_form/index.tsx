@@ -7,7 +7,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { ScrollView } from 'react-native';
 
 import CurrentUser from '../../model/CurrentUser';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type SkinConcerns = {
     acne: boolean;

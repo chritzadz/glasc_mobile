@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native';
 
 import { User } from '../../model/User';
 import CurrentUser from '../../model/CurrentUser';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type SkinConcerns = {
     acne: boolean;

@@ -47,13 +47,20 @@ export async function POST(request: Request) {
     });
 
     const response = await client.send(command);
-    const result = JSON.parse(new TextDecoder().decode(response.body));
-    
-    // Nova response structure: result.output.message.content[0].text
-    const analysisText = result.output.message.content[0].text;
+    const raw = new TextDecoder().decode(response.body);
+    const result = JSON.parse(raw);
+
+    // Extract the model's JSON string
+    const jsonString = result.output.message.content[0].text
+        .replace(/^```json\s*/i, '')
+        .replace(/```$/i, '')
+        .trim();
+
+    const analysisText = JSON.parse(jsonString);
+    console.log(analysisText);
     
     try {
-        const analysis = JSON.parse(analysisText);
+        const analysis = analysisText;
         return Response.json({ analysis });
     } catch (error) {
         return Response.json({ analysis: { raw_response: analysisText } });

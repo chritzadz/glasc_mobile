@@ -2,8 +2,9 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CurrentUser from '../../model/CurrentUser';
+import DetailBox from '../../components/DetailBox';
 
 interface ProcessPhotoProps {
 	uri: string | null;
@@ -11,9 +12,8 @@ interface ProcessPhotoProps {
 }
 
 export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
-	const [ingredients, setIngredients] = useState<string[]>([]);
-	const [personalDetails, setPersonalDetails] = useState(null);
 	const [analysis, setAnalysis] = useState(null);
+	const [productName, setProductName] = useState("Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml");
 
 	//intermediate steps:
 	//1. process data using the api idk.
@@ -35,7 +35,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 	const processPhoto = async () => {
 		const fetchIngredients = async () => {
 			console.log("FETCH INGREDIENTS:\n");
-			const response = await fetch(`/api/ingredient?product_name=${product_name}`, {
+			const response = await fetch(`/api/ingredient?product_name=${productName}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -86,7 +86,6 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
 		//here assuming it always exist in the db
 		//got the product name and ingredients
-		const product_name = "Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml";
 		try {
 			const ingredients = await fetchIngredients();
 			const details = await fetchPersonalDetails();
@@ -95,6 +94,10 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 			console.error("Error in processPhoto:", error);
 		}
 	}
+
+	useEffect(() => {
+		processPhoto();
+	}, []);
 
 	return (
 		<SafeAreaView className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
@@ -116,12 +119,15 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 					<Text className="text-[#F7F4EA] font-bold text-lg">Back</Text>
 				</View>
 			</TouchableOpacity>
-			<TouchableOpacity onPress={processPhoto} className="absolute self-center bottom-40 bg-[#B87C4C] rounded-full px-6 py-3 border-4 border-[#F7F4EA]">
-				<View className="flex flex-row items-center gap-2">
-					<ArrowLeft size={24} color="#F7F4EA" />
-					<Text className="text-[#F7F4EA] font-bold text-lg">Process TEst</Text>
+
+			{ analysis != null &&
+				<View className="absolute right-5 top-1/2">
+					<DetailBox
+						productName="Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml"
+						analysis={analysis}
+					/>
 				</View>
-			</TouchableOpacity>
+			}
 		</SafeAreaView>
 	);
 }
