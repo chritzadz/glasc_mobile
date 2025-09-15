@@ -1,7 +1,10 @@
 
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import CurrentUser from '../../model/CurrentUser';
+import DetailBox from '../../components/DetailBox';
 
 interface ProcessPhotoProps {
 	uri: string | null;
@@ -9,15 +12,96 @@ interface ProcessPhotoProps {
 }
 
 export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
+	const [analysis, setAnalysis] = useState(null);
+	const [productName, setProductName] = useState("Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml");
 
-	//process data using the api idk.
+	//intermediate steps:
+	//1. process data using the api idk.
+	//2. find the object, highlight the object
+	//3. and then get the product from the db
+	//4. analyze the product's ingredients, match with (current routine, current skin_condition)
+	//5. fetch to aws gpt
+	//6. get answer
+	{/*
+		format:
+	{
+		type: "what kind of skincare is this",
+		match_percentage: "match percentage",
+		harmful_ingredients: "harmful ingredients"
+	}
+		*/}
+
+
+	const processPhoto = async () => {
+		const fetchIngredients = async () => {
+			console.log("FETCH INGREDIENTS:\n");
+			const response = await fetch(`/api/ingredient?product_name=${productName}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+			
+			const data = await response.json();
+
+			const temp: string[] = data;
+			console.log(temp);
+			return temp;
+		};
+
+		const fetchPersonalDetails = async () => {
+			console.log("FETCH PERSONAL DETAILS:\n");
+			const userId = CurrentUser.getInstance().getId();
+			const response = await fetch(`/api/personalDetails?user_id=${userId}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+			const data = await response.json();
+			console.log(data.task.rows[0]);
+			return data.task.rows[0];
+		};
+
+		const fetchAnalysis = async (ingredients: string[], personalDetails: any) => {
+			console.log("FETCH ANALYSUIS:\n");
+			const response = await fetch('/api/analyzeProduct', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					ingredients: ingredients,
+					personalDetails: personalDetails
+				})
+			});
+
+			const data = await response.json();
+
+			console.log(data.analysis);
+			setAnalysis(data.analysis);
+		};
+
+		//process image
+
+		//get the name of the product from the db (if not exist then idk...)
+
+		//here assuming it always exist in the db
+		//got the product name and ingredients
+		try {
+			const ingredients = await fetchIngredients();
+			const details = await fetchPersonalDetails();
+			await fetchAnalysis(ingredients, details);
+		} catch (error) {
+			console.error("Error in processPhoto:", error);
+		}
+	}
+
 	useEffect(() => {
-
-	})
+		processPhoto();
+	}, []);
 
 	return (
-		<View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
-			<View className="bg-[#F7F4EA] w-full justify-center p-5 flex-1 relative">
+		<SafeAreaView className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
+			<View className="bg-[#F7F4EA] w-full justify-center px-5 flex-1 relative">
 				<View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
 					{uri ? (
 						<Image source={{ uri }} style={styles.flex} />
@@ -35,7 +119,16 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 					<Text className="text-[#F7F4EA] font-bold text-lg">Back</Text>
 				</View>
 			</TouchableOpacity>
-		</View>
+
+			{ analysis != null &&
+				<View className="absolute right-5 top-1/2 w-4/5">
+					<DetailBox
+						productName="Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml"
+						analysis={analysis}
+					/>
+				</View>
+			}
+		</SafeAreaView>
 	);
 }
 

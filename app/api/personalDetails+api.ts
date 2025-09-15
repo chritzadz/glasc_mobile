@@ -10,7 +10,8 @@ export async function POST(request: Request) {
         });
         const data = await response.json();
         console.log(data);
-        
+        //test
+        console.log(data);
         return Response.json(data);
     } catch (error) {
         return Response.json({ error: (error as Error).message }, { status: 500 });
@@ -32,7 +33,6 @@ export async function GET(request: Request) {
         });
         
         const data = await response.json();
-        console.log(data);
         
         return Response.json(data);
     } catch (error) {
