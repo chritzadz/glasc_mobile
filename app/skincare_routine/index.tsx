@@ -1,20 +1,21 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import { SearchIcon, ChevronLeft } from 'lucide-react-native';
-import { TextInput, ScrollView, Alert, FlatList } from 'react-native';
-import React, { useState } from 'react';
+import { TextInput, ScrollView, Alert, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
 
 import { Product } from '../../model/Product';
 
-export default function SkincareRoutine({ onClose }: { onClose?: () => void }) {
+export default function SkincareRoutine() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const handleClose = () => {
         router.push('settings');
-        // Add your close logic here, e.g., navigating back or closing a modal.
     };
 
     const productExist = (products: Product[]): Product | null => {
@@ -22,7 +23,32 @@ export default function SkincareRoutine({ onClose }: { onClose?: () => void }) {
         return found ? found : null;
     };
 
-    const getProduct = async (): Promise<Product | null> => {
+    // const getProduct = async (): Promise<void> => {
+    //     if (!searchTerm) {
+    //         setProducts([]); // Clear products if search term is empty
+    //         return;
+    //     }
+
+    //     try {
+    //         const response = await fetch('/api/skincare', {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             }
+    //         });
+            
+    //         const data = await response.json();
+    //         const products: Product[] = data;
+    //         setProducts(products);
+    
+    //         return productExist(products); // Return the current user or null
+    //     } catch (error) {
+    //         Alert.alert('Error', 'Failed to fetch products. Please try again later.');
+    //         return null; // Return null in case of an error
+    //     }
+    // };
+
+    const getProduct = async (): Promise<void> => {
         try {
             const response = await fetch('/api/skincare', {
                 method: 'GET',
@@ -32,14 +58,60 @@ export default function SkincareRoutine({ onClose }: { onClose?: () => void }) {
             });
             
             const data = await response.json();
-            const products: Product[] = data;
-            setProducts(products);
-    
-            return productExist(products); // Return the current user or null
-        } catch (error) {
+            console.log(data);
+
+            const productObjects: Product[] = data.map((item: any) => ({
+                name: item.product_name,
+                url: item.product_url,
+                ingredients: item.ingredients || '', // Ensure ingredients are handled
+            }));
+
+            setProducts(productObjects);
+        } 
+        catch (error) {
             Alert.alert('Error', 'Failed to fetch products. Please try again later.');
-            return null; // Return null in case of an error
         }
+    };
+
+    const addNewMyProduct = (newProduct: Product) => {
+        // Use the setter function to update the state
+        setFilteredProducts((prevProducts) => [...prevProducts, newProduct]);
+    };
+
+    // const filterProduct = () => {
+    //     for (let i = 0; i < products.length; i++){
+    //         if (products[i].name.includes(searchTerm)){
+    //             addNewProduct(products[i]);
+    //         }
+    //     }
+    // };
+
+    const filterProduct = () => {
+        if (!Array.isArray(products) || products.length === 0) {
+            setFilteredProducts([]); // Reset if products array is empty or not an array
+            return;
+        }
+
+        if (searchTerm.trim() === "") {
+            setFilteredProducts(products); // Reset to all products if search term is empty
+            return;
+        }
+
+        const newFilteredProducts = products.filter(product => 
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        setFilteredProducts(newFilteredProducts);
+    };
+
+    useEffect(() => {
+        getProduct();
+    }, []);
+
+    const handleProductPress = (product: Product) => {
+        // Navigate or display product details
+        console.log("Product selected:", product);
+        addNewMyProduct(product);
     };
 
     return (
@@ -65,17 +137,24 @@ export default function SkincareRoutine({ onClose }: { onClose?: () => void }) {
                         />
                 </View>
             </View>
+            <FlatList
+                data={filteredProducts}
+                keyExtractor={(item) => item.name} // Assuming each product has a unique `id`
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => handleProductPress(item)}>
+                        <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                    </TouchableOpacity>
+                )}
+                style={{ marginTop: 20, width: '100%' }}
+            />
+
+            <View className="w-full flex flex-row gap-2">
+                <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
+                    <Text className="font-bold text-lg text-[#bf7641]">Press Me</Text>
+                </TouchableOpacity>
+            </View>
             <Text className="text-4xl font-bold text-[#B87C4C]" >My Products:</Text>
-            <ScrollView className="flex flex-col gap-2 w-full">
-                {/* <FlatList
-                    data={items}
-                    keyExtractor={(item, index) => index.toString()} // Use index as key
-                    renderItem={({ item }) => (
-                        <Text style={{ padding: 10, fontSize: 16 }}>{item}</Text>
-                    )}
-                    style={{ marginTop: 20 }}
-                /> */}
-            </ScrollView>
         </View>
     );
 };
+
