@@ -11,7 +11,8 @@ export default function SkincareRoutine() {
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+    const [selectedMorningProducts, setSelectedMorningProducts] = useState<Product[]>([]);
+    const [selectedNightProducts, setSelectedNightProducts] = useState<Product[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const handleClose = () => {
@@ -43,8 +44,12 @@ export default function SkincareRoutine() {
         }
     };
 
-    const addNewMyProduct = (newProduct: Product) => {
-        setSelectedProducts((prevProducts) => [...prevProducts, newProduct]);
+    const addNewMorningProduct = (newProduct: Product) => {
+        setSelectedMorningProducts((prevProducts) => [...prevProducts, newProduct]);
+    };
+
+    const addNewNightProduct = (newProduct: Product) => {
+        setSelectedNightProducts((prevProducts) => [...prevProducts, newProduct]);
     };
 
     const filterProduct = () => {
@@ -54,7 +59,7 @@ export default function SkincareRoutine() {
         }
 
         if (searchTerm.trim() === "") {
-            setFilteredProducts(products); // Reset to all products if search term is empty
+            setFilteredProducts([]); // Reset to all products if search term is empty
             return;
         }
 
@@ -69,62 +74,108 @@ export default function SkincareRoutine() {
         getProduct();
     }, []);
 
-    const handleProductPress = (product: Product) => {
+    const handleMorningProductPress = (product: Product) => {
         console.log("Product selected:", product);
-        addNewMyProduct(product);
+        addNewMorningProduct(product);
+    };
+
+    const handleNightProductPress = (product: Product) => {
+        console.log("Product selected:", product);
+        addNewNightProduct(product);
     };
 
     return (
-        <View className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5 pt-14">
-            <View className="w-full flex flex-row gap-5 mb-8">
-                <View className="items-center w-[20px] p-2 flex justify-center">
-                    <ChevronLeft color="#B87C4C" onPress={handleClose}></ChevronLeft>
-                </View>
-                <View className="justify-center items-center">
-                    <Text className="text-2xl text-[#B87C4C]">Back</Text>
-                </View>
+        <ScrollView className="flex flex-col gap-5 w-full bg-[#F7F4EA] pd-10 px-5 pt-14 pb-20">
+            <View className="flex flex-row items-center gap-5">
+                <TouchableOpacity className="w-[20px] p-2 flex justify-center" onPress={handleClose}>
+                    <ChevronLeft color="#B87C4C" />
+                </TouchableOpacity>
+                <Text className="text-2xl text-[#B87C4C]">Back</Text>
             </View>
-            <Text className="text-4xl font-bold text-[#B87C4C]" >My Skincare Routine</Text>
-            
+
+            {/* Title */}
+            <Text className="text-4xl font-bold text-[#B87C4C] my-8">My Skincare Routine</Text>
+            <Text className="text-3xl font-bold text-[#B87C4C]">Morning Routine</Text>
+
+            {/* Search and Submit Section */}
             <View className="w-full flex flex-row gap-2">
-                <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] flex-1 px-2 flex flex-row gap-2">
-                    <SearchIcon/>
+                <View className="h-10 rounded-2xl p-1 border-2 border-[#B87C4C] flex-1 mt-4 flex flex-row items-center gap-2 px-2">
+                    <SearchIcon />
                     <TextInput
                         placeholder="Search your products here..."
                         value={searchTerm}
-                        onChangeText={(text) => setSearchTerm(text)}
+                        onChangeText={setSearchTerm}
                         className="text-[#b69982] w-full text-lg border-0"
-                        />
+                    />
                 </View>
-            </View>
-            <FlatList
-                data={filteredProducts}
-                keyExtractor={(item) => item.name}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleProductPress(item)}>
-                        <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                    </TouchableOpacity>
-                )}
-                style={{ marginTop: 0, width: '100%' }}
-            />
-
-            <View className="w-full flex flex-row gap-2">
                 <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
-                    <Text className="font-bold text-lg text-[#bf7641]">Submit</Text>
+                    <Text className="font-bold text-lg text-[#bf7641]">Find</Text>
                 </TouchableOpacity>
             </View>
-            <Text className="text-4xl font-bold text-[#B87C4C]" >My Products:</Text>
             <FlatList
-                data={selectedProducts}
+                    data={filteredProducts}
+                    keyExtractor={(item) => item.name}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => handleMorningProductPress(item)}>
+                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                    style={{ marginTop: 0, width: '100%' }}
+                />
+            <Text className="text-2xl font-bold text-[#B87C4C]">My Morning Products: </Text>
+            <FlatList
+                data={selectedMorningProducts}
                 keyExtractor={(item) => item.name} 
                 renderItem={({ item }) => (
                     <TouchableOpacity>
                         <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
                     </TouchableOpacity>
                 )}
-                style={{ marginTop: 20, width: '100%' }}
+                style={{ marginTop: 10, width: '100%' }}
             />
-        </View>
+
+
+            {/* Title */}
+            <Text className="text-3xl font-bold text-[#B87C4C] mt-20">Night Routine</Text>
+
+            {/* Search and Submit Section */}
+            <View className="w-full flex flex-row gap-2">
+                <View className="h-10 rounded-2xl p-1 border-2 border-[#B87C4C] flex-1 mt-4 flex flex-row items-center gap-2 px-2">
+                    <SearchIcon />
+                    <TextInput
+                        placeholder="Search your products here..."
+                        value={searchTerm}
+                        onChangeText={setSearchTerm}
+                        className="text-[#b69982] w-full text-lg border-0"
+                    />
+                </View>
+                <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
+                    <Text className="font-bold text-lg text-[#bf7641]">Find</Text>
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                    data={filteredProducts}
+                    keyExtractor={(item) => item.name}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => handleNightProductPress(item)}>
+                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                    style={{ marginTop: 0, width: '100%' }}
+                />
+            <Text className="text-2xl font-bold text-[#B87C4C]">My Night Products: </Text>
+            <FlatList
+                data={selectedNightProducts}
+                keyExtractor={(item) => item.name} 
+                renderItem={({ item }) => (
+                    <TouchableOpacity>
+                        <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                    </TouchableOpacity>
+                )}
+                style={{ marginTop: 10, width: '100%' }}
+            />
+
+        </ScrollView>
     );
 };
 
