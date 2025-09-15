@@ -19,6 +19,30 @@ export default function SkincareRoutine() {
         router.push('settings');
     };
 
+    const handleDelete = (product_name: String) => {
+        Alert.alert(
+            "Delete",
+            "Do you want to delete this product?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Delete",
+                    onPress: () => {
+                        // Remove the product from the list
+                        setProducts((prevProducts) => 
+                            prevProducts.filter(product => product.name !== product_name)
+                        );
+                    },
+                    style: "destructive"
+                }
+            ]
+        );
+    }
+
     const getProduct = async (): Promise<void> => {
         try {
             const response = await fetch('/api/skincare', {
@@ -127,7 +151,7 @@ export default function SkincareRoutine() {
                 data={selectedMorningProducts}
                 keyExtractor={(item) => item.name} 
                 renderItem={({ item }) => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDelete(item.name)}>
                         <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
                     </TouchableOpacity>
                 )}
