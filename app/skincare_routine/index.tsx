@@ -18,36 +18,6 @@ export default function SkincareRoutine() {
         router.push('settings');
     };
 
-    const productExist = (products: Product[]): Product | null => {
-        const found = products.find((product: Product) => product.name.includes(searchTerm))
-        return found ? found : null;
-    };
-
-    // const getProduct = async (): Promise<void> => {
-    //     if (!searchTerm) {
-    //         setProducts([]); // Clear products if search term is empty
-    //         return;
-    //     }
-
-    //     try {
-    //         const response = await fetch('/api/skincare', {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             }
-    //         });
-            
-    //         const data = await response.json();
-    //         const products: Product[] = data;
-    //         setProducts(products);
-    
-    //         return productExist(products); // Return the current user or null
-    //     } catch (error) {
-    //         Alert.alert('Error', 'Failed to fetch products. Please try again later.');
-    //         return null; // Return null in case of an error
-    //     }
-    // };
-
     const getProduct = async (): Promise<void> => {
         try {
             const response = await fetch('/api/skincare', {
@@ -63,7 +33,7 @@ export default function SkincareRoutine() {
             const productObjects: Product[] = data.map((item: any) => ({
                 name: item.product_name,
                 url: item.product_url,
-                ingredients: item.ingredients || '', // Ensure ingredients are handled
+                ingredients: item.ingredients || '', 
             }));
 
             setProducts(productObjects);
@@ -74,17 +44,8 @@ export default function SkincareRoutine() {
     };
 
     const addNewMyProduct = (newProduct: Product) => {
-        // Use the setter function to update the state
-        setFilteredProducts((prevProducts) => [...prevProducts, newProduct]);
+        setSelectedProducts((prevProducts) => [...prevProducts, newProduct]);
     };
-
-    // const filterProduct = () => {
-    //     for (let i = 0; i < products.length; i++){
-    //         if (products[i].name.includes(searchTerm)){
-    //             addNewProduct(products[i]);
-    //         }
-    //     }
-    // };
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
@@ -109,7 +70,6 @@ export default function SkincareRoutine() {
     }, []);
 
     const handleProductPress = (product: Product) => {
-        // Navigate or display product details
         console.log("Product selected:", product);
         addNewMyProduct(product);
     };
@@ -139,21 +99,31 @@ export default function SkincareRoutine() {
             </View>
             <FlatList
                 data={filteredProducts}
-                keyExtractor={(item) => item.name} // Assuming each product has a unique `id`
+                keyExtractor={(item) => item.name}
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => handleProductPress(item)}>
                         <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
                     </TouchableOpacity>
                 )}
-                style={{ marginTop: 20, width: '100%' }}
+                style={{ marginTop: 0, width: '100%' }}
             />
 
             <View className="w-full flex flex-row gap-2">
                 <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
-                    <Text className="font-bold text-lg text-[#bf7641]">Press Me</Text>
+                    <Text className="font-bold text-lg text-[#bf7641]">Submit</Text>
                 </TouchableOpacity>
             </View>
             <Text className="text-4xl font-bold text-[#B87C4C]" >My Products:</Text>
+            <FlatList
+                data={selectedProducts}
+                keyExtractor={(item) => item.name} 
+                renderItem={({ item }) => (
+                    <TouchableOpacity>
+                        <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                    </TouchableOpacity>
+                )}
+                style={{ marginTop: 20, width: '100%' }}
+            />
         </View>
     );
 };
