@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Animated, Button, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const Search = () => {
     const screenHeight = Dimensions.get('window').height;

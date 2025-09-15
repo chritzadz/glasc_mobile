@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import { SearchIcon, ChevronLeft } from 'lucide-react-native';
 import { TextInput, ScrollView, Alert, FlatList } from 'react-native';
@@ -5,11 +6,16 @@ import React, { useState } from 'react';
 
 import { Product } from '../../model/Product';
 
-const SkincareRoutine = ({ onClose }: { onClose?: () => void }) => {
-
+export default function SkincareRoutine({ onClose }: { onClose?: () => void }) {
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [error, setError] = useState<string | null>(null);
+
+    const handleClose = () => {
+        router.push('settings');
+        // Add your close logic here, e.g., navigating back or closing a modal.
+    };
 
     const productExist = (products: Product[]): Product | null => {
         const found = products.find((product: Product) => product.name.includes(searchTerm))
@@ -38,6 +44,14 @@ const SkincareRoutine = ({ onClose }: { onClose?: () => void }) => {
 
     return (
         <View className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5 pt-14">
+            <View className="w-full flex flex-row gap-5 mb-8">
+                <View className="items-center w-[20px] p-2 flex justify-center">
+                    <ChevronLeft color="#B87C4C" onPress={handleClose}></ChevronLeft>
+                </View>
+                <View className="justify-center items-center">
+                    <Text className="text-2xl text-[#B87C4C]">Back</Text>
+                </View>
+            </View>
             <Text className="text-4xl font-bold text-[#B87C4C]" >My Skincare Routine</Text>
             
             <View className="w-full flex flex-row gap-2">
@@ -45,7 +59,7 @@ const SkincareRoutine = ({ onClose }: { onClose?: () => void }) => {
                     <SearchIcon/>
                     <TextInput
                         placeholder="Search your products here..."
-                        value={""}
+                        value={searchTerm}
                         onChangeText={(text) => setSearchTerm(text)}
                         className="text-[#b69982] w-full text-lg border-0"
                         />
@@ -65,5 +79,3 @@ const SkincareRoutine = ({ onClose }: { onClose?: () => void }) => {
         </View>
     );
 };
-
-export default SkincareRoutine;
