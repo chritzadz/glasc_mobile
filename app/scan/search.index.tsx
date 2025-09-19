@@ -104,7 +104,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                 <ScrollView className="flex flex-col gap-2 w-full">
                     {Array.from({ length: Math.ceil(mockProducts.length / 2) }).map((_, rowIdx) => (
                         <View key={rowIdx} className="flex flex-row gap-2 mb-2">
-                        <View className="flex-1">
+                        <View className="flex-1 shadow">
                             <ProductItemBox
                             imageUrl={mockProducts[rowIdx * 2]?.imageUrl}
                             name={mockProducts[rowIdx * 2]?.name}
@@ -112,7 +112,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                             />
                         </View>
                         {mockProducts[rowIdx * 2 + 1] && (
-                            <View className="flex-1">
+                            <View className="flex-1 shadow">
                             <ProductItemBox
                                 imageUrl={mockProducts[rowIdx * 2 + 1]?.imageUrl}
                                 name={mockProducts[rowIdx * 2 + 1]?.name}
