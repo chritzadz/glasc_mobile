@@ -1,10 +1,11 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import { SearchIcon, ChevronLeft } from 'lucide-react-native';
-import { TextInput, ScrollView, Alert, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, ScrollView, Alert, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 
 import { Product } from '../../model/Product';
+import CurrentUser from '../../model/CurrentUser';
 
 export default function SkincareRoutine() {
     const router = useRouter();
@@ -68,7 +69,30 @@ export default function SkincareRoutine() {
         }
     };
 
-    const addNewMorningProduct = (newProduct: Product) => {
+    const addNewMorningProduct = async (newProduct: Product) => {
+        const response = await fetch('/api/skincareRoutine', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: CurrentUser.getInstance().getId(),
+                product: newProduct,
+                type: "morning"
+            })
+        });
+        const data = await response.json();
+        
+        console.log(data);
+        console.log(response.status);
+
+        if (response.ok) {
+            return true;
+        }
+        else {
+            return false;
+        }
+        
         setSelectedMorningProducts((prevProducts) => [...prevProducts, newProduct]);
     };
 
@@ -109,22 +133,56 @@ export default function SkincareRoutine() {
     };
 
     return (
-        <ScrollView className="flex flex-col gap-5 w-full bg-[#F7F4EA] pd-10 px-5 pt-14 pb-20">
-            <View className="flex flex-row items-center gap-5">
-                <TouchableOpacity className="w-[20px] p-2 flex justify-center" onPress={handleClose}>
-                    <ChevronLeft color="#B87C4C" />
+        <ScrollView style={styles.container}>
+            <View style={styles.backHeader}>
+                <TouchableOpacity style={styles.chevronLeft} onPress={handleClose}>
+                    <ChevronLeft color="white" />
                 </TouchableOpacity>
-                <Text className="text-2xl text-[#B87C4C]">Back</Text>
+                <Text style={styles.backText}>Back</Text>
             </View>
 
             {/* Title */}
-            <Text className="text-4xl font-bold text-[#B87C4C] my-8">My Skincare Routine</Text>
-            <Text className="text-3xl font-bold text-[#B87C4C]">Morning Routine</Text>
+            <View>
+                <Text style={styles.routineTitle}>My Routine</Text>
+                <View style={styles.line}>
+                </View>
+            </View>
+            <View style={styles.AMSection}>
+                <Text style={styles.routineTitle}>AM Routine</Text>
+                <View style={styles.productContainer}>
+                <FlatList
+                    data={selectedMorningProducts}
+                    keyExtractor={(item) => item.name} 
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => handleDelete(item.name)}>
+                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                    style={{ marginTop: 10, width: '100%' }}
+                />
+                </View>
+                <View style={styles.line}>
+                </View>
+            </View>
+            <View style={styles.PMSection}>
+                <Text style={styles.routineTitle}>PM Routine</Text>
+                <View style={styles.productContainer}>
+                <FlatList
+                    data={selectedNightProducts}
+                    keyExtractor={(item) => item.name} 
+                    renderItem={({ item }) => (
+                        <TouchableOpacity>
+                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                        </TouchableOpacity>
+                    )}
+                    style={{ marginTop: 10, width: '100%' }}
+                />
+                </View>
+            </View>
 
-            {/* Search and Submit Section */}
+            {/* Search and Submit Section
             <View className="w-full flex flex-row gap-2">
                 <View className="h-10 rounded-2xl p-1 border-2 border-[#B87C4C] flex-1 mt-4 flex flex-row items-center gap-2 px-2">
-                    <SearchIcon />
                     <TextInput
                         placeholder="Search your products here..."
                         value={searchTerm}
@@ -133,7 +191,7 @@ export default function SkincareRoutine() {
                     />
                 </View>
                 <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
-                    <Text className="font-bold text-lg text-[#bf7641]">Find</Text>
+                    <SearchIcon />
                 </TouchableOpacity>
             </View>
             <FlatList
@@ -145,61 +203,67 @@ export default function SkincareRoutine() {
                         </TouchableOpacity>
                     )}
                     style={{ marginTop: 0, width: '100%' }}
-                />
-            <Text className="text-2xl font-bold text-[#B87C4C]">My Morning Products: </Text>
-            <FlatList
-                data={selectedMorningProducts}
-                keyExtractor={(item) => item.name} 
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleDelete(item.name)}>
-                        <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                    </TouchableOpacity>
-                )}
-                style={{ marginTop: 10, width: '100%' }}
-            />
-
-
-            {/* Title */}
-            <Text className="text-3xl font-bold text-[#B87C4C] mt-20">Night Routine</Text>
-
-            {/* Search and Submit Section */}
-            <View className="w-full flex flex-row gap-2">
-                <View className="h-10 rounded-2xl p-1 border-2 border-[#B87C4C] flex-1 mt-4 flex flex-row items-center gap-2 px-2">
-                    <SearchIcon />
-                    <TextInput
-                        placeholder="Search your products here..."
-                        value={searchTerm}
-                        onChangeText={setSearchTerm}
-                        className="text-[#b69982] w-full text-lg border-0"
-                    />
-                </View>
-                <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
-                    <Text className="font-bold text-lg text-[#bf7641]">Find</Text>
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                    data={filteredProducts}
-                    keyExtractor={(item) => item.name}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => handleNightProductPress(item)}>
-                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    style={{ marginTop: 0, width: '100%' }}
-                />
-            <Text className="text-2xl font-bold text-[#B87C4C]">My Night Products: </Text>
-            <FlatList
-                data={selectedNightProducts}
-                keyExtractor={(item) => item.name} 
-                renderItem={({ item }) => (
-                    <TouchableOpacity>
-                        <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                    </TouchableOpacity>
-                )}
-                style={{ marginTop: 10, width: '100%' }}
-            />
+                /> */}
 
         </ScrollView>
     );
 };
 
+const styles = StyleSheet.create({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20, 
+        width: '100%',
+        backgroundColor: '#B87C4C',
+        paddingTop: 56, // 56px
+        paddingBottom: 80, // 80px
+    },
+    backHeader: {
+        display: 'flex',
+        flexDirection: 'row',
+        paddingLeft: 20, // 20px
+        paddingRight: 20, // 20px
+        alignItems: 'center',
+        gap: 5,
+        marginBottom: 10,
+        // "flex flex-row items-center gap-5 mb-10"
+    },
+    chevronLeft: {
+        //className="w-[20px] p-2 flex justify-center
+    },
+    backText: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    pageTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: 'white',
+        marginVertical: 8,
+        // className="text-4xl font-bold text-[white] my-8"
+    },
+    line: {
+        height: 2,
+        backgroundColor: 'white',
+        marginVertical: 5,
+    },
+    AMSection: {
+        paddingVertical: 8,
+    },
+    routineTitle: {
+        paddingLeft: 20, // 20px
+        paddingRight: 20, // 20px
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
+        //className="text-2xl font-bold text-[white]
+    },
+    PMSection: {
+
+    },
+    productContainer: {
+
+    },
+});
