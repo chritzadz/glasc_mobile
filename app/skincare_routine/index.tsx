@@ -11,12 +11,7 @@ export default function SkincareRoutine() {
     const router = useRouter();
     const [isAMEditMode, setIsAMEditMode] = useState(false);
     const [isPMEditMode, setIsPMEditMode] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [selectedMorningProducts, setSelectedMorningProducts] = useState<Product[]>([]);
-    const [selectedNightProducts, setSelectedNightProducts] = useState<Product[]>([]);
-    const [error, setError] = useState<string | null>(null);
 
     const handleClose = () => {
         router.push('settings');
@@ -83,68 +78,9 @@ export default function SkincareRoutine() {
         }
     };
 
-    const addNewMorningProduct = async (newProduct: Product) => {
-        const response = await fetch('/api/skincareRoutine', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_id: CurrentUser.getInstance().getId(),
-                product: newProduct,
-                type: "morning"
-            })
-        });
-        const data = await response.json();
-        
-        console.log(data);
-        console.log(response.status);
-
-        if (response.ok) {
-            return true;
-        }
-        else {
-            return false;
-        }
-        
-        setSelectedMorningProducts((prevProducts) => [...prevProducts, newProduct]);
-    };
-
-    const addNewNightProduct = (newProduct: Product) => {
-        setSelectedNightProducts((prevProducts) => [...prevProducts, newProduct]);
-    };
-
-    const filterProduct = () => {
-        if (!Array.isArray(products) || products.length === 0) {
-            setFilteredProducts([]); // Reset if products array is empty or not an array
-            return;
-        }
-
-        if (searchTerm.trim() === "") {
-            setFilteredProducts([]); // Reset to all products if search term is empty
-            return;
-        }
-
-        const newFilteredProducts = products.filter(product => 
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-        setFilteredProducts(newFilteredProducts);
-    };
-
     useEffect(() => {
         getProduct();
     }, []);
-
-    const handleMorningProductPress = (product: Product) => {
-        console.log("Product selected:", product);
-        addNewMorningProduct(product);
-    };
-
-    const handleNightProductPress = (product: Product) => {
-        console.log("Product selected:", product);
-        addNewNightProduct(product);
-    };
 
     return (
         <ScrollView style={styles.container}>
@@ -170,8 +106,8 @@ export default function SkincareRoutine() {
                 </View>
                 <View style={styles.productContainer}>
                     <Text>Everyday</Text>
-                <FlatList
-                    data={selectedMorningProducts}
+                {/* <FlatList
+                    data={}
                     keyExtractor={(item) => item.name} 
                     renderItem={({ item }) => (
                         <TouchableOpacity onPress={() => handleDelete(item.name)}>
@@ -179,7 +115,7 @@ export default function SkincareRoutine() {
                         </TouchableOpacity>
                     )}
                     style={{ marginTop: 10, width: '100%' }}
-                />
+                /> */}
                 <View style={styles.addButtonSection}>
                     {isAMEditMode && (
                         <View style={styles.addIcon}>
@@ -201,8 +137,8 @@ export default function SkincareRoutine() {
                 </View>
                 <View style={styles.productContainer}>
                     <Text>Everyday</Text>
-                <FlatList
-                    data={selectedNightProducts}
+                {/* <FlatList
+                    data={}
                     keyExtractor={(item) => item.name} 
                     renderItem={({ item }) => (
                         <TouchableOpacity>
@@ -210,7 +146,7 @@ export default function SkincareRoutine() {
                         </TouchableOpacity>
                     )}
                     style={{ marginTop: 10, width: '100%' }}
-                />
+                /> */}
                 <View style={styles.addButtonSection}>
                     {isPMEditMode && (
                         <View style={styles.addIcon}>
@@ -221,32 +157,6 @@ export default function SkincareRoutine() {
                 </View>
                 
             </View>
-
-            {/* Search and Submit Section
-            <View className="w-full flex flex-row gap-2">
-                <View className="h-10 rounded-2xl p-1 border-2 border-[#B87C4C] flex-1 mt-4 flex flex-row items-center gap-2 px-2">
-                    <TextInput
-                        placeholder="Search your products here..."
-                        value={searchTerm}
-                        onChangeText={setSearchTerm}
-                        className="text-[#b69982] w-full text-lg border-0"
-                    />
-                </View>
-                <TouchableOpacity className="mt-10 py-3 px-5 rounded-lg items-center bg-white" onPress={filterProduct}>
-                    <SearchIcon />
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                    data={filteredProducts}
-                    keyExtractor={(item) => item.name}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => handleMorningProductPress(item)}>
-                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    style={{ marginTop: 0, width: '100%' }}
-                /> */}
-
         </ScrollView>
     );
 };
@@ -295,9 +205,9 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
     },
     row: {
-        flexDirection: 'row',      // Align children in a row
-        justifyContent: 'space-between', // Space between items
-        width: '100%',              // Full width of the parent    
+        flexDirection: 'row',      
+        justifyContent: 'space-between', 
+        width: '100%',    
         paddingRight: 20,
     },
     routineTitle: {
