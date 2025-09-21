@@ -27,7 +27,6 @@ export default function SkincareRoutine() {
             });
             
             const data = await response.json();
-            console.log(data);
 
             const productObjects: Product[] = data.map((item: any) => ({
                 name: item.product_name,
@@ -60,6 +59,37 @@ export default function SkincareRoutine() {
         setFilteredProducts(newFilteredProducts);
     };
 
+    const addProduct = async (name: String) => {
+        console.log(name);
+        const response = await fetch('/api/skincareRoutine', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: CurrentUser.getInstance().getId(),
+                product: name,
+                type: "morning",
+            })
+        });
+
+        // Get raw response text for debugging
+        const text = await response.text(); // Get the raw response
+
+        // Log the response for debugging
+        console.log('Raw response:', text);
+        console.log('Response status:', response.status);
+
+        if (response.ok) {
+            Alert.alert("Success", "Product added to AM routine.")
+            return true;
+        }
+        else {
+            Alert.alert("Error", "Fail to add AM routine.")
+            return false;
+        }
+    };
+
     useEffect(() => {
         getProduct();
     }, []);
@@ -89,7 +119,7 @@ export default function SkincareRoutine() {
                     data={filteredProducts}
                     keyExtractor={(item) => item.name}
                     renderItem={({ item }) => (
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => addProduct(item.name)}>
                             <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
                         </TouchableOpacity>
                     )}

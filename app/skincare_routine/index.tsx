@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
-import { SearchIcon, ChevronLeft, SquarePen, CirclePlus, Save } from 'lucide-react-native';
+import { ChevronLeft, SquarePen, CirclePlus, Save } from 'lucide-react-native';
 import { StyleSheet, TextInput, ScrollView, Alert, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 
@@ -11,14 +11,21 @@ export default function SkincareRoutine() {
     const router = useRouter();
     const [isAMEditMode, setIsAMEditMode] = useState(false);
     const [isPMEditMode, setIsPMEditMode] = useState(false);
+    const [time, setTime] = useState("")
     const [products, setProducts] = useState<Product[]>([]);
+    const [routineProducts, setRoutineProducts] = useState([]);
+    const [error, setError] = useState(null);
 
     const handleClose = () => {
-        router.push('settings');
+        router.push('setting');
     };
 
-    const displaySearchScreen = () => {
-        router.push('skincare_routine_search');
+    const displayAMSearchScreen = () => {
+        router.push('/skincare_routine_search');
+    }
+
+    const displayPMSearchScreen = () => {
+        router.push('/skincare_routine_search_PM');
     }
 
     const toggleAMDisplay = () => {
@@ -29,7 +36,40 @@ export default function SkincareRoutine() {
         setIsPMEditMode(!isPMEditMode);
     };
 
-    const handleDelete = (product_name: String) => {
+    const fetchSkincareRoutine = async () => {
+        try {
+            const userId = CurrentUser.getInstance().getId();
+            const response = await fetch(`/api/skincareRoutine?user_id=${userId}`);
+    
+            if (!response.ok) {
+                const errorData = await response.text(); // Change to text to see full error
+                console.error("API response error:", errorData);
+                throw new Error('Failed to fetch skincare routine');
+            }
+    
+            // Check if the response is JSON
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                console.log(data.routineProducts); 
+    
+                if (data.routineProducts && data.routineProducts.length > 0) {
+                    setRoutineProducts(data.routineProducts);
+                } else {
+                    console.log("No products found in the skincare routine.");
+                    setRoutineProducts([]);
+                }
+            } else {
+                console.error("Expected JSON response, but got:", contentType);
+                throw new Error('Unexpected response format');
+            }
+        } catch (error) {
+            console.error("Error fetching skincare routine:", error);
+            Alert.alert('Error', 'Failed to fetch skincare routine');
+        }
+    };
+
+    const handleDelete = async (product_name: String) => {
         Alert.alert(
             "Delete",
             "Do you want to delete this product?",
@@ -79,7 +119,7 @@ export default function SkincareRoutine() {
     };
 
     useEffect(() => {
-        getProduct();
+        fetchSkincareRoutine();
     }, []);
 
     return (
@@ -106,20 +146,20 @@ export default function SkincareRoutine() {
                 </View>
                 <View style={styles.productContainer}>
                     <Text>Everyday</Text>
-                {/* <FlatList
-                    data={}
-                    keyExtractor={(item) => item.name} 
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => handleDelete(item.name)}>
-                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    style={{ marginTop: 10, width: '100%' }}
-                /> */}
+                    <FlatList
+                        data={products}
+                        keyExtractor={(item) => item.name} 
+                        renderItem={({ item }) => (
+                            <TouchableOpacity onPress={() => handleDelete(item.name)}>
+                                <Text style={{ padding: 10, fontSize: 20 }}>{item.name}</Text>
+                            </TouchableOpacity>
+                        )}
+                        style={{ marginTop: 10, width: '100%' }}
+                    />
                 <View style={styles.addButtonSection}>
                     {isAMEditMode && (
                         <View style={styles.addIcon}>
-                        <CirclePlus color="white" onPress={displaySearchScreen} />
+                        <CirclePlus color="white" onPress={displayAMSearchScreen}  />
                         </View>
                     )}
                 </View>
@@ -150,7 +190,7 @@ export default function SkincareRoutine() {
                 <View style={styles.addButtonSection}>
                     {isPMEditMode && (
                         <View style={styles.addIcon}>
-                        <CirclePlus color="white" />
+                        <CirclePlus color="white" onPress={displayPMSearchScreen} />
                         </View>
                     )}
                 </View>
