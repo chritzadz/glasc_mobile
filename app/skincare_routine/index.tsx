@@ -69,6 +69,19 @@ export default function SkincareRoutine() {
         }
     };
 
+    const displayAMRoutine = () => {
+        if (!Array.isArray(products) || products.length === 0) {
+            return;
+        }
+
+        // const AMRoutineProducts = products.filter(product => 
+        //     product.type.toLowerCase().includes(searchTerm.toLowerCase())
+        // );
+
+        // setFilteredProducts(newFilteredProducts);
+    };
+
+
     const handleDelete = async (product_name: String) => {
         Alert.alert(
             "Delete",
