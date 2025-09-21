@@ -4,20 +4,19 @@ import { ChevronLeft, SquarePen, CirclePlus, Save } from 'lucide-react-native';
 import { StyleSheet, TextInput, ScrollView, Alert, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 
-import { Product } from '../../model/Product';
+import { Routine } from '../../model/Routine';
 import CurrentUser from '../../model/CurrentUser';
 
 export default function SkincareRoutine() {
     const router = useRouter();
     const [isAMEditMode, setIsAMEditMode] = useState(false);
     const [isPMEditMode, setIsPMEditMode] = useState(false);
-    const [time, setTime] = useState("")
-    const [products, setProducts] = useState<Product[]>([]);
-    const [routineProducts, setRoutineProducts] = useState([]);
+    const [AMRoutineProducts, setAMRoutineProducts] = useState<Routine[]>([]);
+    const [routineProducts, setRoutineProducts] = useState<Routine[]>([]);
     const [error, setError] = useState(null);
 
     const handleClose = () => {
-        router.push('setting');
+        router.push('/settings');
     };
 
     const displayAMSearchScreen = () => {
@@ -39,76 +38,7 @@ export default function SkincareRoutine() {
     const fetchSkincareRoutine = async () => {
         try {
             const userId = CurrentUser.getInstance().getId();
-            const response = await fetch(`/api/skincareRoutine?user_id=${userId}`);
-    
-            if (!response.ok) {
-                const errorData = await response.text(); // Change to text to see full error
-                console.error("API response error:", errorData);
-                throw new Error('Failed to fetch skincare routine');
-            }
-    
-            // Check if the response is JSON
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                const data = await response.json();
-                console.log(data.routineProducts); 
-    
-                if (data.routineProducts && data.routineProducts.length > 0) {
-                    setRoutineProducts(data.routineProducts);
-                } else {
-                    console.log("No products found in the skincare routine.");
-                    setRoutineProducts([]);
-                }
-            } else {
-                console.error("Expected JSON response, but got:", contentType);
-                throw new Error('Unexpected response format');
-            }
-        } catch (error) {
-            console.error("Error fetching skincare routine:", error);
-            Alert.alert('Error', 'Failed to fetch skincare routine');
-        }
-    };
-
-    const displayAMRoutine = () => {
-        if (!Array.isArray(products) || products.length === 0) {
-            return;
-        }
-
-        // const AMRoutineProducts = products.filter(product => 
-        //     product.type.toLowerCase().includes(searchTerm.toLowerCase())
-        // );
-
-        // setFilteredProducts(newFilteredProducts);
-    };
-
-
-    const handleDelete = async (product_name: String) => {
-        Alert.alert(
-            "Delete",
-            "Do you want to delete this product?",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Delete",
-                    onPress: () => {
-                        // Remove the product from the list
-                        setProducts((prevProducts) => 
-                            prevProducts.filter(product => product.name !== product_name)
-                        );
-                    },
-                    style: "destructive"
-                }
-            ]
-        );
-    }
-
-    const getProduct = async (): Promise<void> => {
-        try {
-            const response = await fetch('/api/skincare', {
+            const response = await fetch(`/api/skincareRoutine?user_id=${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,17 +48,29 @@ export default function SkincareRoutine() {
             const data = await response.json();
             console.log(data);
 
-            const productObjects: Product[] = data.map((item: any) => ({
-                name: item.product_name,
-                url: item.product_url,
-                ingredients: item.ingredients || '', 
+            const routineObjects: Routine[] = data.map((item: any) => ({
+                user_id: item.user_id,
+                product: item.product,
+                type: item.type, 
             }));
 
-            setProducts(productObjects);
+            setRoutineProducts(routineObjects);
         } 
         catch (error) {
             Alert.alert('Error', 'Failed to fetch products. Please try again later.');
         }
+    };
+
+    const displayAMRoutine = () => {
+        if (!Array.isArray(routineProducts) || routineProducts.length === 0) {
+            return;
+        }
+
+        const AMRoutineProducts = routineProducts.filter(routine => 
+            routine.type.toLowerCase().includes("morning".toLowerCase())
+        );
+
+        setAMRoutineProducts(AMRoutineProducts);
     };
 
     useEffect(() => {
@@ -160,11 +102,11 @@ export default function SkincareRoutine() {
                 <View style={styles.productContainer}>
                     <Text>Everyday</Text>
                     <FlatList
-                        data={products}
-                        keyExtractor={(item) => item.name} 
+                        data={routineProducts}
+                        keyExtractor={(item) => item.product} 
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => handleDelete(item.name)}>
-                                <Text style={{ padding: 10, fontSize: 20 }}>{item.name}</Text>
+                            <TouchableOpacity>
+                                <Text style={{ padding: 10, fontSize: 30 }}>{item.product}</Text>
                             </TouchableOpacity>
                         )}
                         style={{ marginTop: 10, width: '100%' }}
@@ -190,16 +132,6 @@ export default function SkincareRoutine() {
                 </View>
                 <View style={styles.productContainer}>
                     <Text>Everyday</Text>
-                {/* <FlatList
-                    data={}
-                    keyExtractor={(item) => item.name} 
-                    renderItem={({ item }) => (
-                        <TouchableOpacity>
-                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    style={{ marginTop: 10, width: '100%' }}
-                /> */}
                 <View style={styles.addButtonSection}>
                     {isPMEditMode && (
                         <View style={styles.addIcon}>
@@ -208,7 +140,6 @@ export default function SkincareRoutine() {
                     )}
                 </View>
                 </View>
-                
             </View>
         </ScrollView>
     );
