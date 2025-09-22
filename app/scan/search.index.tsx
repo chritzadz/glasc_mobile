@@ -1,12 +1,63 @@
 import { Text, View } from 'react-native';
 import { SearchIcon, ChevronLeft } from 'lucide-react-native';
-import { TextInput } from 'react-native';
-import { ScrollView } from 'react-native';
+import { TextInput, Alert, ScrollView } from 'react-native';
 import ProductItemBox from '../../components/ProductItemBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
+
+import { Product } from '../../model/Product';
 
 const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
-    const getProduct
+    const [searchTerm, setSearchTerm] = useState("");
+    const [products, setProducts] = useState<Product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
+    const getProduct = async (): Promise<void> => {
+        try {
+            const response = await fetch('/api/skincare', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const data = await response.json();
+
+            const productObjects: Product[] = data.map((item: any) => ({
+                name: item.product_name,
+                url: item.product_url,
+                ingredients: item.ingredients || '', 
+            }));
+
+            setProducts(productObjects);
+        } 
+        catch (error) {
+            Alert.alert('Error', 'Failed to fetch products. Please try again later.');
+        }
+    };
+
+    const filterProduct = () => {
+        if (!Array.isArray(products) || products.length === 0) {
+            setFilteredProducts([]); // Reset if products array is empty or not an array
+            return;
+        }
+
+        if (searchTerm.trim() === "") {
+            setFilteredProducts([]); // Reset to all products if search term is empty
+            return;
+        }
+
+        const newFilteredProducts = products.filter(product => 
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        setFilteredProducts(newFilteredProducts);
+    };
+
+    useEffect(() => {
+        getProduct();
+    }, []);
+
     const mockProducts = [
         {
             imageUrl: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80',
@@ -98,7 +149,6 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                             placeholder="Search your products here..."
                             value={""}
                             onChangeText={() => {}}
-                            onSubmitEditing={handleSubmit}
                             className="text-[#b69982] w-full text-lg border-0"
                             />
                     </View>
