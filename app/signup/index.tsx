@@ -13,6 +13,7 @@ import { z } from "zod";
 import { useAuth } from "../../contexts/AuthContext";
 import { User } from "../../model/User";
 import CurrentUser from "../../model/CurrentUser";
+import { useAuth } from "../../contexts/AuthContext";
 
 const signupSchema = z.object({
     username: z
@@ -35,6 +36,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { login } = useAuth();
 
     const userExist = (users: User[]): User | null => {
         const found = users.find(
@@ -146,6 +148,7 @@ const Signup = () => {
             console.error("Error fetching current user:", error);
             return null;
         }
+        return currUser;
     };
 
     return (
