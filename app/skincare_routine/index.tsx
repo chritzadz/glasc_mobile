@@ -120,7 +120,7 @@ export default function SkincareRoutine() {
                 </View>
                 <View style={styles.productContainer}>
                     <FlatList
-                        data={AMRoutineProducts}
+                        data={routineProducts}
                         keyExtractor={(item) => item.product} 
                         renderItem={({ item }) => (
                             <TouchableOpacity>
@@ -150,7 +150,7 @@ export default function SkincareRoutine() {
                 </View>
                 <View style={styles.productContainer}>
                     <FlatList
-                        data={PMRoutineProducts}
+                        data={routineProducts}
                         keyExtractor={(item) => item.product} 
                         renderItem={({ item }) => (
                             <TouchableOpacity>
