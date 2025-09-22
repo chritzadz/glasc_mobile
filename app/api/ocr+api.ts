@@ -1,23 +1,7 @@
 import { TextractClient, AnalyzeDocumentCommand, FeatureType } from "@aws-sdk/client-textract";
 
 export async function POST(request: Request) {
-    const { uri } = await request.json(); //in mobile it is save locally, via uri, so convert to base64 first.
-    
-    // Use fetch to read the file as blob, then convert to base64
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    
-    // Convert blob to base64
-    const base64 = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = (reader.result as string).split(',')[1];
-            resolve(base64String);
-        };
-        reader.readAsDataURL(blob);
-    });
-    
-    console.log("Base64 data prepared: " + base64);
+    const { base64Img } = await request.json(); //in mobile it is save locally, via uri, so convert to base64 first.
 
     const textractClient = new TextractClient({
         region: 'us-east-2', // Textract is definitely available in us-east-1
@@ -30,7 +14,7 @@ export async function POST(request: Request) {
     console.log("texractClient SETTED UP");
     try {
         // Use the base64 data we read from the file
-        const imageBytes = Buffer.from(base64, 'base64');
+        const imageBytes = Buffer.from(base64Img, 'base64');
 
         console.log("analyze data");
         const command = new AnalyzeDocumentCommand({

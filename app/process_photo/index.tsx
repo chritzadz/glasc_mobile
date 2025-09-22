@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CurrentUser from '../../model/CurrentUser';
 import DetailBox from '../../components/DetailBox';
 import { useRouter } from 'expo-router';
+import * as FileSystem from 'expo-file-system/legacy';
 
 interface ProcessPhotoProps {
 	uri: string | null;
@@ -29,6 +30,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 	//4. analyze the product's ingredients, match with (current routine, current skin_condition)
 	//5. fetch to aws gpt
 	//6. get answer
+
 	{/*
 		format:
 	{
@@ -36,18 +38,22 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 		match_percentage: "match percentage",
 		harmful_ingredients: "harmful ingredients"
 	}
-		*/}
-
+	*/}
 
 	const processPhoto = async () => {
 		const processImg2Text = async () => {
+			console.log("uri: "+ uri);
+			const base64Img = await FileSystem.readAsStringAsync(uri!, {
+				encoding: FileSystem.EncodingType.Base64,
+			});
+
 			const response = await fetch(`/api/ocr`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					uri: uri,
+					base64Img: base64Img,
 				})
 			});
 
@@ -117,7 +123,11 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 		try {
 			const ingredients = await fetchIngredients(detectedProductName);
 			const details = await fetchPersonalDetails();
-			await fetchAnalysis(ingredients, details);
+			if (ingredients && details) {
+				await fetchAnalysis(ingredients, details);
+			} else {
+				console.warn("Missing ingredients or personal details");
+			}
 		} catch (error) {
 			console.error("Error in processPhoto:", error);
 		}
