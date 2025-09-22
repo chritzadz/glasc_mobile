@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CurrentUser from '../../model/CurrentUser';
 import DetailBox from '../../components/DetailBox';
 import { useRouter } from 'expo-router';
+import { TextractClient } from "@aws-sdk/client-textract";
 
 interface ProcessPhotoProps {
 	uri: string | null;
@@ -15,7 +16,7 @@ interface ProcessPhotoProps {
 export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 	const router = useRouter();
 	const [analysis, setAnalysis] = useState(null);
-	const [productName, setProductName] = useState("Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml");
+	const [productName, setProductName] = useState("");
 
 	//intermediate steps:
 	//1. process data using the api idk.
@@ -35,6 +36,23 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
 
 	const processPhoto = async () => {
+		const processImg2Text = async () => {
+			const response = await fetch(`/api/ocr`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					uri: uri,
+				})
+			});
+
+			const data = await response.json();
+			const temp: string[] = data;
+			setProductName(temp[0]); //first option with most similarity percentage
+		}
+
+
 		const fetchIngredients = async () => {
 			console.log("FETCH INGREDIENTS:\n");
 			const response = await fetch(`/api/ingredient?product_name=${productName}`, {
@@ -89,6 +107,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 		//here assuming it always exist in the db
 		//got the product name and ingredients
 		try {
+			const getProductName = await processImg2Text();
 			const ingredients = await fetchIngredients();
 			const details = await fetchPersonalDetails();
 			await fetchAnalysis(ingredients, details);
@@ -147,3 +166,4 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 });
+

@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.886.0",
     "@aws-sdk/client-rds-data": "^3.879.0",
+    "@aws-sdk/client-textract": "^3.893.0",
     "@expo/metro-runtime": "~6.1.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "8.4.4",
