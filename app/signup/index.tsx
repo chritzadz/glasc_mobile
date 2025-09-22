@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
 } from "react-native";
 import { z } from "zod";
-
+import { useAuth } from "../../contexts/AuthContext";
 import { User } from "../../model/User";
 import CurrentUser from "../../model/CurrentUser";
 import { useAuth } from "../../contexts/AuthContext";
@@ -31,10 +31,10 @@ const signupSchema = z.object({
 
 const Signup = () => {
     const router = useRouter();
+    const { login } = useAuth();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [userId, setUserId] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { login } = useAuth();
 
@@ -52,7 +52,7 @@ const Signup = () => {
 
         const success = await saveCredential();
         console.log(success);
-        handleSignUpResponse(success);
+        await handleSignUpResponse(success);
     };
 
     const validateForm = (): boolean => {
@@ -79,6 +79,7 @@ const Signup = () => {
             try {
                 const currentUser = await getCurrentUser();
                 if (currentUser) {
+                    await login(currentUser);
                     CurrentUser.getInstance().setId(currentUser.id);
                     Alert.alert("Success", "User successfully signed up");
                     router.push("/personal_form");
@@ -98,6 +99,7 @@ const Signup = () => {
         } else {
             Alert.alert("Error", "Failed to sign up. Please try again.");
         }
+        setIsSubmitting(false);
     };
 
     const saveCredential = async () => {
@@ -124,21 +126,27 @@ const Signup = () => {
         }
     };
 
-    const getCurrentUser = async () => {
-        const response = await fetch("/api/users", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+    const getCurrentUser = async (): Promise<User | null> => {
+        try {
+            const response = await fetch("/api/users", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-        const data = await response.json();
-        const users: User[] = data;
+            const data = await response.json();
+            const users: User[] = data;
 
-        const currUser: User | null = userExist(users);
-        if (currUser != null) {
-            console.log(`Current user id signup is: ${currUser.id}`);
-            CurrentUser.getInstance().setId(currUser.id);
+            const currUser: User | null = userExist(users);
+            if (currUser != null) {
+                console.log(`Current user id signup is: ${currUser.id}`);
+                return currUser;
+            }
+            return null;
+        } catch (error) {
+            console.error("Error fetching current user:", error);
+            return null;
         }
         return currUser;
     };
