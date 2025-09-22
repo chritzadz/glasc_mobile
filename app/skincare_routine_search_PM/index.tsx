@@ -81,11 +81,11 @@ export default function SkincareRoutineSearchPM() {
         console.log('Response status:', response.status);
 
         if (response.ok) {
-            Alert.alert("Success", "Product added to AM routine.")
+            Alert.alert("Success", "Product added to PM routine.")
             return true;
         }
         else {
-            Alert.alert("Error", "Fail to add AM routine.")
+            Alert.alert("Error", "Fail to add PM routine.")
             return false;
         }
     };

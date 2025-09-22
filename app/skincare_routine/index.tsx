@@ -12,6 +12,7 @@ export default function SkincareRoutine() {
     const [isAMEditMode, setIsAMEditMode] = useState(false);
     const [isPMEditMode, setIsPMEditMode] = useState(false);
     const [AMRoutineProducts, setAMRoutineProducts] = useState<Routine[]>([]);
+    const [PMRoutineProducts, setPMRoutineProducts] = useState<Routine[]>([]);
     const [routineProducts, setRoutineProducts] = useState<Routine[]>([]);
     const [error, setError] = useState(null);
 
@@ -55,6 +56,8 @@ export default function SkincareRoutine() {
             }));
 
             setRoutineProducts(routineObjects);
+            displayAMRoutine();
+            displayPMRoutine();
         } 
         catch (error) {
             Alert.alert('Error', 'Failed to fetch products. Please try again later.');
@@ -62,16 +65,29 @@ export default function SkincareRoutine() {
     };
 
     const displayAMRoutine = () => {
-        if (!Array.isArray(routineProducts) || routineProducts.length === 0) {
+        if (routineProducts.length === 0) {
             return;
         }
 
         const AMRoutineProducts = routineProducts.filter(routine => 
-            routine.type.toLowerCase().includes("morning".toLowerCase())
+            routine.type === "morning"
         );
 
         setAMRoutineProducts(AMRoutineProducts);
     };
+
+    const displayPMRoutine = () => {
+        if (!Array.isArray(routineProducts) || routineProducts.length === 0) {
+            return;
+        }
+
+        const PMRoutineProducts = routineProducts.filter(routine => 
+            routine.type === "evening"
+        );
+
+        setPMRoutineProducts(PMRoutineProducts);
+    };
+
 
     useEffect(() => {
         fetchSkincareRoutine();
@@ -100,16 +116,15 @@ export default function SkincareRoutine() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.productContainer}>
-                    <Text>Everyday</Text>
                     <FlatList
-                        data={routineProducts}
+                        data={AMRoutineProducts}
                         keyExtractor={(item) => item.product} 
                         renderItem={({ item }) => (
                             <TouchableOpacity>
-                                <Text style={{ padding: 10, fontSize: 30 }}>{item.product}</Text>
+                                <Text style={{ padding: 10, fontSize: 16 }}>{item.product}</Text>
                             </TouchableOpacity>
                         )}
-                        style={{ marginTop: 10, width: '100%' }}
+                        style={{ width: '100%' }}
                     />
                 <View style={styles.addButtonSection}>
                     {isAMEditMode && (
@@ -131,7 +146,16 @@ export default function SkincareRoutine() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.productContainer}>
-                    <Text>Everyday</Text>
+                    <FlatList
+                        data={PMRoutineProducts}
+                        keyExtractor={(item) => item.product} 
+                        renderItem={({ item }) => (
+                            <TouchableOpacity>
+                                <Text style={{ padding: 10, fontSize: 16 }}>{item.product}</Text>
+                            </TouchableOpacity>
+                        )}
+                        style={{ width: '100%' }}
+                    />
                 <View style={styles.addButtonSection}>
                     {isPMEditMode && (
                         <View style={styles.addIcon}>
