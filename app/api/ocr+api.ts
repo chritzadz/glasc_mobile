@@ -24,27 +24,36 @@ export async function POST(request: Request) {
 
         const response = await textractClient.send(command);
         
-        const extractedText: string[] = [];
+        const textLines: string[] = [];
         
         if (response.Blocks) {
             response.Blocks.forEach(block => {
                 if (block.BlockType === 'LINE' && block.Text) {
-                    extractedText.push(block.Text);
+                    textLines.push(block.Text);
                 }
             });
         }
 
-        return Response.json({ 
-            success: true,
-            extractedText,
-            rawResponse: response 
+        // Join all lines into a single string
+        const extractedText = textLines.join('\n');
+
+        //process to db
+        const responseDb = await fetch(`https://glasc-api.netlify.app/api/skincare/productSim?text=${extractedText}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
+
+        const data = await responseDb.json();
+        return Response.json(data);
+
     } catch (error) {
         console.error('OCR extraction error:', error);
         return Response.json({ 
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
-            extractedText: []
+            extractedText: ''
         });
     }
 }
