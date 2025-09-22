@@ -1,11 +1,25 @@
-import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
-import { ChevronLeft, SquarePen, CirclePlus, Save } from 'lucide-react-native';
-import { StyleSheet, TextInput, ScrollView, Alert, FlatList, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { useRouter } from "expo-router";
+import { Text, View } from "react-native";
+import {
+    ChevronLeft,
+    SquarePen,
+    CirclePlus,
+    Save,
+    Loader,
+} from "lucide-react-native";
+import {
+    StyleSheet,
+    TextInput,
+    ScrollView,
+    Alert,
+    FlatList,
+    TouchableOpacity,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { Routine } from '../../model/Routine';
-import CurrentUser from '../../model/CurrentUser';
+import { Routine } from "../../model/Routine";
+import CurrentUser from "../../model/CurrentUser";
 
 export default function SkincareRoutine() {
     const router = useRouter();
@@ -13,7 +27,6 @@ export default function SkincareRoutine() {
     const [isPMEditMode, setIsPMEditMode] = useState(false);
     const [AMRoutineProducts, setAMRoutineProducts] = useState<Routine[]>([]);
     const [PMRoutineProducts, setPMRoutineProducts] = useState<Routine[]>([]);
-    const [routineProducts, setRoutineProducts] = useState<Routine[]>([]);
     const [error, setError] = useState(null);
 
     const handleClose = () => {
@@ -21,12 +34,12 @@ export default function SkincareRoutine() {
     };
 
     const displayAMSearchScreen = () => {
-        router.push('/skincare_routine_search');
-    }
+        router.push("/skincare_routine_search");
+    };
 
     const displayPMSearchScreen = () => {
-        router.push('/skincare_routine_search_PM');
-    }
+        router.push("/skincare_routine_search_PM");
+    };
 
     const toggleAMDisplay = () => {
         setIsAMEditMode(!isAMEditMode);
@@ -39,67 +52,68 @@ export default function SkincareRoutine() {
     const fetchSkincareRoutine = async () => {
         try {
             const userId = CurrentUser.getInstance().getId();
-            const response = await fetch(`/api/skincareRoutine?user_id=${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await fetch(
+                `/api/skincareRoutine?user_id=${userId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 }
-            });
-            
+            );
+
             const data = await response.json();
             console.log(data);
 
             const routineObjects: Routine[] = data.map((item: any) => ({
                 user_id: item.user_id,
                 product: item.product,
-                type: item.type, 
+                type: item.type,
             }));
 
-            setRoutineProducts(routineObjects);
-            displayAMRoutine();
-            displayPMRoutine();
-        } 
-        catch (error) {
-            Alert.alert('Error', 'Failed to fetch products. Please try again later.');
+            return routineObjects;
+        } catch (error) {
+            Alert.alert(
+                "Error",
+                "Failed to fetch products. Please try again later."
+            );
         }
     };
 
-    const displayAMRoutine = () => {
-        if (routineProducts.length === 0) {
-            return;
-        }
-
-        const AMRoutineProducts = routineProducts.filter(routine => 
-            routine.type === "morning"
-        );
-
-        setAMRoutineProducts(AMRoutineProducts);
-    };
-
-    const displayPMRoutine = () => {
-        if (!Array.isArray(routineProducts) || routineProducts.length === 0) {
-            return;
-        }
-
-        const PMRoutineProducts = routineProducts.filter(routine => 
-            routine.type === "evening"
-        );
-
-        setPMRoutineProducts(PMRoutineProducts);
-    };
-
-    const deleteProduct = () => {
-        
-    };
+    const {
+        data: routineProductsData,
+        isLoading: isRoutineLoading,
+        isError: isRoutineError,
+    } = useQuery({
+        queryKey: ["routineProducts"],
+        queryFn: async () => {
+            const res = await fetchSkincareRoutine();
+            if (!res) {
+                throw new Error("Failed to fetch skincare routine");
+            }
+            return {
+                morning: res?.filter((routine) => routine.type === "morning"),
+                evening: res?.filter((routine) => routine.type === "evening"),
+            };
+        },
+    });
 
     useEffect(() => {
-        fetchSkincareRoutine();
-    }, []);
+        if (routineProductsData) {
+            setAMRoutineProducts(routineProductsData.morning);
+            setPMRoutineProducts(routineProductsData.evening);
+        }
+    }, [routineProductsData]);
+    console.log(isRoutineLoading);
 
+    const deleteProduct = () => {};
     return (
         <ScrollView style={styles.container}>
             <View style={styles.backHeader}>
-                <TouchableOpacity style={styles.chevronLeft} onPress={handleClose}>
+                <TouchableOpacity
+                    style={styles.chevronLeft}
+                    onPress={handleClose}
+                >
                     <ChevronLeft color="white" />
                 </TouchableOpacity>
                 <Text style={styles.backText}>Back</Text>
@@ -108,86 +122,122 @@ export default function SkincareRoutine() {
             {/* Title */}
             <View>
                 <Text style={styles.routineTitle}>My Routine</Text>
-                <View style={styles.line}>
-                </View>
+                <View style={styles.line}></View>
             </View>
             <View style={styles.AMSection}>
                 <View style={styles.row}>
                     <Text style={styles.routineTitle}>AM Routine</Text>
                     <TouchableOpacity onPress={toggleAMDisplay}>
-                        {isAMEditMode ? < Save color="white"  /> : <SquarePen color="white" onPress={toggleAMDisplay} />} {/* Conditional rendering */}
+                        {isAMEditMode ? (
+                            <Save color="white" />
+                        ) : (
+                            <SquarePen
+                                color="white"
+                                onPress={toggleAMDisplay}
+                            />
+                        )}
+                        {/* Conditional rendering */}
                     </TouchableOpacity>
                 </View>
                 <View style={styles.productContainer}>
-                    <FlatList
+                    {/*<FlatList
                         data={AMRoutineProducts}
-                        keyExtractor={(item) => item.product} 
+                        keyExtractor={(item) => item.product}
                         renderItem={({ item }) => (
                             <TouchableOpacity>
-                                <Text style={{ padding: 10, fontSize: 16 }}>{item.product}</Text>
+                                <Text style={{ padding: 10, fontSize: 16 }}>
+                                    {item.product}
+                                </Text>
                             </TouchableOpacity>
                         )}
-                        style={{ width: '100%' }}
-                    />
-                <View style={styles.addButtonSection}>
-                    {isAMEditMode && (
-                        <View style={styles.addIcon}>
-                        <CirclePlus color="white" onPress={displayAMSearchScreen}  />
-                        </View>
-                    )}
+                        style={{ width: "100%" }}
+                    />*/}
+                    <View className="flex-row gap-2 w-full">
+                        {isRoutineLoading ? (
+                            <Loader color="white" className="animate-spin" />
+                        ) : (
+                            AMRoutineProducts.map((product, index) => (
+                                <TouchableOpacity key={index}>
+                                    <Text style={{ padding: 10, fontSize: 16 }}>
+                                        {product.product}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))
+                        )}
+                    </View>
+                    <View style={styles.addButtonSection}>
+                        {isAMEditMode && (
+                            <View style={styles.addIcon}>
+                                <CirclePlus
+                                    color="white"
+                                    onPress={displayAMSearchScreen}
+                                />
+                            </View>
+                        )}
+                    </View>
                 </View>
-                </View>
-                
-                <View style={styles.line}>
-                </View>
+
+                <View style={styles.line}></View>
             </View>
             <View style={styles.PMSection}>
                 <View style={styles.row}>
                     <Text style={styles.routineTitle}>PM Routine</Text>
                     <TouchableOpacity onPress={togglePMDisplay}>
-                        {isPMEditMode ? < Save color="white"  /> : <SquarePen color="white" onPress={togglePMDisplay} />} {/* Conditional rendering */}
+                        {isPMEditMode ? (
+                            <Save color="white" />
+                        ) : (
+                            <SquarePen
+                                color="white"
+                                onPress={togglePMDisplay}
+                            />
+                        )}
+                        {/* Conditional rendering */}
                     </TouchableOpacity>
                 </View>
                 <View style={styles.productContainer}>
-                    <FlatList
-                        data={PMRoutineProducts}
-                        keyExtractor={(item) => item.product} 
-                        renderItem={({ item }) => (
-                            <TouchableOpacity>
-                                <Text style={{ padding: 10, fontSize: 16 }}>{item.product}</Text>
+                    {isRoutineLoading ? (
+                        <Loader color="white" className="animate-spin" />
+                    ) : (
+                        PMRoutineProducts.map((product, index) => (
+                            <TouchableOpacity key={index}>
+                                <Text style={{ padding: 10, fontSize: 16 }}>
+                                    {product.product}
+                                </Text>
                             </TouchableOpacity>
-                        )}
-                        style={{ width: '100%' }}
-                    />
-                <View style={styles.addButtonSection}>
-                    {isPMEditMode && (
-                        <View style={styles.addIcon}>
-                        <CirclePlus color="white" onPress={displayPMSearchScreen} />
-                        </View>
+                        ))
                     )}
-                </View>
+                    <View style={styles.addButtonSection}>
+                        {isPMEditMode && (
+                            <View style={styles.addIcon}>
+                                <CirclePlus
+                                    color="white"
+                                    onPress={displayPMSearchScreen}
+                                />
+                            </View>
+                        )}
+                    </View>
                 </View>
             </View>
         </ScrollView>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20, 
-        width: '100%',
-        backgroundColor: '#B87C4C',
+        display: "flex",
+        flexDirection: "column",
+        gap: 20,
+        width: "100%",
+        backgroundColor: "#B87C4C",
         paddingTop: 56, // 56px
         paddingBottom: 80, // 80px
     },
     backHeader: {
-        display: 'flex',
-        flexDirection: 'row',
+        display: "flex",
+        flexDirection: "row",
         paddingLeft: 20, // 20px
         paddingRight: 20, // 20px
-        alignItems: 'center',
+        alignItems: "center",
         gap: 5,
         marginBottom: 10,
         // "flex flex-row items-center gap-5 mb-10"
@@ -197,51 +247,49 @@ const styles = StyleSheet.create({
     },
     backText: {
         fontSize: 22,
-        fontWeight: 'bold',
-        color: 'white'
+        fontWeight: "bold",
+        color: "white",
     },
     pageTitle: {
         fontSize: 22,
-        fontWeight: 'bold',
-        color: 'white',
+        fontWeight: "bold",
+        color: "white",
         marginVertical: 8,
         // className="text-4xl font-bold text-[white] my-8"
     },
     line: {
         height: 2,
-        backgroundColor: 'white',
+        backgroundColor: "white",
         marginVertical: 5,
     },
     AMSection: {
         paddingVertical: 8,
     },
     row: {
-        flexDirection: 'row',      
-        justifyContent: 'space-between', 
-        width: '100%',    
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
         paddingRight: 20,
     },
     routineTitle: {
         paddingLeft: 20, // 20px
         paddingRight: 20, // 20px
         fontSize: 20,
-        fontWeight: 'bold',
-        color: 'white',
+        fontWeight: "bold",
+        color: "white",
         //className="text-2xl font-bold text-[white]
     },
-    PMSection: {
-
-    },
+    PMSection: {},
     productContainer: {
         marginHorizontal: 20,
         marginVertical: 16,
         paddingHorizontal: 10,
         paddingVertical: 10,
-        backgroundColor: '#996032',
+        backgroundColor: "#996032",
         borderRadius: 10,
     },
     addButtonSection: {
-        alignItems: 'center',
+        alignItems: "center",
     },
     addIcon: {
         margin: 10,
