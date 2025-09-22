@@ -3,6 +3,7 @@ import { User, ListChecks, LogOut, ChevronLeft } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { ScrollView, Alert } from "react-native";
 import CurrentUser from "../../model/CurrentUser";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Settings({ onClose }: { onClose?: () => void }) {
     const router = useRouter();
