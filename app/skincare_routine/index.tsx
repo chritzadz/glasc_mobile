@@ -88,6 +88,9 @@ export default function SkincareRoutine() {
         setPMRoutineProducts(PMRoutineProducts);
     };
 
+    const deleteProduct = () => {
+        
+    };
 
     useEffect(() => {
         fetchSkincareRoutine();
