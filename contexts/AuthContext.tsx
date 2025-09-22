@@ -8,6 +8,7 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { User } from "../model/User";
+import CurrentUser from "../model/CurrentUser";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -131,6 +132,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await storeToken(token);
       await storeUserData(userData);
 
+      CurrentUser.getInstance().setId(userData.id);
+
       setUser(userData);
       setIsAuthenticated(true);
     } catch (error) {
@@ -143,6 +146,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await removeStoredToken();
       await removeStoredUserData();
+
+      CurrentUser.getInstance().setId(-1);
 
       setUser(null);
       setIsAuthenticated(false);
