@@ -1,5 +1,4 @@
 export interface Product {
-    name: string;
-    url: string;
-    ingredients: string;
+    product_name: string;
+    product_url: string
 }

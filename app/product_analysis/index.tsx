@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AlertTriangle, ChevronLeft, Lightbulb } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import ProductItemBox from '../../components/ProductItemBox';
+import { Product } from '../../model/Product';
 
 interface HarmfulIngredient {
     ingredient: string;
@@ -16,10 +17,6 @@ interface Analysis {
     harmful_ingredients: HarmfulIngredient[];
 }
 
-interface Product {
-    product_name: string;
-    product_url: string;
-}
 
 export default function ProductAnalysisPage() {
     const router = useRouter();

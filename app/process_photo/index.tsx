@@ -6,16 +6,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CurrentUser from '../../model/CurrentUser';
 import DetailBox from '../../components/DetailBox';
 import { useRouter } from 'expo-router';
+import * as FileSystem from 'expo-file-system/legacy';
 
 interface ProcessPhotoProps {
 	uri: string | null;
 	onBack: () => void;
 }
 
+export interface OcrProduct {
+	product_name: string;
+	sim: number;
+}
+
 export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 	const router = useRouter();
 	const [analysis, setAnalysis] = useState(null);
-	const [productName, setProductName] = useState("Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml");
+	const [productName, setProductName] = useState("");
 
 	//intermediate steps:
 	//1. process data using the api idk.
@@ -24,6 +30,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 	//4. analyze the product's ingredients, match with (current routine, current skin_condition)
 	//5. fetch to aws gpt
 	//6. get answer
+
 	{/*
 		format:
 	{
@@ -31,11 +38,34 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 		match_percentage: "match percentage",
 		harmful_ingredients: "harmful ingredients"
 	}
-		*/}
-
+	*/}
 
 	const processPhoto = async () => {
-		const fetchIngredients = async () => {
+		const processImg2Text = async () => {
+			console.log("uri: "+ uri);
+			const base64Img = await FileSystem.readAsStringAsync(uri!, {
+				encoding: FileSystem.EncodingType.Base64,
+			});
+
+			const response = await fetch(`/api/ocr`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					base64Img: base64Img,
+				})
+			});
+
+			const data = await response.json();
+			const temp: OcrProduct[] = data.simProducts;
+			const detectedProductName = temp[0].product_name; // Get the actual value
+			setProductName(detectedProductName); // Update state for UI
+			return detectedProductName; // Return the value for immediate use
+		}
+
+
+		const fetchIngredients = async (productName: string) => {
 			console.log("FETCH INGREDIENTS:\n");
 			const response = await fetch(`/api/ingredient?product_name=${productName}`, {
 				method: 'GET',
@@ -83,15 +113,21 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 		};
 
 		//process image
+		const detectedProductName = await processImg2Text();
+		console.log("GET PRODUCT NAME: " + detectedProductName);
 
 		//get the name of the product from the db (if not exist then idk...)
 
 		//here assuming it always exist in the db
 		//got the product name and ingredients
 		try {
-			const ingredients = await fetchIngredients();
+			const ingredients = await fetchIngredients(detectedProductName);
 			const details = await fetchPersonalDetails();
-			await fetchAnalysis(ingredients, details);
+			if (ingredients && details) {
+				await fetchAnalysis(ingredients, details);
+			} else {
+				console.warn("Missing ingredients or personal details");
+			}
 		} catch (error) {
 			console.error("Error in processPhoto:", error);
 		}
@@ -132,7 +168,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 				})}}>
 				<View>
 					<DetailBox
-						productName="Estée Lauder DayWear Advanced Multi-Protection Anti-Oxidant Creme SPF15 N/C 50ml"
+						productName={productName}
 						analysis={analysis}
 					/>
 				</View>
@@ -147,3 +183,4 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 });
+
