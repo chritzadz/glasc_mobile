@@ -1,12 +1,24 @@
 import { TextractClient, AnalyzeDocumentCommand, FeatureType } from "@aws-sdk/client-textract";
-import * as FileSystem from 'expo-file-system';
 
 export async function POST(request: Request) {
     const { uri } = await request.json(); //in mobile it is save locally, via uri, so convert to base64 first.
-    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
     
-    console.log(base64);
+    // Use fetch to read the file as blob, then convert to base64
+    const response = await fetch(uri);
+    const blob = await response.blob();
     
+    // Convert blob to base64
+    const base64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = (reader.result as string).split(',')[1];
+            resolve(base64String);
+        };
+        reader.readAsDataURL(blob);
+    });
+    
+    console.log("Base64 data prepared: " + base64);
+
     const textractClient = new TextractClient({
         region: 'us-east-2', // Textract is definitely available in us-east-1
         credentials: {
