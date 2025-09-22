@@ -16,7 +16,7 @@ export default function SkincareRoutine() {
     const [error, setError] = useState(null);
 
     const handleClose = () => {
-        router.push('/settings');
+        router.back();
     };
 
     const displayAMSearchScreen = () => {

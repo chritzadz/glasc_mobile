@@ -7,14 +7,14 @@ interface ProductItemBoxProps {
     }
 
 const ProductItemBox = ({ imageUrl, name, description }: ProductItemBoxProps) => (
-    <View className="w-full flex-col items-center rounded-2xl bg-white border-2 border-[#B87C4C]">
+    <View className="w-full h-70 flex-col items-center justify-center rounded-2xl bg-[#B87C4C]">
         <Image
         source={{ uri: imageUrl }}
-        className="w-full h-40 rounded-t-xl"
+        className="w-full h-40 rounded-xl"
         resizeMode="cover"
         />
-        <View className="flex-1 w-full flex justify-center items-center p-2">
-            <Text className="font-bold text-lg mb-1 flex justify-center items-center text-[#B87C4C]">{name}</Text>
+        <View className="flex-1 w-full flex justify-center items-center p-2 bg-[#B87C4C] rounded-2xl">
+            <Text className="font-bold text-md mb-1 flex justify-center items-center text-[#F7F4EA]">{name}</Text>
         </View>
     </View>
 );
