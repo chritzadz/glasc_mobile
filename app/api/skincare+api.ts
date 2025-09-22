@@ -7,10 +7,11 @@ export async function GET(request: Request) {
             headers: {
                 'Content-Type': 'application/json',
             }
-        });        
+        });
         const data = await response.json();
-        
+        console.log("got from api");
         return Response.json(data);
+
     } catch (error) {
         return Response.json({ error: (error as Error).message }, { status: 500 });
     }
