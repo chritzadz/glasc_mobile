@@ -1,7 +1,11 @@
 import { TextractClient, AnalyzeDocumentCommand, FeatureType } from "@aws-sdk/client-textract";
+import * as FileSystem from 'expo-file-system';
 
 export async function POST(request: Request) {
-    const { uri } = await request.json();
+    const { uri } = await request.json(); //in mobile it is save locally, via uri, so convert to base64 first.
+    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+    
+    console.log(base64);
     
     const textractClient = new TextractClient({
         region: 'us-east-2', // Textract is definitely available in us-east-1
@@ -13,8 +17,8 @@ export async function POST(request: Request) {
 
     console.log("texractClient SETTED UP");
     try {
-        const base64Data = uri.split(',')[1];
-        const imageBytes = Buffer.from(base64Data, 'base64');
+        // Use the base64 data we read from the file
+        const imageBytes = Buffer.from(base64, 'base64');
 
         console.log("analyze data");
         const command = new AnalyzeDocumentCommand({
