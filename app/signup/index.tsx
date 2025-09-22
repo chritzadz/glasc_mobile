@@ -13,6 +13,7 @@ import { z } from "zod";
 
 import { User } from "../../model/User";
 import CurrentUser from "../../model/CurrentUser";
+import { useAuth } from "../../contexts/AuthContext";
 
 const signupSchema = z.object({
     username: z
@@ -35,6 +36,7 @@ const Signup = () => {
     const [password, setPassword] = useState("");
     const [userId, setUserId] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { login } = useAuth();
 
     const userExist = (users: User[]): User | null => {
         const found = users.find(
@@ -72,11 +74,27 @@ const Signup = () => {
         }
     };
 
-    const handleSignUpResponse = (success: boolean): void => {
+    const handleSignUpResponse = async (success: boolean): Promise<void> => {
         if (success) {
-            getCurrentUser();
-            Alert.alert("Success", "User successfully signed up");
-            router.push("/personal_form");
+            try {
+                const currentUser = await getCurrentUser();
+                if (currentUser) {
+                    CurrentUser.getInstance().setId(currentUser.id);
+                    Alert.alert("Success", "User successfully signed up");
+                    router.push("/personal_form");
+                } else {
+                    Alert.alert(
+                        "Error",
+                        "Failed to retrieve user information after signup."
+                    );
+                }
+            } catch (error) {
+                Alert.alert(
+                    "Error",
+                    "Failed to complete signup. Please try again."
+                );
+                console.error("Signup completion error:", error);
+            }
         } else {
             Alert.alert("Error", "Failed to sign up. Please try again.");
         }
@@ -122,6 +140,7 @@ const Signup = () => {
             console.log(`Current user id signup is: ${currUser.id}`);
             CurrentUser.getInstance().setId(currUser.id);
         }
+        return currUser;
     };
 
     return (
