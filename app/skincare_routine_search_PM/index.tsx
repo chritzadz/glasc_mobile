@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../../model/Product';
 import CurrentUser from '../../model/CurrentUser';
 
-export default function SkincareRoutineSearch() {
+export default function SkincareRoutineSearchPM() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
@@ -69,7 +69,7 @@ export default function SkincareRoutineSearch() {
             body: JSON.stringify({
                 user_id: CurrentUser.getInstance().getId(),
                 product: name,
-                type: "morning",
+                type: "evening",
             })
         });
 
