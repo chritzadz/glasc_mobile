@@ -6,6 +6,7 @@ import ProductItemBox from '../../components/ProductItemBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
+    const getProduct
     const mockProducts = [
         {
             imageUrl: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80',
@@ -97,6 +98,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                             placeholder="Search your products here..."
                             value={""}
                             onChangeText={() => {}}
+                            onSubmitEditing={handleSubmit}
                             className="text-[#b69982] w-full text-lg border-0"
                             />
                     </View>
