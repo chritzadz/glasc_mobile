@@ -25,7 +25,6 @@ export default function SkincareRoutine() {
     const [isAMEditMode, setIsAMEditMode] = useState(false);
     const [isPMEditMode, setIsPMEditMode] = useState(false);
     const [isAlertVisible, setAlertVisible] = useState(false);
-    const [selectedProductName, setSelectedProductName] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Routine>();
     const [AMRoutineProducts, setAMRoutineProducts] = useState<Routine[]>([]);
     const [PMRoutineProducts, setPMRoutineProducts] = useState<Routine[]>([]);
@@ -101,33 +100,6 @@ export default function SkincareRoutine() {
         }
     };
 
-    const {
-        data: routineProductsData,
-        isLoading: isRoutineLoading,
-        isError: isRoutineError,
-        refetch: refetchRoutineProducts,
-    } = useQuery({
-        queryKey: ["routineProducts"],
-        queryFn: async () => {
-            const res = await fetchSkincareRoutine();
-            if (!res) {
-                throw new Error("Failed to fetch skincare routine");
-            }
-            return {
-                morning: res?.filter((routine) => routine.type === "morning"),
-                evening: res?.filter((routine) => routine.type === "evening"),
-            };
-        },
-    });
-
-    useEffect(() => {
-        if (routineProductsData) {
-            setAMRoutineProducts(routineProductsData.morning);
-            setPMRoutineProducts(routineProductsData.evening);
-        }
-    }, [routineProductsData]);
-    console.log(isRoutineLoading);
-
     const deleteProduct = async (product: Routine) => {
         try {
             const userId = CurrentUser.getInstance().getId();
@@ -156,105 +128,218 @@ export default function SkincareRoutine() {
         }
     };
 
+    const {
+        data: routineProductsData,
+        isLoading: isRoutineLoading,
+        isError: isRoutineError,
+        refetch: refetchRoutineProducts,
+    } = useQuery({
+        queryKey: ["routineProducts"],
+        queryFn: async () => {
+            const res = await fetchSkincareRoutine();
+            if (!res) {
+                throw new Error("Failed to fetch skincare routine");
+            }
+            return {
+                morning: res?.filter((routine) => routine.type === "morning"),
+                evening: res?.filter((routine) => routine.type === "evening"),
+            };
+        },
+    });
+
+    useEffect(() => {
+        if (routineProductsData) {
+            setAMRoutineProducts(routineProductsData.morning);
+            setPMRoutineProducts(routineProductsData.evening);
+        }
+    }, [routineProductsData]);
+    console.log(isRoutineLoading);
+
+    // return (
+    //     <View style={styles.container}>
+    //         <View style={styles.backHeader}>
+    //             <TouchableOpacity
+    //                 style={styles.chevronLeft}
+    //                 onPress={handleClose}
+    //             >
+    //                 <ChevronLeft color="white" />
+    //             </TouchableOpacity>
+    //             <Text style={styles.backText}>Back</Text>
+    //         </View>
+
+    //         {/* Title */}
+    //         <View>
+    //             <Text style={styles.routineTitle}>My Routine</Text>
+    //             <View style={styles.line}></View>
+    //         </View>
+    //         <View style={styles.AMSection}>
+    //             <View style={styles.row}>
+    //                 <Text style={styles.routineTitle}>AM Routine</Text>
+    //                 <TouchableOpacity onPress={toggleAMDisplay}>
+    //                     {isAMEditMode ? (
+    //                         <Save color="white" />
+    //                     ) : (
+    //                         <SquarePen
+    //                             color="white"
+    //                             onPress={toggleAMDisplay}
+    //                         />
+    //                     )}
+    //                     {/* Conditional rendering */}
+    //                 </TouchableOpacity>
+    //             </View>
+    //             <View style={styles.productContainer}>
+    //                 <View className="flex-row gap-2 w-full">
+    //                     {isRoutineLoading ? (
+    //                         <Loader color="white" className="animate-spin" />
+    //                     ) : (
+    //                         AMRoutineProducts.map((product, index) => (
+    //                             <TouchableOpacity key={index} onPress={() => showAlert(product)}>
+    //                                 <Text style={{ padding: 10, fontSize: 16 }}>
+    //                                     {product.product}
+    //                                 </Text>
+    //                             </TouchableOpacity>
+    //                         ))
+    //                     )}
+    //                 </View>
+    //                 <View style={styles.addButtonSection}>
+    //                     {isAMEditMode && (
+    //                         <View style={styles.addIcon}>
+    //                             <CirclePlus
+    //                                 color="white"
+    //                                 onPress={displayAMSearchScreen}
+    //                             />
+    //                         </View>
+    //                     )}
+    //                 </View>
+    //             </View>
+
+    //             <View style={styles.line}></View>
+    //         </View>
+    //         <View style={styles.PMSection}>
+    //             <View style={styles.row}>
+    //                 <Text style={styles.routineTitle}>PM Routine</Text>
+    //                 <TouchableOpacity onPress={togglePMDisplay}>
+    //                     {isPMEditMode ? (
+    //                         <Save color="white" />
+    //                     ) : (
+    //                         <SquarePen
+    //                             color="white"
+    //                             onPress={togglePMDisplay}
+    //                         />
+    //                     )}
+    //                     {/* Conditional rendering */}
+    //                 </TouchableOpacity>
+    //             </View>
+    //             <View style={styles.productContainer}>
+    //                 {isRoutineLoading ? (
+    //                     <Loader color="white" className="animate-spin" />
+    //                 ) : (
+    //                     PMRoutineProducts.map((product, index) => (
+    //                         <TouchableOpacity key={index} onPress={() => showAlert(product)}>
+    //                             <Text style={{ padding: 10, fontSize: 16 }}>
+    //                                 {product.product}
+    //                             </Text>
+    //                         </TouchableOpacity>
+    //                     ))
+    //                 )}
+    //                 <View style={styles.addButtonSection}>
+    //                     {isPMEditMode && (
+    //                         <View style={styles.addIcon}>
+    //                             <CirclePlus
+    //                                 color="white"
+    //                                 onPress={displayPMSearchScreen}
+    //                             />
+    //                         </View>
+    //                     )}
+    //                 </View>
+    //             </View>
+    //         </View>
+    //         {isAlertVisible && (
+    //             <CustomAlertBox
+    //                 title="Confirm Action"
+    //                 message={`Are you sure you want to delete ${selectedProduct?.product}?`}
+    //                 onYes={handleYes}
+    //                 onNo={handleNo}
+    //             />
+    //         )}
+    //     </View>
+    // );
     return (
-        <View style={styles.container}>
-            <View style={styles.backHeader}>
-                <TouchableOpacity
-                    style={styles.chevronLeft}
-                    onPress={handleClose}
-                >
+        <View className="flex-1 bg-[#B87C4C] pt-14 pb-20">
+            <View className="flex-row items-center gap-5 mb-2 px-5">
+                <TouchableOpacity onPress={handleClose}>
                     <ChevronLeft color="white" />
                 </TouchableOpacity>
-                <Text style={styles.backText}>Back</Text>
+                <Text className="text-2xl font-bold text-white">Back</Text>
             </View>
 
-            {/* Title */}
             <View>
-                <Text style={styles.routineTitle}>My Routine</Text>
-                <View style={styles.line}></View>
+                <Text className="text-2xl font-bold text-white my-2 pl-5">My Routine</Text>
+                <View className="h-0.5 bg-white my-1 shadow-md"></View>
             </View>
-            <View style={styles.AMSection}>
-                <View style={styles.row}>
-                    <Text style={styles.routineTitle}>AM Routine</Text>
+
+            <View className="py-2">
+                <View className="flex-row justify-between w-full pr-5">
+                    <Text className="text-2xl font-bold text-white pl-5">AM Routine</Text>
                     <TouchableOpacity onPress={toggleAMDisplay}>
                         {isAMEditMode ? (
                             <Save color="white" />
                         ) : (
-                            <SquarePen
-                                color="white"
-                                onPress={toggleAMDisplay}
-                            />
+                            <SquarePen color="white" />
                         )}
-                        {/* Conditional rendering */}
                     </TouchableOpacity>
                 </View>
-                <View style={styles.productContainer}>
+                <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
                     <View className="flex-row gap-2 w-full">
                         {isRoutineLoading ? (
                             <Loader color="white" className="animate-spin" />
                         ) : (
                             AMRoutineProducts.map((product, index) => (
                                 <TouchableOpacity key={index} onPress={() => showAlert(product)}>
-                                    <Text style={{ padding: 10, fontSize: 16 }}>
-                                        {product.product}
-                                    </Text>
+                                    <Text className="p-2 text-lg text-white">{product.product}</Text>
                                 </TouchableOpacity>
                             ))
                         )}
                     </View>
-                    <View style={styles.addButtonSection}>
-                        {isAMEditMode && (
-                            <View style={styles.addIcon}>
-                                <CirclePlus
-                                    color="white"
-                                    onPress={displayAMSearchScreen}
-                                />
-                            </View>
-                        )}
-                    </View>
+                    {isAMEditMode && (
+                        <View className="flex items-center">
+                            <CirclePlus color="white" onPress={displayAMSearchScreen} />
+                        </View>
+                    )}
                 </View>
 
-                <View style={styles.line}></View>
+                <View className="h-0.5 bg-white my-1"></View>
             </View>
-            <View style={styles.PMSection}>
-                <View style={styles.row}>
-                    <Text style={styles.routineTitle}>PM Routine</Text>
+
+            <View className="py-2">
+                <View className="flex-row justify-between w-full pr-5">
+                    <Text className="text-2xl font-bold text-white pl-5">PM Routine</Text>
                     <TouchableOpacity onPress={togglePMDisplay}>
                         {isPMEditMode ? (
                             <Save color="white" />
                         ) : (
-                            <SquarePen
-                                color="white"
-                                onPress={togglePMDisplay}
-                            />
+                            <SquarePen color="white" />
                         )}
-                        {/* Conditional rendering */}
                     </TouchableOpacity>
                 </View>
-                <View style={styles.productContainer}>
+                <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
                     {isRoutineLoading ? (
                         <Loader color="white" className="animate-spin" />
                     ) : (
                         PMRoutineProducts.map((product, index) => (
                             <TouchableOpacity key={index} onPress={() => showAlert(product)}>
-                                <Text style={{ padding: 10, fontSize: 16 }}>
-                                    {product.product}
-                                </Text>
+                                <Text className="p-2 text-lg text-white">{product.product}</Text>
                             </TouchableOpacity>
                         ))
                     )}
-                    <View style={styles.addButtonSection}>
-                        {isPMEditMode && (
-                            <View style={styles.addIcon}>
-                                <CirclePlus
-                                    color="white"
-                                    onPress={displayPMSearchScreen}
-                                />
-                            </View>
-                        )}
-                    </View>
+                    {isPMEditMode && (
+                        <View className="flex items-center">
+                            <CirclePlus color="white" onPress={displayPMSearchScreen} />
+                        </View>
+                    )}
                 </View>
             </View>
+
             {isAlertVisible && (
                 <CustomAlertBox
                     title="Confirm Action"
@@ -266,78 +351,3 @@ export default function SkincareRoutine() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-        gap: 20,
-        width: "100%",
-        backgroundColor: "#B87C4C",
-        paddingTop: 56, // 56px
-        paddingBottom: 80, // 80px
-    },
-    backHeader: {
-        display: "flex",
-        flexDirection: "row",
-        paddingLeft: 20, // 20px
-        paddingRight: 20, // 20px
-        alignItems: "center",
-        gap: 5,
-        marginBottom: 10,
-        // "flex flex-row items-center gap-5 mb-10"
-    },
-    chevronLeft: {
-        //className="w-[20px] p-2 flex justify-center
-    },
-    backText: {
-        fontSize: 22,
-        fontWeight: "bold",
-        color: "white",
-    },
-    pageTitle: {
-        fontSize: 22,
-        fontWeight: "bold",
-        color: "white",
-        marginVertical: 8,
-        // className="text-4xl font-bold text-[white] my-8"
-    },
-    line: {
-        height: 2,
-        backgroundColor: "white",
-        marginVertical: 5,
-    },
-    AMSection: {
-        paddingVertical: 8,
-    },
-    row: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: "100%",
-        paddingRight: 20,
-    },
-    routineTitle: {
-        paddingLeft: 20, // 20px
-        paddingRight: 20, // 20px
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-        //className="text-2xl font-bold text-[white]
-    },
-    PMSection: {},
-    productContainer: {
-        marginHorizontal: 20,
-        marginVertical: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        backgroundColor: "#996032",
-        borderRadius: 10,
-    },
-    addButtonSection: {
-        alignItems: "center",
-    },
-    addIcon: {
-        margin: 10,
-    },
-});

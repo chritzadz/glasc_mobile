@@ -93,7 +93,7 @@ export default function SkincareRoutineSearchPM() {
                 type: "evening",
             })
         });
-        
+
         console.log('Response status:', response.status);
 
         if (response.ok) {
@@ -110,26 +110,30 @@ export default function SkincareRoutineSearchPM() {
         getProduct();
     }, []);
 
+
     return (
-        <View style={styles.container}>
+        <View className="flex-1 bg-[#B87C4C] pb-24">
             <SafeAreaView>
                 <View>
-                    <View style={styles.backHeader}>
+                    <View className="flex flex-row items-center px-5 mb-2">
                         <TouchableOpacity onPress={handleBack}>
                             <ChevronLeft color="white" />
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.searchContainer}>
-                        <View style={styles.searchBar}>
-                            <View style={styles.searchBox}>
+                    <View className="px-5 pt-4 h-full">
+                        <View className="flex flex-row gap-2 w-full pb-4">
+                            <View className="h-10 w-4/5 bg-white rounded-lg flex-row items-center p-1">
                                 <TextInput
                                     placeholder="Search your products here..."
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
-                                    style={styles.textInput}
+                                    className="w-full text-lg text-black pl-2"
                                 />
                             </View>
-                            <TouchableOpacity style={styles.searchIcon} onPress={filterProduct}>
+                            <TouchableOpacity
+                                className="h-10 w-1/5 bg-white rounded-lg flex justify-center items-center"
+                                onPress={filterProduct}
+                            >
                                 <SearchIcon />
                             </TouchableOpacity>
                         </View>
@@ -141,7 +145,7 @@ export default function SkincareRoutineSearchPM() {
                                     <Text className="p-2 text-lg">{item.name}</Text>
                                 </TouchableOpacity>
                             )}
-                            style={{ marginTop: 0, width: '100%' }}
+                            className="mt-0 w-full" // Apply any Tailwind classes here
                         />
                     </View>
                 </View>

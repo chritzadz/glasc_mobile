@@ -111,25 +111,28 @@ export default function SkincareRoutineSearchPM() {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <View className="flex-1 bg-[#B87C4C] pb-24">
             <SafeAreaView>
                 <View>
-                    <View style={styles.backHeader}>
+                    <View className="flex flex-row items-center px-5 mb-2">
                         <TouchableOpacity onPress={handleBack}>
                             <ChevronLeft color="white" />
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.searchContainer}>
-                        <View style={styles.searchBar}>
-                            <View style={styles.searchBox}>
+                    <View className="px-5 pt-4 h-full">
+                        <View className="flex flex-row gap-2 w-full pb-4">
+                            <View className="h-10 w-4/5 bg-white rounded-lg flex-row items-center p-1">
                                 <TextInput
                                     placeholder="Search your products here..."
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
-                                    style={styles.textInput}
+                                    className="w-full text-lg text-black pl-2"
                                 />
                             </View>
-                            <TouchableOpacity style={styles.searchIcon} onPress={filterProduct}>
+                            <TouchableOpacity
+                                className="h-10 w-1/5 bg-white rounded-lg flex justify-center items-center"
+                                onPress={filterProduct}
+                            >
                                 <SearchIcon />
                             </TouchableOpacity>
                         </View>
@@ -141,7 +144,7 @@ export default function SkincareRoutineSearchPM() {
                                     <Text className="p-2 text-lg">{item.name}</Text>
                                 </TouchableOpacity>
                             )}
-                            style={{ marginTop: 0, width: '100%' }}
+                            className="mt-0 w-full" // Apply any Tailwind classes here
                         />
                     </View>
                 </View>
@@ -149,7 +152,7 @@ export default function SkincareRoutineSearchPM() {
             {isAlertVisible && (
                 <CustomAlertBox
                     title="Confirm Action"
-                    message={`Are you sure you want to add ${selectedProduct} to your evening routine?`}
+                    message={`Are you sure you want to add ${selectedProduct} to your morning routine?`}
                     onYes={handleYes}
                     onNo={handleNo}
                 />
@@ -157,61 +160,3 @@ export default function SkincareRoutineSearchPM() {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20, 
-        width: '100%',
-        backgroundColor: '#B87C4C',
-        flex: 1,
-    },
-    backHeader: {
-        display: 'flex',
-        flexDirection: 'row',
-        paddingLeft: 20, // 20px
-        paddingRight: 20, // 20px
-        alignItems: 'center',
-        gap: 5,
-        marginBottom: 10,
-        // "flex flex-row items-center gap-5 mb-10"
-    },
-    searchContainer: {
-        paddingHorizontal: 20,
-    },
-    searchBar: {
-        width: '100%',
-        flexDirection: 'row', 
-        gap: 8, 
-        // className="w-full flex flex-row gap-2"
-    },
-    textInput: {
-        width: '100%',
-        paddingLeft: 10,
-        alignItems: 'center',
-        fontSize: 16,
-        //className="text-[white] w-full text-lg border-0"
-    },
-    searchBox: {
-        height: 40, 
-        width: '85%',
-        borderRadius: 10, 
-        padding: 4, 
-        backgroundColor: 'white',
-        marginTop: 16, 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        paddingHorizontal: 8, 
-        justifyContent: 'center',
-    },
-    searchIcon: {
-        marginTop: 16, 
-        height: 40, 
-        width: '15%',
-        borderRadius: 10, 
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-});
