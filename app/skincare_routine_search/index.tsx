@@ -6,15 +6,36 @@ import React, { useState, useEffect } from 'react';
 
 import { Product } from '../../model/Product';
 import CurrentUser from '../../model/CurrentUser';
+import CustomAlertBox from '../../components/CustomAlertBox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function SkincareRoutineSearch() {
+export default function SkincareRoutineSearchPM() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [isAlertVisible, setAlertVisible] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState("");
 
     const handleBack = () => {
         router.back();
+    };
+
+    const showAlert = (productName: string) => {
+        setSelectedProduct(productName);
+        setAlertVisible(true);
+    };
+
+    const handleYes = async () => {
+        console.log("User selected Yes");
+        await addProduct(selectedProduct);
+        setAlertVisible(false);
+        handleBack();
+    };
+
+    const handleNo = () => {
+        console.log("User selected No");
+        setAlertVisible(false);
     };
 
     const getProduct = async (): Promise<void> => {
@@ -69,7 +90,7 @@ export default function SkincareRoutineSearch() {
             body: JSON.stringify({
                 user_id: CurrentUser.getInstance().getId(),
                 product: name,
-                type: "morning",
+                type: "evening",
             })
         });
 
@@ -81,11 +102,11 @@ export default function SkincareRoutineSearch() {
         console.log('Response status:', response.status);
 
         if (response.ok) {
-            Alert.alert("Success", "Product added to AM routine.")
+            Alert.alert("Success", "Product added to PM routine.")
             return true;
         }
         else {
-            Alert.alert("Error", "Fail to add AM routine.")
+            Alert.alert("Error", "Fail to add PM routine.")
             return false;
         }
     };
@@ -95,38 +116,60 @@ export default function SkincareRoutineSearch() {
     }, []);
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.backHeader}>
-                <TouchableOpacity onPress={handleBack}>
-                    <ChevronLeft color="white" />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.searchContainer}>
-                <View style={styles.searchBar}>
-                    <View style={styles.searchBox}>
-                        <TextInput
-                            placeholder="Search your products here..."
-                            value={searchTerm}
-                            onChangeText={setSearchTerm}
-                            style={styles.textInput}
+        <View style={styles.container}>
+            <SafeAreaView>
+                <ScrollView>
+                    <View style={styles.backHeader}>
+                        <TouchableOpacity onPress={handleBack}>
+                            <ChevronLeft color="white" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.searchContainer}>
+                        <View style={styles.searchBar}>
+                            <View style={styles.searchBox}>
+                                <TextInput
+                                    placeholder="Search your products here..."
+                                    value={searchTerm}
+                                    onChangeText={setSearchTerm}
+                                    style={styles.textInput}
+                                />
+                            </View>
+                            <TouchableOpacity style={styles.searchIcon} onPress={filterProduct}>
+                                <SearchIcon />
+                            </TouchableOpacity>
+                        </View>
+                        {/* <FlatList
+                            data={filteredProducts}
+                            keyExtractor={(item) => item.name}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => addProduct(item.name)}>
+                                    <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
+                                </TouchableOpacity>
+                            )}
+                            style={{ marginTop: 0, width: '100%' }}
+                        /> */}
+                        <FlatList
+                            data={filteredProducts}
+                            keyExtractor={(item) => item.name}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => showAlert(item.name)}>
+                                    <Text className="p-2 text-lg">{item.name}</Text>
+                                </TouchableOpacity>
+                            )}
+                            style={{ marginTop: 0, width: '100%' }}
                         />
                     </View>
-                    <TouchableOpacity style={styles.searchIcon} onPress={filterProduct}>
-                        <SearchIcon />
-                    </TouchableOpacity>
-                </View>
-                <FlatList
-                    data={filteredProducts}
-                    keyExtractor={(item) => item.name}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => addProduct(item.name)}>
-                            <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                        </TouchableOpacity>
+                </ScrollView>
+            </SafeAreaView>
+            {isAlertVisible && (
+                        <CustomAlertBox
+                            title="Confirm Action"
+                            message={`Are you sure you want to add ${selectedProduct} to your evening routine?`}
+                            onYes={handleYes}
+                            onNo={handleNo}
+                        />
                     )}
-                    style={{ marginTop: 0, width: '100%' }}
-                />
-            </View>
-        </ScrollView>
+        </View>
     );
 };
 
@@ -137,8 +180,7 @@ const styles = StyleSheet.create({
         gap: 20, 
         width: '100%',
         backgroundColor: '#B87C4C',
-        paddingTop: 56, // 56px
-        paddingBottom: 80, // 80px
+        flex: 1,
     },
     backHeader: {
         display: 'flex',
