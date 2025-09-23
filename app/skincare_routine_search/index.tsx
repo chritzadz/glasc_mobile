@@ -64,12 +64,12 @@ export default function SkincareRoutineSearchPM() {
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
-            setFilteredProducts([]); // Reset if products array is empty or not an array
+            setFilteredProducts([]); 
             return;
         }
 
         if (searchTerm.trim() === "") {
-            setFilteredProducts([]); // Reset to all products if search term is empty
+            setFilteredProducts([]); 
             return;
         }
 
@@ -94,11 +94,6 @@ export default function SkincareRoutineSearchPM() {
             })
         });
 
-        // Get raw response text for debugging
-        const text = await response.text(); // Get the raw response
-
-        // Log the response for debugging
-        console.log('Raw response:', text);
         console.log('Response status:', response.status);
 
         if (response.ok) {
@@ -118,7 +113,7 @@ export default function SkincareRoutineSearchPM() {
     return (
         <View style={styles.container}>
             <SafeAreaView>
-                <ScrollView>
+                <View>
                     <View style={styles.backHeader}>
                         <TouchableOpacity onPress={handleBack}>
                             <ChevronLeft color="white" />
@@ -138,16 +133,6 @@ export default function SkincareRoutineSearchPM() {
                                 <SearchIcon />
                             </TouchableOpacity>
                         </View>
-                        {/* <FlatList
-                            data={filteredProducts}
-                            keyExtractor={(item) => item.name}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => addProduct(item.name)}>
-                                    <Text style={{ padding: 10, fontSize: 16 }}>{item.name}</Text>
-                                </TouchableOpacity>
-                            )}
-                            style={{ marginTop: 0, width: '100%' }}
-                        /> */}
                         <FlatList
                             data={filteredProducts}
                             keyExtractor={(item) => item.name}
@@ -159,7 +144,7 @@ export default function SkincareRoutineSearchPM() {
                             style={{ marginTop: 0, width: '100%' }}
                         />
                     </View>
-                </ScrollView>
+                </View>
             </SafeAreaView>
             {isAlertVisible && (
                         <CustomAlertBox
