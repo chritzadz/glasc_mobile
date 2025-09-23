@@ -9,10 +9,7 @@ import {
 } from "lucide-react-native";
 import {
     StyleSheet,
-    TextInput,
-    ScrollView,
     Alert,
-    FlatList,
     TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -21,10 +18,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Routine } from "../../model/Routine";
 import CurrentUser from "../../model/CurrentUser";
 
+import CustomAlertBox from '../../components/CustomAlertBox';
+
 export default function SkincareRoutine() {
     const router = useRouter();
     const [isAMEditMode, setIsAMEditMode] = useState(false);
     const [isPMEditMode, setIsPMEditMode] = useState(false);
+    const [isAlertVisible, setAlertVisible] = useState(false);
+    const [selectedProductName, setSelectedProductName] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState<Routine>();
     const [AMRoutineProducts, setAMRoutineProducts] = useState<Routine[]>([]);
     const [PMRoutineProducts, setPMRoutineProducts] = useState<Routine[]>([]);
     const [error, setError] = useState(null);
@@ -47,6 +49,25 @@ export default function SkincareRoutine() {
 
     const togglePMDisplay = () => {
         setIsPMEditMode(!isPMEditMode);
+    };
+
+    const showAlert = (product: Routine) => {
+        setSelectedProduct(product);
+        setAlertVisible(true);
+    };
+
+    const handleYes = async () => {
+        console.log("User selected Yes");
+        if (selectedProduct) {
+            await deleteProduct(selectedProduct);
+            await refetchRoutineProducts();
+        }
+        setAlertVisible(false);
+    };
+
+    const handleNo = () => {
+        console.log("User selected No");
+        setAlertVisible(false);
     };
 
     const fetchSkincareRoutine = async () => {
@@ -84,6 +105,7 @@ export default function SkincareRoutine() {
         data: routineProductsData,
         isLoading: isRoutineLoading,
         isError: isRoutineError,
+        refetch: refetchRoutineProducts,
     } = useQuery({
         queryKey: ["routineProducts"],
         queryFn: async () => {
@@ -135,7 +157,7 @@ export default function SkincareRoutine() {
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.backHeader}>
                 <TouchableOpacity
                     style={styles.chevronLeft}
@@ -167,24 +189,12 @@ export default function SkincareRoutine() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.productContainer}>
-                    {/*<FlatList
-                        data={AMRoutineProducts}
-                        keyExtractor={(item) => item.product}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity>
-                                <Text style={{ padding: 10, fontSize: 16 }}>
-                                    {item.product}
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                        style={{ width: "100%" }}
-                    />*/}
                     <View className="flex-row gap-2 w-full">
                         {isRoutineLoading ? (
                             <Loader color="white" className="animate-spin" />
                         ) : (
                             AMRoutineProducts.map((product, index) => (
-                                <TouchableOpacity key={index}>
+                                <TouchableOpacity key={index} onPress={() => showAlert(product)}>
                                     <Text style={{ padding: 10, fontSize: 16 }}>
                                         {product.product}
                                     </Text>
@@ -226,7 +236,7 @@ export default function SkincareRoutine() {
                         <Loader color="white" className="animate-spin" />
                     ) : (
                         PMRoutineProducts.map((product, index) => (
-                            <TouchableOpacity key={index}>
+                            <TouchableOpacity key={index} onPress={() => showAlert(product)}>
                                 <Text style={{ padding: 10, fontSize: 16 }}>
                                     {product.product}
                                 </Text>
@@ -245,7 +255,15 @@ export default function SkincareRoutine() {
                     </View>
                 </View>
             </View>
-        </ScrollView>
+            {isAlertVisible && (
+                <CustomAlertBox
+                    title="Confirm Action"
+                    message={`Are you sure you want to delete ${selectedProduct?.product}?`}
+                    onYes={handleYes}
+                    onNo={handleNo}
+                />
+            )}
+        </View>
     );
 }
 
@@ -253,6 +271,7 @@ const styles = StyleSheet.create({
     container: {
         display: "flex",
         flexDirection: "column",
+        flex: 1,
         gap: 20,
         width: "100%",
         backgroundColor: "#B87C4C",

@@ -147,13 +147,13 @@ export default function SkincareRoutineSearchPM() {
                 </View>
             </SafeAreaView>
             {isAlertVisible && (
-                        <CustomAlertBox
-                            title="Confirm Action"
-                            message={`Are you sure you want to add ${selectedProduct} to your evening routine?`}
-                            onYes={handleYes}
-                            onNo={handleNo}
-                        />
-                    )}
+                <CustomAlertBox
+                    title="Confirm Action"
+                    message={`Are you sure you want to add ${selectedProduct} to your evening routine?`}
+                    onYes={handleYes}
+                    onNo={handleNo}
+                />
+            )}
         </View>
     );
 };
