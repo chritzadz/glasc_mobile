@@ -106,7 +106,34 @@ export default function SkincareRoutine() {
     }, [routineProductsData]);
     console.log(isRoutineLoading);
 
-    const deleteProduct = () => {};
+    const deleteProduct = async (product: Routine) => {
+        try {
+            const userId = CurrentUser.getInstance().getId();
+            const response = await fetch(
+                '/api/skincareRoutine',
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        user_id: CurrentUser.getInstance().getId(),
+                        product: product.product,
+                        type: product.type,
+                    })
+                }
+            );
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            Alert.alert(
+                "Error",
+                "Failed to fetch products. Please try again later."
+            );
+        }
+    };
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.backHeader}>
