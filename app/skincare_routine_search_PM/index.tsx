@@ -8,13 +8,8 @@ import { Product } from '../../model/Product';
 import CurrentUser from '../../model/CurrentUser';
 import CustomAlertBox from '../../components/CustomAlertBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProductItemBox from '../../components/ProductItemBox';
 
-interface SkincareRoutineSearchProp{
-    type: string; //AM or PM only
-}
-
-export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp) {
+export default function SkincareRoutineSearchPM() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
@@ -23,7 +18,7 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
     const [selectedProduct, setSelectedProduct] = useState("");
 
     const handleBack = () => {
-        router.push("/skincare_routine");
+        router.back();
     };
 
     const showAlert = (productName: string) => {
@@ -57,9 +52,9 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
             const productObjects: Product[] = data.map((item: any) => ({
                 name: item.product_name,
                 url: item.product_url,
-                ingredients: item.ingredients || '',
+                ingredients: item.ingredients || '', 
             }));
-            setFilteredProducts(productObjects);
+
             setProducts(productObjects);
         } 
         catch (error) {
@@ -69,12 +64,12 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
-            setFilteredProducts(products);
+            setFilteredProducts(products); // Reset if products array is empty or not an array
             return;
         }
 
         if (searchTerm.trim() === "") {
-            setFilteredProducts(products);
+            setFilteredProducts(products); // Reset to all products if search term is empty
             return;
         }
 
@@ -95,73 +90,54 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
             body: JSON.stringify({
                 user_id: CurrentUser.getInstance().getId(),
                 product: name,
-                type: type === "AM" ? "morning" : "evening",
+                type: "evening",
             })
         });
 
         console.log('Response status:', response.status);
 
         if (response.ok) {
-            Alert.alert(`Success", "Product added to ${type} routine.`)
+            Alert.alert("Success", "Product added to PM routine.")
             return true;
         }
         else {
-            Alert.alert("Error", `Fail to add ${type} routine.`)
+            Alert.alert("Error", "Fail to add PM routine.")
             return false;
         }
     };
 
     useEffect(() => {
-        console.log(type);
         getProduct();
     }, []);
 
+
     return (
-        <View className="flex-1 bg-[#F7F4EA]">
+        <View className="flex-1 bg-[#B87C4C] pb-24">
             <SafeAreaView>
-                <View className="gap-2">
+                <View>
+                    <View className="flex flex-row items-center px-5 mb-2">
+                        <TouchableOpacity onPress={handleBack}>
+                            <ChevronLeft color="white" />
+                        </TouchableOpacity>
+                    </View>
                     <View className="px-5 pt-4 h-full">
-                        <View className="w-full flex flex-row gap-2">
-                            <View className="items-center w-[20px] p-2 flex justify-center">
-                                <ChevronLeft color="#B87C4C" onPress={handleBack}></ChevronLeft>
-                            </View>
-                            <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] bg-[#F7F4EA] flex-1 px-2 flex flex-row gap-2">
-                                <SearchIcon color="#B87C4C" onPress={filterProduct}/>
+                        <View className="flex flex-row gap-2 w-full pb-4">
+                            <View className="h-10 w-4/5 bg-white rounded-lg flex-row items-center p-1">
                                 <TextInput
                                     placeholder="Search your products here..."
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
-                                    className="text-[#b69982] w-full text-lg border-0"
-                                    />
+                                    className="w-full text-lg text-black pl-2"
+                                />
                             </View>
+                            <TouchableOpacity
+                                className="h-10 w-1/5 bg-white rounded-lg flex justify-center items-center"
+                                onPress={filterProduct}
+                            >
+                                <SearchIcon />
+                            </TouchableOpacity>
                         </View>
-                        <ScrollView className="flex flex-col gap-2 mt-2 w-full">
-                            {Array.from({ length: Math.ceil(filteredProducts.length / 2) }).map((_, rowIdx) => (
-                                <View key={rowIdx} className="flex flex-row gap-2 mb-2">
-                                <View className="flex-1 shadow">
-                                    <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2]?.name)}>
-                                        <ProductItemBox
-                                        imageUrl={"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"}
-                                        name={filteredProducts[rowIdx * 2]?.name}
-                                        description={"desc"}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                {filteredProducts[rowIdx * 2 + 1] && (
-                                    <View className="flex-1 shadow">
-                                        <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2 + 1]?.name)}>
-                                            <ProductItemBox
-                                                imageUrl={"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"}
-                                                name={filteredProducts[rowIdx * 2 + 1]?.name}
-                                                description={"desc"}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                </View>
-                            ))}
-                        </ScrollView>
-                        {/* <FlatList
+                        <FlatList
                             data={filteredProducts}
                             keyExtractor={(item) => item.name}
                             renderItem={({ item }) => (
@@ -170,14 +146,14 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
                                 </TouchableOpacity>
                             )}
                             className="mt-0 w-full" // Apply any Tailwind classes here
-                        /> */}
+                        />
                     </View>
                 </View>
             </SafeAreaView>
             {isAlertVisible && (
                 <CustomAlertBox
                     title="Confirm Action"
-                    message={`Are you sure you want to add ${selectedProduct} to your ${type} routine?`}
+                    message={`Are you sure you want to add ${selectedProduct} to your evening routine?`}
                     onYes={handleYes}
                     onNo={handleNo}
                 />
@@ -185,3 +161,62 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20, 
+        width: '100%',
+        backgroundColor: '#B87C4C',
+        flex: 1,
+        
+    },
+    backHeader: {
+        display: 'flex',
+        flexDirection: 'row',
+        paddingLeft: 20, // 20px
+        paddingRight: 20, // 20px
+        alignItems: 'center',
+        gap: 5,
+        marginBottom: 10,
+        // "flex flex-row items-center gap-5 mb-10"
+    },
+    searchContainer: {
+        paddingHorizontal: 20,
+    },
+    searchBar: {
+        width: '100%',
+        flexDirection: 'row', 
+        gap: 8, 
+        // className="w-full flex flex-row gap-2"
+    },
+    textInput: {
+        width: '100%',
+        paddingLeft: 10,
+        alignItems: 'center',
+        fontSize: 16,
+        //className="text-[white] w-full text-lg border-0"
+    },
+    searchBox: {
+        height: 40, 
+        width: '85%',
+        borderRadius: 10, 
+        padding: 4, 
+        backgroundColor: 'white',
+        marginTop: 16, 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        paddingHorizontal: 8, 
+        justifyContent: 'center',
+    },
+    searchIcon: {
+        marginTop: 16, 
+        height: 40, 
+        width: '15%',
+        borderRadius: 10, 
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
