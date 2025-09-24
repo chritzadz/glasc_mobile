@@ -79,7 +79,7 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
         }
 
         const newFilteredProducts = products.filter(product => 
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         setFilteredProducts(newFilteredProducts);
@@ -139,20 +139,20 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
                             {Array.from({ length: Math.ceil(filteredProducts.length / 2) }).map((_, rowIdx) => (
                                 <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                                 <View className="flex-1 shadow">
-                                    <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2]?.name)}>
+                                    <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2]?.product_name)}>
                                         <ProductItemBox
                                         imageUrl={"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"}
-                                        name={filteredProducts[rowIdx * 2]?.name}
+                                        name={filteredProducts[rowIdx * 2]?.product_name}
                                         description={"desc"}
                                         />
                                     </TouchableOpacity>
                                 </View>
                                 {filteredProducts[rowIdx * 2 + 1] && (
                                     <View className="flex-1 shadow">
-                                        <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2 + 1]?.name)}>
+                                        <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2 + 1]?.product_name)}>
                                             <ProductItemBox
                                                 imageUrl={"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"}
-                                                name={filteredProducts[rowIdx * 2 + 1]?.name}
+                                                name={filteredProducts[rowIdx * 2 + 1]?.product_name}
                                                 description={"desc"}
                                             />
                                         </TouchableOpacity>
