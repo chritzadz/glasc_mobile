@@ -57,7 +57,7 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
             const productObjects: Product[] = data.map((item: any) => ({
                 name: item.product_name,
                 url: item.product_url,
-                ingredients: item.ingredients || '', 
+                ingredients: item.ingredients || '',
             }));
             setFilteredProducts(productObjects);
             setProducts(productObjects);
@@ -95,18 +95,18 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
             body: JSON.stringify({
                 user_id: CurrentUser.getInstance().getId(),
                 product: name,
-                type: "evening",
+                type: type === "AM" ? "morning" : "evening",
             })
         });
 
         console.log('Response status:', response.status);
 
         if (response.ok) {
-            Alert.alert("Success", "Product added to PM routine.")
+            Alert.alert(`Success", "Product added to ${type} routine.`)
             return true;
         }
         else {
-            Alert.alert("Error", "Fail to add PM routine.")
+            Alert.alert("Error", `Fail to add ${type} routine.`)
             return false;
         }
     };
@@ -177,7 +177,7 @@ export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp)
             {isAlertVisible && (
                 <CustomAlertBox
                     title="Confirm Action"
-                    message={`Are you sure you want to add ${selectedProduct} to your morning routine?`}
+                    message={`Are you sure you want to add ${selectedProduct} to your ${type} routine?`}
                     onYes={handleYes}
                     onNo={handleNo}
                 />
