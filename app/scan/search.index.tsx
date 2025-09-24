@@ -64,6 +64,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                             placeholder="Search your products here..."
                             value={searchTerm}
                             onChangeText={setSearchTerm}
+                            onSubmitEditing={filterProduct}
                             className="text-[#b69982] w-full text-lg border-0"
                             />
                     </View>
