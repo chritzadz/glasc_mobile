@@ -2,13 +2,14 @@ import React, { useEffect } from "react";
 import { useRouter, useSegments } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
+import CurrentUser from "../model/CurrentUser";
 
 interface AuthGuardProps {
   children: React.ReactNode;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
   const segments = useSegments();
 
@@ -23,6 +24,11 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     if (!isAuthenticated && !inAuthGroup) {
       router.replace("/login");
     } else if (isAuthenticated && inAuthGroup) {
+      console.log("set user id tp: " + user?.id);
+      if (user != null){
+        console.log("set user id tp: " + user.id);
+        CurrentUser.getInstance().setId(user.id);
+      }
       router.replace("/scan");
     }
   }, [isAuthenticated, isLoading, segments]);

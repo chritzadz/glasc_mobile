@@ -8,7 +8,6 @@ import {
     Loader,
 } from "lucide-react-native";
 import {
-    StyleSheet,
     Alert,
     TouchableOpacity,
 } from "react-native";
@@ -93,7 +92,7 @@ export default function SkincareRoutine() {
             );
 
             const data = await response.json();
-            console.log(data);
+            console.log("routines:" + data);
 
             const routineObjects: Routine[] = data.map((item: any) => ({
                 user_id: item.user_id,
