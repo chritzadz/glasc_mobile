@@ -9,7 +9,7 @@
 
 ## Iteration 1 (Week 1-2) - Core Authentication & Product Scanning
 
-### User Story 1: User Registration
+### User Story 1: User Registration (Keshia)
 **As a** new user
 **I want to** create an account with my personal skin information
 **So that** I can receive personalized skincare recommendations
@@ -20,7 +20,7 @@
 - Implement user data storage
 - Design onboarding flow
 
-### User Story 2: User Login
+### User Story 2: User Login (Keshia)
 **As a** returning user
 **I want to** log into my account
 **So that** I can access my personalized skincare data
