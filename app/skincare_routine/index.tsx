@@ -21,6 +21,7 @@ import CurrentUser from "../../model/CurrentUser";
 import CustomAlertBox from '../../components/CustomAlertBox';
 import { ScrollView } from "react-native";
 import RoutineProduct from "../../components/RoutineProduct";
+import EditRoutineProduct from "../../components/EditRoutineProduct";
 
 export default function SkincareRoutine() {
     const router = useRouter();
@@ -52,9 +53,15 @@ export default function SkincareRoutine() {
         setIsPMEditMode(!isPMEditMode);
     };
 
-    const showAlert = (product: Routine) => {
-        setSelectedProduct(product);
-        setAlertVisible(true);
+    const showDeleteAlert = (product: Routine, from: string) => {
+        if (isAMEditMode && from === "AM") {
+            setSelectedProduct(product);
+            setAlertVisible(true);
+        }
+        else if (isPMEditMode && from === "PM") {
+            setSelectedProduct(product);
+            setAlertVisible(true);
+        }
     };
 
     const handleYes = async () => {
@@ -188,26 +195,42 @@ export default function SkincareRoutine() {
                             <Loader color="white" className="animate-spin" />
                         </View>
                     ) : (
-                        <ScrollView
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            className="flex flex-row"
-                            contentContainerStyle={{ gap: 8 }}
-                        >
-                            {AMRoutineProducts.map((product, index) => (
-                                <TouchableOpacity key={index} className="w-40" onPress={() => showAlert(product)}>
-                                    <RoutineProduct
-                                        imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                        name={product.product}
-                                    />
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    )}
-                    {isAMEditMode && (
-                        <View className="flex items-center">
-                            <CirclePlus color="white" onPress={displayAMSearchScreen} />
-                        </View>
+                        isAMEditMode ? (
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                className="flex flex-row"
+                                contentContainerStyle={{ gap: 8 }}
+                            >
+                                {AMRoutineProducts.map((product, index) => (
+                                    <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "AM")}>
+                                        <EditRoutineProduct
+                                            imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                            name={product.product}
+                                        />
+                                    </TouchableOpacity>
+                                ))}
+                                <View className="flex items-center w-40 justify-center">
+                                    <CirclePlus color="white" onPress={displayAMSearchScreen} />
+                                </View>
+                            </ScrollView>
+                        ) : (
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                className="flex flex-row"
+                                contentContainerStyle={{ gap: 8 }}
+                            >
+                                {AMRoutineProducts.map((product, index) => (
+                                    <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "AM")}>
+                                        <RoutineProduct
+                                            imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                            name={product.product}
+                                        />
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        )
                     )}
                 </View>
                 <View className="h-0.5 bg-white my-1"></View>
@@ -226,31 +249,48 @@ export default function SkincareRoutine() {
                 </View>
                 <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
                     {isRoutineLoading ? (
-                        <View className="flex items-center justify-center py-4">
-                            <Loader color="white" className="animate-spin" />
-                        </View>
-                    ) : (
-                        <ScrollView
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            className="flex flex-row"
-                            contentContainerStyle={{ gap: 8 }}
-                        >
-                            {PMRoutineProducts.map((product, index) => (
-                                <TouchableOpacity key={index} className="w-40" onPress={() => showAlert(product)}>
-                                    <RoutineProduct
-                                        imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                        name={product.product}
-                                    />
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    )}
-                    {isAMEditMode && (
-                        <View className="flex items-center">
-                            <CirclePlus color="white" onPress={displayAMSearchScreen} />
-                        </View>
-                    )}
+                            <View className="flex items-center justify-center py-4">
+                                <Loader color="white" className="animate-spin" />
+                            </View>
+                        ) : (
+                            isPMEditMode ? (
+                                <ScrollView
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    className="flex flex-row"
+                                    contentContainerStyle={{ gap: 8 }}
+                                >
+                                    {PMRoutineProducts.map((product, index) => (
+                                        <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "PM")}>
+                                            <EditRoutineProduct
+                                                imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                                name={product.product}
+                                            />
+                                        </TouchableOpacity>
+                                    ))}
+                                    <View className="flex items-center w-40 justify-center">
+                                        <CirclePlus color="white" onPress={displayPMSearchScreen} />
+                                    </View>
+                                </ScrollView>
+                            ) : (
+                                <ScrollView
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    className="flex flex-row"
+                                    contentContainerStyle={{ gap: 8 }}
+                                >
+                                    {PMRoutineProducts.map((product, index) => (
+                                        <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "PM")}>
+                                            <RoutineProduct
+                                                imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                                name={product.product}
+                                            />
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            )
+                        )
+                    }
                 </View>
             </View>
 
