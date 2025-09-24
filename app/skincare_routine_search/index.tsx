@@ -8,8 +8,13 @@ import { Product } from '../../model/Product';
 import CurrentUser from '../../model/CurrentUser';
 import CustomAlertBox from '../../components/CustomAlertBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ProductItemBox from '../../components/ProductItemBox';
 
-export default function SkincareRoutineSearchPM() {
+interface SkincareRoutineSearchProp{
+    type: string; //AM or PM only
+}
+
+export default function SkincareRoutineSearch({type}: SkincareRoutineSearchProp) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
@@ -18,7 +23,7 @@ export default function SkincareRoutineSearchPM() {
     const [selectedProduct, setSelectedProduct] = useState("");
 
     const handleBack = () => {
-        router.back();
+        router.push("/skincare_routine");
     };
 
     const showAlert = (productName: string) => {
@@ -54,7 +59,7 @@ export default function SkincareRoutineSearchPM() {
                 url: item.product_url,
                 ingredients: item.ingredients || '', 
             }));
-
+            setFilteredProducts(productObjects);
             setProducts(productObjects);
         } 
         catch (error) {
@@ -64,12 +69,12 @@ export default function SkincareRoutineSearchPM() {
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
-            setFilteredProducts([]); 
+            setFilteredProducts(products);
             return;
         }
 
         if (searchTerm.trim() === "") {
-            setFilteredProducts([]); 
+            setFilteredProducts(products);
             return;
         }
 
@@ -107,36 +112,56 @@ export default function SkincareRoutineSearchPM() {
     };
 
     useEffect(() => {
+        console.log(type);
         getProduct();
     }, []);
 
     return (
-        <View className="flex-1 bg-[#B87C4C] pb-24">
+        <View className="flex-1 bg-[#F7F4EA]">
             <SafeAreaView>
-                <View>
-                    <View className="flex flex-row items-center px-5 mb-2">
-                        <TouchableOpacity onPress={handleBack}>
-                            <ChevronLeft color="white" />
-                        </TouchableOpacity>
-                    </View>
+                <View className="gap-2">
                     <View className="px-5 pt-4 h-full">
-                        <View className="flex flex-row gap-2 w-full pb-4">
-                            <View className="h-10 w-4/5 bg-white rounded-lg flex-row items-center p-1">
+                        <View className="w-full flex flex-row gap-2">
+                            <View className="items-center w-[20px] p-2 flex justify-center">
+                                <ChevronLeft color="#B87C4C" onPress={handleBack}></ChevronLeft>
+                            </View>
+                            <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] bg-[#F7F4EA] flex-1 px-2 flex flex-row gap-2">
+                                <SearchIcon color="#B87C4C" onPress={filterProduct}/>
                                 <TextInput
                                     placeholder="Search your products here..."
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
-                                    className="w-full text-lg text-black pl-2"
-                                />
+                                    className="text-[#b69982] w-full text-lg border-0"
+                                    />
                             </View>
-                            <TouchableOpacity
-                                className="h-10 w-1/5 bg-white rounded-lg flex justify-center items-center"
-                                onPress={filterProduct}
-                            >
-                                <SearchIcon />
-                            </TouchableOpacity>
                         </View>
-                        <FlatList
+                        <ScrollView className="flex flex-col gap-2 mt-2 w-full">
+                            {Array.from({ length: Math.ceil(filteredProducts.length / 2) }).map((_, rowIdx) => (
+                                <View key={rowIdx} className="flex flex-row gap-2 mb-2">
+                                <View className="flex-1 shadow">
+                                    <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2]?.name)}>
+                                        <ProductItemBox
+                                        imageUrl={"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"}
+                                        name={filteredProducts[rowIdx * 2]?.name}
+                                        description={"desc"}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                {filteredProducts[rowIdx * 2 + 1] && (
+                                    <View className="flex-1 shadow">
+                                        <TouchableOpacity onPress={() => showAlert(filteredProducts[rowIdx * 2 + 1]?.name)}>
+                                            <ProductItemBox
+                                                imageUrl={"https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"}
+                                                name={filteredProducts[rowIdx * 2 + 1]?.name}
+                                                description={"desc"}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                                </View>
+                            ))}
+                        </ScrollView>
+                        {/* <FlatList
                             data={filteredProducts}
                             keyExtractor={(item) => item.name}
                             renderItem={({ item }) => (
@@ -145,7 +170,7 @@ export default function SkincareRoutineSearchPM() {
                                 </TouchableOpacity>
                             )}
                             className="mt-0 w-full" // Apply any Tailwind classes here
-                        />
+                        /> */}
                     </View>
                 </View>
             </SafeAreaView>

@@ -22,6 +22,8 @@ import CustomAlertBox from '../../components/CustomAlertBox';
 import { ScrollView } from "react-native";
 import RoutineProduct from "../../components/RoutineProduct";
 import EditRoutineProduct from "../../components/EditRoutineProduct";
+import SkincareRoutineSearch from "../skincare_routine_search";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SkincareRoutine() {
     const router = useRouter();
@@ -31,18 +33,17 @@ export default function SkincareRoutine() {
     const [selectedProduct, setSelectedProduct] = useState<Routine>();
     const [AMRoutineProducts, setAMRoutineProducts] = useState<Routine[]>([]);
     const [PMRoutineProducts, setPMRoutineProducts] = useState<Routine[]>([]);
+    const [openSetting, setOpenSetting] = useState(false);
+    const [searchType, setSearchType] = useState("");
     const [error, setError] = useState(null);
 
     const handleClose = () => {
         router.back();
     };
 
-    const displayAMSearchScreen = () => {
-        router.push("/skincare_routine_search");
-    };
-
-    const displayPMSearchScreen = () => {
-        router.push("/skincare_routine_search_PM");
+    const displaySearchScreen = (type: string) => {
+        setSearchType(type);
+        setOpenSetting(true);
     };
 
     const toggleAMDisplay = () => {
@@ -165,143 +166,148 @@ export default function SkincareRoutine() {
     console.log(isRoutineLoading);
 
     return (
-        <View className="flex-1 bg-[#B87C4C] pt-14 pb-20">
-            <View className="flex-row items-center gap-5 mb-2 px-5">
-                <TouchableOpacity onPress={handleClose}>
-                    <ChevronLeft color="white" />
-                </TouchableOpacity>
-                <Text className="text-2xl font-bold text-white">Back</Text>
-            </View>
-
-            <View>
-                <Text className="text-2xl font-bold text-white my-2 pl-5">My Routine</Text>
-                <View className="h-0.5 bg-white my-1 shadow-md"></View>
-            </View>
-
-            <View className="py-2">
-                <View className="flex-row justify-between w-full pr-5">
-                    <Text className="text-2xl font-bold text-white pl-5">AM Routine</Text>
-                    <TouchableOpacity onPress={toggleAMDisplay}>
-                        {isAMEditMode ? (
-                            <Save color="white" />
-                        ) : (
-                            <SquarePen color="white" />
-                        )}
-                    </TouchableOpacity>
-                </View>
-                <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
-                    {isRoutineLoading ? (
-                        <View className="flex items-center justify-center py-4">
-                            <Loader color="white" className="animate-spin" />
-                        </View>
-                    ) : (
-                        isAMEditMode ? (
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                className="flex flex-row"
-                                contentContainerStyle={{ gap: 8 }}
-                            >
-                                {AMRoutineProducts.map((product, index) => (
-                                    <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "AM")}>
-                                        <EditRoutineProduct
-                                            imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                            name={product.product}
-                                        />
-                                    </TouchableOpacity>
-                                ))}
-                                <View className="flex items-center w-40 justify-center">
-                                    <CirclePlus color="white" onPress={displayAMSearchScreen} />
-                                </View>
-                            </ScrollView>
-                        ) : (
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                className="flex flex-row"
-                                contentContainerStyle={{ gap: 8 }}
-                            >
-                                {AMRoutineProducts.map((product, index) => (
-                                    <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "AM")}>
-                                        <RoutineProduct
-                                            imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                            name={product.product}
-                                        />
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        )
-                    )}
-                </View>
-                <View className="h-0.5 bg-white my-1"></View>
-            </View>
-
-            <View className="py-2">
-                <View className="flex-row justify-between w-full pr-5">
-                    <Text className="text-2xl font-bold text-white pl-5">PM Routine</Text>
-                    <TouchableOpacity onPress={togglePMDisplay}>
-                        {isPMEditMode ? (
-                            <Save color="white" />
-                        ) : (
-                            <SquarePen color="white" />
-                        )}
-                    </TouchableOpacity>
-                </View>
-                <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
-                    {isRoutineLoading ? (
-                            <View className="flex items-center justify-center py-4">
-                                <Loader color="white" className="animate-spin" />
+        <View className="flex-1">
+            { openSetting ? (
+                    <SkincareRoutineSearch type={searchType}></SkincareRoutineSearch>
+                ) : (
+                    <SafeAreaView className="flex-1 bg-[#B87C4C] h-full">
+                        <View>
+                            <View className="flex-row items-center gap-5 mb-2 px-5">
+                                <TouchableOpacity onPress={handleClose}>
+                                    <ChevronLeft color="white" />
+                                </TouchableOpacity>
+                                <Text className="text-2xl font-bold text-white">Back</Text>
                             </View>
-                        ) : (
-                            isPMEditMode ? (
-                                <ScrollView
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    className="flex flex-row"
-                                    contentContainerStyle={{ gap: 8 }}
-                                >
-                                    {PMRoutineProducts.map((product, index) => (
-                                        <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "PM")}>
-                                            <EditRoutineProduct
-                                                imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                                name={product.product}
-                                            />
-                                        </TouchableOpacity>
-                                    ))}
-                                    <View className="flex items-center w-40 justify-center">
-                                        <CirclePlus color="white" onPress={displayPMSearchScreen} />
-                                    </View>
-                                </ScrollView>
-                            ) : (
-                                <ScrollView
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    className="flex flex-row"
-                                    contentContainerStyle={{ gap: 8 }}
-                                >
-                                    {PMRoutineProducts.map((product, index) => (
-                                        <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "PM")}>
-                                            <RoutineProduct
-                                                imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                                name={product.product}
-                                            />
-                                        </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
-                            )
-                        )
-                    }
-                </View>
-            </View>
-
-            {isAlertVisible && (
-                <CustomAlertBox
-                    title="Confirm Action"
-                    message={`Are you sure you want to delete ${selectedProduct?.product}?`}
-                    onYes={handleYes}
-                    onNo={handleNo}
-                />
-            )}
+                            <View>
+                                <Text className="text-2xl font-bold text-white my-2 pl-5">My Routine</Text>
+                                <View className="h-0.5 bg-white my-1 shadow-md"></View>
+                            </View>
+                            <View className="py-2">
+                                <View className="flex-row justify-between w-full pr-5">
+                                    <Text className="text-2xl font-bold text-white pl-5">AM Routine</Text>
+                                    <TouchableOpacity onPress={toggleAMDisplay}>
+                                        {isAMEditMode ? (
+                                            <Save color="white" />
+                                        ) : (
+                                            <SquarePen color="white" />
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                                <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
+                                    {isRoutineLoading ? (
+                                        <View className="flex items-center justify-center py-4">
+                                            <Loader color="white" className="animate-spin" />
+                                        </View>
+                                    ) : (
+                                        isAMEditMode ? (
+                                            <ScrollView
+                                                horizontal={true}
+                                                showsHorizontalScrollIndicator={false}
+                                                className="flex flex-row"
+                                                contentContainerStyle={{ gap: 8 }}
+                                            >
+                                                {AMRoutineProducts.map((product, index) => (
+                                                    <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "AM")}>
+                                                        <EditRoutineProduct
+                                                            imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                                            name={product.product}
+                                                        />
+                                                    </TouchableOpacity>
+                                                ))}
+                                                <View className="flex items-center w-40 justify-center">
+                                                    <CirclePlus color="white" onPress={() => displaySearchScreen("AM")} />
+                                                </View>
+                                            </ScrollView>
+                                        ) : (
+                                            <ScrollView
+                                                horizontal={true}
+                                                showsHorizontalScrollIndicator={false}
+                                                className="flex flex-row"
+                                                contentContainerStyle={{ gap: 8 }}
+                                            >
+                                                {AMRoutineProducts.map((product, index) => (
+                                                    <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "AM")}>
+                                                        <RoutineProduct
+                                                            imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                                            name={product.product}
+                                                        />
+                                                    </TouchableOpacity>
+                                                ))}
+                                            </ScrollView>
+                                        )
+                                    )}
+                                </View>
+                                <View className="h-0.5 bg-white my-1"></View>
+                            </View>
+                            <View className="py-2">
+                                <View className="flex-row justify-between w-full pr-5">
+                                    <Text className="text-2xl font-bold text-white pl-5">PM Routine</Text>
+                                    <TouchableOpacity onPress={togglePMDisplay}>
+                                        {isPMEditMode ? (
+                                            <Save color="white" />
+                                        ) : (
+                                            <SquarePen color="white" />
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                                <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
+                                    {isRoutineLoading ? (
+                                            <View className="flex items-center justify-center py-4">
+                                                <Loader color="white" className="animate-spin" />
+                                            </View>
+                                        ) : (
+                                            isPMEditMode ? (
+                                                <ScrollView
+                                                    horizontal={true}
+                                                    showsHorizontalScrollIndicator={false}
+                                                    className="flex flex-row"
+                                                    contentContainerStyle={{ gap: 8 }}
+                                                >
+                                                    {PMRoutineProducts.map((product, index) => (
+                                                        <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "PM")}>
+                                                            <EditRoutineProduct
+                                                                imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                                                name={product.product}
+                                                            />
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                    <View className="flex items-center w-40 justify-center">
+                                                        <CirclePlus color="white" onPress={() => displaySearchScreen("PM")} />
+                                                    </View>
+                                                </ScrollView>
+                                            ) : (
+                                                <ScrollView
+                                                    horizontal={true}
+                                                    showsHorizontalScrollIndicator={false}
+                                                    className="flex flex-row"
+                                                    contentContainerStyle={{ gap: 8 }}
+                                                >
+                                                    {PMRoutineProducts.map((product, index) => (
+                                                        <TouchableOpacity key={index} className="w-40" onPress={() => showDeleteAlert(product, "PM")}>
+                                                            <RoutineProduct
+                                                                imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                                                name={product.product}
+                                                            />
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </ScrollView>
+                                            )
+                                        )
+                                    }
+                                </View>
+                            </View>
+                            {isAlertVisible && (
+                                <CustomAlertBox
+                                    title="Confirm Action"
+                                    message={`Are you sure you want to delete ${selectedProduct?.product}?`}
+                                    onYes={handleYes}
+                                    onNo={handleNo}
+                                />
+                            )}
+                        </View>
+                    </SafeAreaView>
+                )
+            }
         </View>
     );
 }

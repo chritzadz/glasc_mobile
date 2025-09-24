@@ -64,12 +64,12 @@ export default function SkincareRoutineSearchPM() {
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
-            setFilteredProducts([]); // Reset if products array is empty or not an array
+            setFilteredProducts(products); // Reset if products array is empty or not an array
             return;
         }
 
         if (searchTerm.trim() === "") {
-            setFilteredProducts([]); // Reset to all products if search term is empty
+            setFilteredProducts(products); // Reset to all products if search term is empty
             return;
         }
 
