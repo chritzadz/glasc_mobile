@@ -106,8 +106,7 @@ export default function SkincareRoutine() {
             Alert.alert(
                 "Error",
                 "Failed to fetch products. Please try again later."
-            );
-        }
+            );        }
     };
 
     const deleteProduct = async (product: Routine) => {
