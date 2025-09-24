@@ -19,6 +19,8 @@ import { Routine } from "../../model/Routine";
 import CurrentUser from "../../model/CurrentUser";
 
 import CustomAlertBox from '../../components/CustomAlertBox';
+import { ScrollView } from "react-native";
+import RoutineProduct from "../../components/RoutineProduct";
 
 export default function SkincareRoutine() {
     const router = useRouter();
@@ -155,115 +157,6 @@ export default function SkincareRoutine() {
     }, [routineProductsData]);
     console.log(isRoutineLoading);
 
-    // return (
-    //     <View style={styles.container}>
-    //         <View style={styles.backHeader}>
-    //             <TouchableOpacity
-    //                 style={styles.chevronLeft}
-    //                 onPress={handleClose}
-    //             >
-    //                 <ChevronLeft color="white" />
-    //             </TouchableOpacity>
-    //             <Text style={styles.backText}>Back</Text>
-    //         </View>
-
-    //         {/* Title */}
-    //         <View>
-    //             <Text style={styles.routineTitle}>My Routine</Text>
-    //             <View style={styles.line}></View>
-    //         </View>
-    //         <View style={styles.AMSection}>
-    //             <View style={styles.row}>
-    //                 <Text style={styles.routineTitle}>AM Routine</Text>
-    //                 <TouchableOpacity onPress={toggleAMDisplay}>
-    //                     {isAMEditMode ? (
-    //                         <Save color="white" />
-    //                     ) : (
-    //                         <SquarePen
-    //                             color="white"
-    //                             onPress={toggleAMDisplay}
-    //                         />
-    //                     )}
-    //                     {/* Conditional rendering */}
-    //                 </TouchableOpacity>
-    //             </View>
-    //             <View style={styles.productContainer}>
-    //                 <View className="flex-row gap-2 w-full">
-    //                     {isRoutineLoading ? (
-    //                         <Loader color="white" className="animate-spin" />
-    //                     ) : (
-    //                         AMRoutineProducts.map((product, index) => (
-    //                             <TouchableOpacity key={index} onPress={() => showAlert(product)}>
-    //                                 <Text style={{ padding: 10, fontSize: 16 }}>
-    //                                     {product.product}
-    //                                 </Text>
-    //                             </TouchableOpacity>
-    //                         ))
-    //                     )}
-    //                 </View>
-    //                 <View style={styles.addButtonSection}>
-    //                     {isAMEditMode && (
-    //                         <View style={styles.addIcon}>
-    //                             <CirclePlus
-    //                                 color="white"
-    //                                 onPress={displayAMSearchScreen}
-    //                             />
-    //                         </View>
-    //                     )}
-    //                 </View>
-    //             </View>
-
-    //             <View style={styles.line}></View>
-    //         </View>
-    //         <View style={styles.PMSection}>
-    //             <View style={styles.row}>
-    //                 <Text style={styles.routineTitle}>PM Routine</Text>
-    //                 <TouchableOpacity onPress={togglePMDisplay}>
-    //                     {isPMEditMode ? (
-    //                         <Save color="white" />
-    //                     ) : (
-    //                         <SquarePen
-    //                             color="white"
-    //                             onPress={togglePMDisplay}
-    //                         />
-    //                     )}
-    //                     {/* Conditional rendering */}
-    //                 </TouchableOpacity>
-    //             </View>
-    //             <View style={styles.productContainer}>
-    //                 {isRoutineLoading ? (
-    //                     <Loader color="white" className="animate-spin" />
-    //                 ) : (
-    //                     PMRoutineProducts.map((product, index) => (
-    //                         <TouchableOpacity key={index} onPress={() => showAlert(product)}>
-    //                             <Text style={{ padding: 10, fontSize: 16 }}>
-    //                                 {product.product}
-    //                             </Text>
-    //                         </TouchableOpacity>
-    //                     ))
-    //                 )}
-    //                 <View style={styles.addButtonSection}>
-    //                     {isPMEditMode && (
-    //                         <View style={styles.addIcon}>
-    //                             <CirclePlus
-    //                                 color="white"
-    //                                 onPress={displayPMSearchScreen}
-    //                             />
-    //                         </View>
-    //                     )}
-    //                 </View>
-    //             </View>
-    //         </View>
-    //         {isAlertVisible && (
-    //             <CustomAlertBox
-    //                 title="Confirm Action"
-    //                 message={`Are you sure you want to delete ${selectedProduct?.product}?`}
-    //                 onYes={handleYes}
-    //                 onNo={handleNo}
-    //             />
-    //         )}
-    //     </View>
-    // );
     return (
         <View className="flex-1 bg-[#B87C4C] pt-14 pb-20">
             <View className="flex-row items-center gap-5 mb-2 px-5">
@@ -290,24 +183,33 @@ export default function SkincareRoutine() {
                     </TouchableOpacity>
                 </View>
                 <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
-                    <View className="flex-row gap-2 w-full">
-                        {isRoutineLoading ? (
+                    {isRoutineLoading ? (
+                        <View className="flex items-center justify-center py-4">
                             <Loader color="white" className="animate-spin" />
-                        ) : (
-                            AMRoutineProducts.map((product, index) => (
-                                <TouchableOpacity key={index} onPress={() => showAlert(product)}>
-                                    <Text className="p-2 text-lg text-white">{product.product}</Text>
+                        </View>
+                    ) : (
+                        <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            className="flex flex-row"
+                            contentContainerStyle={{ gap: 8 }}
+                        >
+                            {AMRoutineProducts.map((product, index) => (
+                                <TouchableOpacity key={index} className="w-40" onPress={() => showAlert(product)}>
+                                    <RoutineProduct
+                                        imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                        name={product.product}
+                                    />
                                 </TouchableOpacity>
-                            ))
-                        )}
-                    </View>
+                            ))}
+                        </ScrollView>
+                    )}
                     {isAMEditMode && (
                         <View className="flex items-center">
                             <CirclePlus color="white" onPress={displayAMSearchScreen} />
                         </View>
                     )}
                 </View>
-
                 <View className="h-0.5 bg-white my-1"></View>
             </View>
 
@@ -324,17 +226,29 @@ export default function SkincareRoutine() {
                 </View>
                 <View className="mx-5 my-4 p-2 bg-[#996032] rounded-lg">
                     {isRoutineLoading ? (
-                        <Loader color="white" className="animate-spin" />
+                        <View className="flex items-center justify-center py-4">
+                            <Loader color="white" className="animate-spin" />
+                        </View>
                     ) : (
-                        PMRoutineProducts.map((product, index) => (
-                            <TouchableOpacity key={index} onPress={() => showAlert(product)}>
-                                <Text className="p-2 text-lg text-white">{product.product}</Text>
-                            </TouchableOpacity>
-                        ))
+                        <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            className="flex flex-row"
+                            contentContainerStyle={{ gap: 8 }}
+                        >
+                            {PMRoutineProducts.map((product, index) => (
+                                <TouchableOpacity key={index} className="w-40" onPress={() => showAlert(product)}>
+                                    <RoutineProduct
+                                        imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
+                                        name={product.product}
+                                    />
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
                     )}
-                    {isPMEditMode && (
+                    {isAMEditMode && (
                         <View className="flex items-center">
-                            <CirclePlus color="white" onPress={displayPMSearchScreen} />
+                            <CirclePlus color="white" onPress={displayAMSearchScreen} />
                         </View>
                     )}
                 </View>
