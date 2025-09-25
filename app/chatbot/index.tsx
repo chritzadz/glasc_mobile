@@ -71,7 +71,7 @@ export default function Chatbot() {
                             <View className="items-center w-[20px] flex justify-center">
                                 <ChevronLeft color="#B87C4C" onPress={() => {router.back()}}></ChevronLeft>
                             </View>
-                            <Text className="text-center items-center justify-center text-2xl"> RYAN CHABOT </Text>
+                            <Text className="text-center items-center justify-center text-2xl"> RyanFairy </Text>
                         </View>
                     </TouchableWithoutFeedback>
                     
@@ -80,13 +80,13 @@ export default function Chatbot() {
                         <ScrollView className="flex-1">
                             {messages.map((message, index) => (
                                 message.from === MessageType.BOT ? (
-                                    <LeftChatBubble
+                                    <RightChatBubble
                                         key={index}
                                         message={message.message}
                                     />
                                     
                                 ) : (
-                                    <RightChatBubble
+                                    <LeftChatBubble
                                         key={index}
                                         message={message.message}
                                     />
@@ -94,8 +94,8 @@ export default function Chatbot() {
                             ))}
                             {
                                 isFetching && (
-                                    <LeftChatBubbleLoading>
-                                    </LeftChatBubbleLoading>
+                                    <RightChatBubbleLoading>
+                                    </RightChatBubbleLoading>
                                 )
                             }
                         </ScrollView>
