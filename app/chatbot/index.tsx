@@ -4,7 +4,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    ScrollView,
+    Image,
     KeyboardAvoidingView,
     Platform,
     Keyboard,
@@ -19,6 +19,7 @@ import RightChatBubble from '../../components/RightChatBubble';
 import RightChatBubbleLoading from '../../components/RightChatBubbleLoading';
 import { MessageImpl } from '../../model/MessageImpl';
 import LeftChatBubbleLoading from '../../components/LeftChatBubbleLoading';
+import { FlatList } from 'react-native';
 
 export default function Chatbot() {
     const router = useRouter();
@@ -31,7 +32,7 @@ export default function Chatbot() {
     const onSend = async () => {
         Keyboard.dismiss;
         const userMessage: Message = new MessageImpl(prompt, MessageType.USER);
-        setMessages(prev => [...prev, userMessage]);
+        setMessages(prev => [userMessage, ...prev]);
         setPrompt("");
         setIsFetching(true);
         if (prompt.trim()) {
@@ -53,7 +54,7 @@ export default function Chatbot() {
 
                 const data = await response.json();
                 const botMessage: Message = data.analysis;
-                setMessages(prev => [...prev, botMessage])
+                setMessages(prev => [botMessage, ...prev])
                 setIsFetching(false);
                 console.log(messages);
             } catch (error) {
@@ -76,29 +77,60 @@ export default function Chatbot() {
                     </TouchableWithoutFeedback>
                     
 
-                    <View className="flex-1 px-5 bg-[#F7F4EA] pt-5">
-                        <ScrollView className="flex-1">
-                            {messages.map((message, index) => (
-                                message.from === MessageType.BOT ? (
-                                    <RightChatBubble
-                                        key={index}
-                                        message={message.message}
-                                    />
-                                    
+                    <View className="flex-1 bg-[#F7F4EA] pt-5">
+                        <FlatList
+                            className="flex flex-col"
+                            data={messages}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                item.from === MessageType.BOT ? (
+                                    <View className='flex-row gap-0 items-end justify-end'>
+                                        <View className='px-5'>
+                                            <RightChatBubble message={item.message} />
+                                        </View>
+                                        {
+                                            item === messages[0] &&
+                                            (
+                                                <View className="">
+                                                    <Image
+                                                        source={require('../../assets/ryanfairy_cropped.png')}
+                                                        className="w-24 h-24"
+                                                        resizeMode="cover"
+                                                    />
+                                                </View>
+                                            )
+                                        }
+                                        
+                                    </View>
                                 ) : (
-                                    <LeftChatBubble
-                                        key={index}
-                                        message={message.message}
-                                    />
+                                    <View className='px-5'>
+                                        <LeftChatBubble message={item.message} />
+                                    </View>
                                 )
-                            ))}
-                            {
-                                isFetching && (
-                                    <RightChatBubbleLoading>
-                                    </RightChatBubbleLoading>
+                            )}
+                            inverted={true}
+                            showsVerticalScrollIndicator={false}
+                            ListHeaderComponent={isFetching ? (
+                                <View className='flex-row gap-0 items-end justify-end'>
+                                        <View className='px-5'>
+                                            <RightChatBubbleLoading />
+                                        </View>
+                                        {
+                                            (
+                                                <View className="">
+                                                    <Image
+                                                        source={require('../../assets/ryanfairy_cropped.png')}
+                                                        className="w-24 h-24"
+                                                        resizeMode="cover"
+                                                    />
+                                                </View>
+                                            )
+                                        }
+                                        
+                                    </View>
                                 )
-                            }
-                        </ScrollView>
+                            : null}
+                        />
                     </View>
                     
                     <View className="border-[#B87C4C] border-t-2"></View>

@@ -38,6 +38,7 @@
     "react-icons": "^5.5.0",
     "react-native": "0.81.4",
     "react-native-elements": "^3.4.3",
+    "react-native-invertible-scroll-view": "^2.0.0",
     "react-native-picker-select": "^9.3.1",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "~5.6.0",

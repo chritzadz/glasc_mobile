@@ -8,7 +8,7 @@ interface RightChatBubbleProps {
 const RightChatBubble: React.FC<RightChatBubbleProps> = ({ message }) => {
     return (
         <View className="flex-row justify-end mb-3">
-        <View className="max-w-[80%] bg-[#B87C4C] p-3 rounded-2xl rounded-tr-sm shadow-sm">
+        <View className="max-w-[80%] bg-[#B87C4C] p-3 rounded-2xl rounded-br-sm shadow-sm">
             <Text className="text-white text-base leading-5">
             {message}
             </Text>

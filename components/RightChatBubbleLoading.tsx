@@ -16,8 +16,8 @@ const RightChatBubbleLoading: React.FC = () => {
     }, []);
 
     return (
-        <View className="flex-row justify-start mb-3">
-        <View className="max-w-[80%] bg-[#B87C4C] p-3 rounded-2xl rounded-tr-sm shadow-sm">
+        <View className="flex-row justify-end mb-3">
+        <View className="max-w-[100%] bg-[#B87C4C] p-3 rounded-2xl rounded-br-sm shadow-sm">
             <Text className="text-white text-base leading-5 opacity-70">
             Typing{dots}
             </Text>
