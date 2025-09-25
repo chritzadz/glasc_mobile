@@ -1,5 +1,33 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
+function cleanJsonResponse(text: string): string {
+    // Remove common prefixes that AI models add
+    text = text.replace(/^(Here's the analysis|Based on|To provide|The analysis shows?:?\s*)/i, '');
+    
+    // Remove markdown code blocks
+    text = text.replace(/```json\s*/gi, '');
+    text = text.replace(/```\s*/g, '');
+    
+    // Remove any text before the first {
+    const firstBrace = text.indexOf('{');
+    if (firstBrace !== -1) {
+        text = text.substring(firstBrace);
+    }
+    
+    // Remove any text after the last }
+    const lastBrace = text.lastIndexOf('}');
+    if (lastBrace !== -1) {
+        text = text.substring(0, lastBrace + 1);
+    }
+    
+    // Clean up common JSON issues
+    text = text.replace(/'/g, '"'); // Replace single quotes with double quotes
+    text = text.replace(/,\s*}/g, '}'); // Remove trailing commas before }
+    text = text.replace(/,\s*]/g, ']'); // Remove trailing commas before ]
+    
+    return text.trim();
+}
+
 export async function POST(request: Request) {
     const { ingredients, personalDetails } = await request.json();
     
@@ -51,12 +79,11 @@ export async function POST(request: Request) {
     const result = JSON.parse(raw);
 
     // Extract the model's JSON string
-    const jsonString = result.output.message.content[0].text
-        .replace(/^```json\s*/i, '')
-        .replace(/```$/i, '')
-        .trim();
+    const jsonString = result.output.message.content[0].text;
 
-    const analysisText = JSON.parse(jsonString);
+    const cleanedJson = cleanJsonResponse(jsonString);
+
+    const analysisText = JSON.parse(cleanedJson);
     console.log("analysis text: " + analysisText);
     
     try {
