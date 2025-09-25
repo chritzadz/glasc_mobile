@@ -159,7 +159,7 @@ const Home = () => {
             >
                 <ScrollView className="bg-[#F7F4EA] w-full flex flex-col pt-20 px-5">
                     <Text className="text-5xl font-bold text-[#B87C4C]" >Help us better understand your skin!</Text>
-                    <View className="flex flex-col gap-8 my-10"> {/*form container*/}
+                    <View className="flex flex-col gap-8 my-10">
                         <View>
                             <Text className="text-xl text-[#B87C4C]">*Birth Date</Text>
                             <DateTimePicker
@@ -233,7 +233,7 @@ const Home = () => {
                             <Text className="text-xl text-[#B87C4C]">Average Sleep Duration</Text>
                             <View >
                                 <Picker
-                                    selectedValue={sleepDuration} 
+                                    selectedValue={sleepDuration}
                                     onValueChange={(itemValue) => setSleepDuration(itemValue)}>
                                     <Picker.Item label="Select Sleep Duration" value="" />
                                     <Picker.Item label="Less than 4 hours" value="less_than_4" />

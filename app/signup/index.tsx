@@ -10,7 +10,6 @@ import {
     ActivityIndicator,
 } from "react-native";
 import { z } from "zod";
-import { useAuth } from "../../contexts/AuthContext";
 import { User } from "../../model/User";
 import CurrentUser from "../../model/CurrentUser";
 
@@ -30,7 +29,6 @@ const signupSchema = z.object({
 
 const Signup = () => {
     const router = useRouter();
-    const { login } = useAuth();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -77,7 +75,6 @@ const Signup = () => {
             try {
                 const currentUser = await getCurrentUser();
                 if (currentUser) {
-                    await login(currentUser);
                     CurrentUser.getInstance().setId(currentUser.id);
                     Alert.alert("Success", "User successfully signed up");
                     router.push("/personal_form");
@@ -201,7 +198,7 @@ const Signup = () => {
                     )}
                 </View>
                 <Text className="mt-10 text-white text-center">
-                    Already have an account?{" "}
+                    Already have an account? 
                     <Text
                         onPress={() => router.push("/login")}
                         className="text-white underline font-bold"

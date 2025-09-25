@@ -19,7 +19,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     const inAuthGroup =
       segments[0] === "(auth)" ||
       segments[0] === "login" ||
-      segments[0] === "signup";
+      segments[0] === "signup" ||
+      segments[0] === "personal_form"
+      ;
 
     if (!isAuthenticated && !inAuthGroup) {
       router.replace("/login");
