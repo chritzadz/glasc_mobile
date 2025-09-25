@@ -52,8 +52,8 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     }, []);
 
     return (
-        <View className="px-5">
-            <SafeAreaView className="flex flex-col gap-5 w-full items-center bg-[#F7F4EA] pd-10 px-5">
+        <View className="px-5 h-screen w-full bg-[#F7F4EA]">
+            <SafeAreaView className="flex flex-col gap-5 w-full h-screen items-center pd-10 px-5">
                 <View className="w-full flex flex-row gap-2">
                     {/* <View className="items-center w-[20px] flex justify-center">
                         <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
@@ -70,7 +70,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                 </View>
                 {
                     isFetchingFromDb ? (
-                        <View className="bg-[#F7F4EA] flex-1 mt-10 justify-center items-center">
+                        <View className="bg-[#F7F4EA] flex-1 mt-10">
                             <ActivityIndicator size="large" color="#B87C4C" />
                         </View>
                     ) : (
