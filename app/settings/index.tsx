@@ -65,6 +65,18 @@ export default function Settings({ onClose }: { onClose?: () => void }) {
 
                     <View className="mb-4">
                         <Pressable
+                            className="flex-row items-center rounded-2xl bg-white p-4"
+                            onPress={() => router.push("/chatbot")}
+                        >
+                            <ListChecks size={28} color="#B87C4C" />
+                            <Text className="ml-4 text-lg font-semibold text-[#B87C4C]">
+                                Skinbot
+                            </Text>
+                        </Pressable>
+                    </View>
+
+                    <View className="mb-4">
+                        <Pressable
                             className="flex-row items-center rounded-2xl bg-[#B87C4C] p-4 justify-start"
                             onPress={handleLogout}
                         >
