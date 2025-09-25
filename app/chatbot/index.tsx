@@ -16,7 +16,9 @@ import { TouchableWithoutFeedback } from 'react-native';
 import LeftChatBubble from '../../components/LeftChatBubble';
 import { Message, MessageType } from '../../model/Message';
 import RightChatBubble from '../../components/RightChatBubble';
+import RightChatBubbleLoading from '../../components/RightChatBubbleLoading';
 import { MessageImpl } from '../../model/MessageImpl';
+import LeftChatBubbleLoading from '../../components/LeftChatBubbleLoading';
 
 export default function Chatbot() {
     const router = useRouter();
@@ -24,10 +26,40 @@ export default function Chatbot() {
     const [messages, setMessages] = useState<Message[]>([
         new MessageImpl("Hello! How can I assist you today?", MessageType.BOT)
     ]);
+    const [isFetching, setIsFetching] = useState(false);
 
-    const onSend = () => {
+    const onSend = async () => {
+        Keyboard.dismiss;
+        const userMessage: Message = new MessageImpl(prompt, MessageType.USER);
+        setMessages(prev => [...prev, userMessage]);
+        setPrompt("");
+        setIsFetching(true);
         if (prompt.trim()) {
-            
+            try {
+                const response = await fetch('/api/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: prompt,
+                        previousMessage: messages[messages.length - 2] || ""
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get response from chatbot');
+                }
+
+                const data = await response.json();
+                const botMessage: Message = data.analysis;
+                setMessages(prev => [...prev, botMessage])
+                setIsFetching(false);
+                console.log(messages);
+            } catch (error) {
+                console.error('Error calling chatbot API:', error);
+                throw error;
+            }
         }
     }
 
@@ -52,6 +84,7 @@ export default function Chatbot() {
                                         key={index}
                                         message={message.message}
                                     />
+                                    
                                 ) : (
                                     <RightChatBubble
                                         key={index}
@@ -59,6 +92,12 @@ export default function Chatbot() {
                                     />
                                 )
                             ))}
+                            {
+                                isFetching && (
+                                    <LeftChatBubbleLoading>
+                                    </LeftChatBubbleLoading>
+                                )
+                            }
                         </ScrollView>
                     </View>
                     
@@ -73,7 +112,7 @@ export default function Chatbot() {
                                 multiline
                             />
                             <TouchableOpacity
-                                onPress={() => {}}
+                                onPress={onSend}
                                 className="bg-[#B87C4C] p-2 rounded-lg"
                                 disabled={!prompt.trim()}
                             >
