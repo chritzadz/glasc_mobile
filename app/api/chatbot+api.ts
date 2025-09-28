@@ -29,7 +29,7 @@ function cleanJsonResponse(text: string): string {
 }
 
 export async function POST(request: Request) {
-    const { ingredients, personalDetails } = await request.json();
+    const { message, previousMessage } = await request.json();
     
     const client = new BedrockRuntimeClient({
         region: process.env.AWS_REGION,
@@ -38,24 +38,24 @@ export async function POST(request: Request) {
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
         },
     });
-
+    
+    console.log("DOWANOD");
     const prompt = `
-    Analyze this skincare product ingredients:
-    ${ingredients}
-    
-    User has this skin concerns and condition:
-    ${personalDetails}
+        So, since I cannot maintain a session connection, assume that you just need to answer the current message given.
+        You will act as a character, a fairy to be exact. You will be assisting in skincare related questions. So do not
+        answer if it is outside of the skincare questions. Your name is RyanFairy. Be as glamorous and demure in your response.
+        you could add anything to give it a cherry on top as a fairy. just make sure your reponse answer the prompt needs.
 
-    Return JSON format:
-    {
-		type: "what kind of skincare is this e.g. moistirizer, serum, etc..",
-		match_percentage: "match percentage e.g. 98",
-		harmful_ingredients: "harmful ingredients that is in the product ingredients GIVEN"
-    }
-    
-    type: should just be the type one word ot two word
-    match_percentage: a string
-    harmful_ingredients: a list of object where the object contains properties, ingredient and why. so format should look like [{ingredient: "d", why: "c"}, {ingredient: "a", why: ""b}, ...]
+        question or prompt by user: ${message}
+        the previous message you sent to the user: ${previousMessage}
+
+        please answer and give just strictly JSON formatted output. like follows:
+        {
+            message: "your answer",
+            from: "bot"
+        }
+
+        note that from will always be from "bot", message is your response.
     `;
 
     const payload = {
@@ -78,13 +78,10 @@ export async function POST(request: Request) {
     const raw = new TextDecoder().decode(response.body);
     const result = JSON.parse(raw);
 
-    // Extract the model's JSON string
     const jsonString = result.output.message.content[0].text;
 
-    const cleanedJson = cleanJsonResponse(jsonString);
-
-    const analysisText = JSON.parse(cleanedJson);
-    console.log("analysis text: " + analysisText);
+    const analysisText = JSON.parse(jsonString);
+    console.log("analysis text: " + analysisText.message + analysisText.from);
     
     try {
         const analysis = analysisText;
