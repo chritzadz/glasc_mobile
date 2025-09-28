@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 
 import { Product } from '../../model/Product';
+import CurrentProduct from "../../model/CurrentProduct";
 
 const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     const router = useRouter();
@@ -34,10 +35,8 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     };
 
     const handleProductPress = (product_name: string) => {
-        router.push({
-            pathname: 'product_details',
-            params: { product_name }, // Pass the product name as a parameter
-        });
+        CurrentProduct.getInstance().setProductName(product_name);
+        router.push("product_details");
     }
 
     useEffect(() => {

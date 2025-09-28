@@ -1,4 +1,4 @@
-import { useRouter, useRoute } from "expo-router";
+import { useRouter } from "expo-router";
 import { ActivityIndicator, Text, View, StyleSheet } from 'react-native';
 import { SearchIcon, ArrowLeft, Flag } from 'lucide-react-native';
 import { TextInput, Alert, ScrollView, TouchableOpacity, Image } from 'react-native';
@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Product } from '../../model/Product';
 import  IngredientItem from '../../components/SingleIngredientBox';
+import CurrentProduct from "../../model/CurrentProduct";
 
 const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     const items = [
@@ -26,8 +27,8 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     ];
 
     const router = useRouter();
-    const { productName } = router.params; 
-    const [searchTerm, setSearchTerm] = useState("");
+    const [productName, setProductName] = useState<string | null>(null);
+    const maxLength = 30;
 
     const handleBack = () => {
         router.back();
@@ -49,6 +50,12 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         return temp;
     };
 
+    useEffect(() => {
+        const productInstance = CurrentProduct.getInstance(); // Type is CurrentProduct
+        const product_name = productInstance.getProductName();
+        console.log(product_name);
+        setProductName(product_name);
+    })
     return (
         <View className="flex-1 bg-[#B87C4C] shadow-md">
             <SafeAreaView>
@@ -59,7 +66,13 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                                 <ArrowLeft color="#B87C4C" />
                             </TouchableOpacity>
                         </View>
-                        <Text className="font-semibold text-white text-base ml-4">LABORE Acne & Oil Correct Phy..</Text>
+                        <View className="w-56">
+                            <Text className="font-semibold text-white text-base ml-4 overflow-hidden" 
+                                numberOfLines={1} 
+                                ellipsizeMode="tail">
+                                {productName || 'Loading...'}
+                            </Text>
+                        </View>
                         <Flag color="white" size={16}></Flag>
                     </View>
                     <View className="flex flex-row items-center px-5 mb-2">
