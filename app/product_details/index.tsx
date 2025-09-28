@@ -27,7 +27,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     ];
 
     const router = useRouter();
-    const [ingredients, setIngredients] = useState([]);
+    const [ingredients, setIngredients] = useState<string[]>([]);
     const [productName, setProductName] = useState<string | null>(null);
     const [productId, setProductId] = useState<string | null>(null);
     const maxLength = 30;
@@ -36,20 +36,53 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         router.back();
     };
 
-    const fetchIngredients = async () => {
-        console.log("FETCH INGREDIENTS:\n");
-        const response = await fetch(`/api/ingredient?product_id=${productId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+    // const fetchIngredients = async () => {
+    //     console.log("FETCH INGREDIENTS:\n");
+    //     const response = await fetch(`/api/ingredient?product_id=${productId}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         }
+    //     });
         
-        const data = await response.json();
-        console.log(data);
-        const temp: string[] = data;
-        console.log(temp);
-        return temp;
+    //     console.log("in");
+    //     const data = await response.json();
+    //     console.log("Fetched data:", data);
+    //     console.log(data);
+    //     const temp: string[] = data.split(',');
+    //     return temp;
+    // };
+    const fetchIngredients = async () => {
+        if (!productId) {
+            console.log("No product ID available");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            console.log("succesful");
+    
+            const data = await response.text();  // Use .text() since the API returns a plain string
+            console.log("Fetched data:", data);  // Log the raw string
+    
+            // Split the string into an array
+            //const ingredientsArray = data.split(',').map(item => item.trim());  // Trim whitespace from each item
+            //setIngredients(ingredientsArray);  // Set the state with the array of ingredients
+            const ingredientsArray = JSON.parse(data);  // Convert string to array
+            setIngredients(ingredientsArray); 
+        } catch (error) {
+            console.error("Error fetching ingredients:", error);
+        }
     };
 
     useEffect(() => {
@@ -60,8 +93,11 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         console.log(product_id);
         setProductName(product_name);
         setProductId(product_id);
-        fetchIngredients();
-    })
+        if (product_id) {
+            fetchIngredients();  // Call fetchIngredients only if productId is available
+        }
+    }, [productId]);
+
     return (
         <View className="flex-1 bg-[#B87C4C] shadow-md">
             <SafeAreaView>
