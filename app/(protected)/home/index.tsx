@@ -9,7 +9,7 @@ import {
     SearchIcon,
     FlaskConical,
     UsersRound,
-    Bot,
+    Sparkles,
 } from "lucide-react-native";
 import { Navbar } from "./tabs/components/Navbar";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +17,6 @@ import { TouchableOpacity } from "react-native";
 import { Dropdown } from "../../../components/Dropdown";
 import { Settings } from "./settings-dropdown";
 import { useRouter } from "expo-router";
-import { usePathname } from "expo-router";
 
 export enum Tabs {
     Scan = "scan",
@@ -52,10 +51,11 @@ export const NavItems: {
     },
 };
 
-export default function App() {
+export default function Page() {
     const [permission, requestPermission] = useCameraPermissions();
     const [settingOpen, setSettingOpen] = useState(false);
     const [tabs, setTabs] = useState<Tabs>(Tabs.Scan);
+    const router = useRouter();
 
     if (!permission) {
         return <View />;
@@ -84,13 +84,13 @@ export default function App() {
                     zIndex: 10,
                     boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
                 }}
-                className="flex flex-row gap-4 absolute bg-[#F7F4EA] rounded-full p-4 self-center top-20 shadow z-10"
+                className="flex flex-row gap-4 absolute bg-[#F7F4EA] rounded-full p-4 self-center top-16 shadow z-10"
             >
                 <TouchableOpacity onPress={() => setSettingOpen(!settingOpen)}>
                     <UsersRound size={24} color="#B87C4C" />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Bot size={24} color="#B87C4C" />
+                <TouchableOpacity onPress={() => router.push("/chatbot")}>
+                    <Sparkles size={24} color="#B87C4C" />
                 </TouchableOpacity>
             </View>
 

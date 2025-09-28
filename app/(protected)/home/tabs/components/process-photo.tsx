@@ -147,9 +147,14 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
     }, []);
 
     return (
-        <SafeAreaView className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
-            <View className="bg-[#F7F4EA] w-full justify-center px-5 flex-1 relative">
-                <View className="rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4">
+        <>
+            <View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
+                <View
+                    className="shadow rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-2 mx-1"
+                    style={{
+                        boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                    }}
+                >
                     {uri ? (
                         <Image source={{ uri }} style={styles.flex} />
                     ) : (
@@ -164,13 +169,14 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
             <TouchableOpacity
                 onPress={onBack}
-                className="absolute self-center bottom-24 bg-[#B87C4C] rounded-full px-6 py-3 border-4 border-[#F7F4EA]"
+                style={{
+                    boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                }}
+                className="absolute self-center bottom-28 bg-secondary rounded-full px-6 py-3 shadow"
             >
                 <View className="flex flex-row items-center gap-2">
-                    <ArrowLeft size={24} color="#F7F4EA" />
-                    <Text className="text-[#F7F4EA] font-bold text-lg">
-                        Back
-                    </Text>
+                    <ArrowLeft size={24} color="#B87C4C" />
+                    <Text className="text-primary font-bold text-lg">Back</Text>
                 </View>
             </TouchableOpacity>
 
@@ -195,7 +201,7 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
                     </View>
                 </TouchableOpacity>
             )}
-        </SafeAreaView>
+        </>
     );
 }
 

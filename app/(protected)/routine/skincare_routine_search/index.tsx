@@ -13,7 +13,7 @@ import { Product } from "../../../../model/Product";
 import CurrentUser from "../../../../model/CurrentUser";
 import CustomAlertBox from "../../../../components/CustomAlertBox";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProductItemBox from "../../../../components/ProductItemBox";
+import { ProductItemBox } from "../../../../components/ProductItemBox";
 
 interface SkincareRoutineSearchProp {
     type: string; //AM or PM only

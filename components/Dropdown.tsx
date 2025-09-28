@@ -136,7 +136,7 @@ export const Dropdown = ({
                     </TouchableOpacity>
 
                     <Animated.View
-                        className="bg-primary border-b-4                                                                             3 border-secondary rounded-b-2xl"
+                        className="bg-primary  border-b-4  border-secondary rounded-b-2xl"
                         style={[
                             dropdownStyle,
                             {

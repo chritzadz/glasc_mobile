@@ -16,7 +16,7 @@ import Animated, {
 
 import { Product } from "../../../../model/Product";
 
-export const Search = ({ onClose }: { onClose?: () => void }) => {
+export const Search = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -26,7 +26,6 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
     const searchInputRef = useRef<TextInput>(null);
 
     const searchBarPosition = useSharedValue(0);
-    const searchBarOpacity = useSharedValue(1);
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
@@ -135,7 +134,7 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
             filterProduct();
             setIsSearchFocused(false);
             searchInputRef.current?.blur();
-            Keyboard.dismiss(); // Force keyboard to close
+            Keyboard.dismiss();
         }
     };
 
@@ -144,9 +143,8 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
         updateRecentSearches(search);
         setIsSearchFocused(false);
         searchInputRef.current?.blur();
-        Keyboard.dismiss(); // Force keyboard to close
+        Keyboard.dismiss();
 
-        // Filter products with the selected search term
         const newFilteredProducts = products.filter((product) =>
             product.product_name.toLowerCase().includes(search.toLowerCase())
         );
@@ -157,7 +155,7 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
         setSearchTerm("");
         setIsSearchFocused(false);
         searchInputRef.current?.blur();
-        Keyboard.dismiss(); // Force keyboard to close
+        Keyboard.dismiss();
     };
 
     const animatedSearchBarStyle = useAnimatedStyle(() => {
@@ -165,8 +163,6 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
             transform: [{ translateY: searchBarPosition.value }],
         };
     });
-
-    // Recent searches should show all stored searches, not filtered by current input
 
     return (
         <View className="relative flex flex-col w-full h-screen items-center px-5">
@@ -273,7 +269,7 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
                             <ActivityIndicator size="large" color="#B87C4C" />
                         </View>
                     ) : (
-                        <View className="max-h-screen w-full relative">
+                        <View className="max-h-[85vh] mb-32 w-full relative">
                             <LinearGradient
                                 colors={["transparent", "#F7F4EA"]}
                                 style={{
@@ -281,7 +277,7 @@ export const Search = ({ onClose }: { onClose?: () => void }) => {
                                     bottom: 0,
                                     left: 0,
                                     right: 0,
-                                    height: 320,
+                                    height: 80,
                                     zIndex: 10,
                                     width: "100%",
                                 }}

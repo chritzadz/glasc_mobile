@@ -3,8 +3,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AlertTriangle, ChevronLeft, Lightbulb } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { ProductItemBox } from "../../../../components/ProductItemBox";
-import { Product } from "../../../../model/Product";
+import { ProductItemBox } from "../../../components/ProductItemBox";
+import { Product } from "../../../model/Product";
 
 interface HarmfulIngredient {
     ingredient: string;

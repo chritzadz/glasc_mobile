@@ -65,7 +65,12 @@ export function Scan() {
                 />
             ) : (
                 <View className="bg-[#F7F4EA] w-full justify-center flex-1 relative">
-                    <View className="shadow rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-4 mx-2">
+                    <View
+                        className="shadow rounded-3xl overflow-hidden flex-1 border-[#B87C4C] border-2 mx-1"
+                        style={{
+                            boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                        }}
+                    >
                         {showCamera && (
                             <CameraView
                                 ref={cameraRef}

@@ -91,6 +91,7 @@ export const Navbar = ({
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => handleSwitchTab(item as Tabs)}
+                                activeOpacity={1}
                                 className="relative z-20 flex min-h-10 flex-row items-center justify-center gap-1 rounded-full py-1 px-2 w-[100px]"
                             >
                                 {React.createElement(
