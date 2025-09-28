@@ -10,8 +10,8 @@ import {
     ActivityIndicator,
 } from "react-native";
 import { z } from "zod";
-import { User } from "../../model/User";
-import CurrentUser from "../../model/CurrentUser";
+import { User } from "../../../model/User";
+import CurrentUser from "../../../model/CurrentUser";
 
 const signupSchema = z.object({
     username: z
@@ -146,66 +146,121 @@ const Signup = () => {
     };
 
     return (
-        <SafeAreaView className="bg-[#B87C4C] flex-1 items-center justify-center">
-            <View className="flex justify-center items-center">
-                <Text className="text-4xl text-white">Create your account</Text>
-            </View>
-
-            <View className="w-full items-center px-7 mt-10">
-                <Text className="self-start text-white font-bold mb-2">
-                    Name
-                </Text>
-                <TextInput
-                    className="w-full h-12 px-3 my-1 text-lg border border-[#bf7641] rounded-lg mb-5 bg-white"
-                    placeholder="Enter your name"
-                    placeholderTextColor={"#6A7E97"}
-                    value={username}
-                    onChangeText={setUsername}
-                />
-                <Text className="self-start text-white font-bold mb-2">
-                    Email Address
-                </Text>
-                <TextInput
-                    className="w-full h-12 px-3 my-1 text-lg border border-[#bf7641] rounded-lg mb-5 bg-white"
-                    placeholder="Enter Email"
-                    placeholderTextColor={"#6A7E97"}
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <Text className="self-start text-white font-bold mb-2">
-                    Password
-                </Text>
-                <TextInput
-                    className="w-full h-12 px-3 my-1 text-lg border border-[#bf7641] rounded-lg mb-5 bg-white"
-                    placeholder="Enter Password"
-                    placeholderTextColor={"#6A7E97"}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={true}
-                />
-                <View className="w-full">
-                    {isSubmitting ? (
-                        <ActivityIndicator size="small" color="#fffff" />
-                    ) : (
-                        <Pressable
-                            onPress={handleSignUpButton}
-                            className="mt-10 py-3 px-5 rounded-lg items-center bg-white"
-                        >
-                            <Text className="font-bold text-lg text-[#bf7641]">
-                                Sign Up
-                            </Text>
-                        </Pressable>
-                    )}
-                </View>
-                <Text className="mt-10 text-white text-center">
-                    Already have an account? 
-                    <Text
-                        onPress={() => router.push("/login")}
-                        className="text-white underline font-bold"
-                    >
-                        Log In
+        <SafeAreaView className="bg-secondary flex-1 items-center justify-center px-6">
+            <View className="w-full max-w-sm">
+                {/* Header */}
+                <View className="items-center mb-12">
+                    <Text className="text-4xl font-bold text-primary mb-2">
+                        Join Glasc
                     </Text>
-                </Text>
+                    <Text className="text-lg text-primary/70 text-center">
+                        Start your personalized skincare journey
+                    </Text>
+                </View>
+
+                {/* Form Container */}
+                <View
+                    className="bg-primary rounded-3xl p-6 shadow-lg"
+                    style={{
+                        boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                    }}
+                >
+                    {/* Name Field */}
+                    <View className="mb-4">
+                        <Text className="text-secondary font-semibold mb-2 text-base">
+                            Full Name
+                        </Text>
+                        <TextInput
+                            className="w-full h-12 px-4 text-lg rounded-2xl bg-secondary text-primary"
+                            style={{
+                                boxShadow:
+                                    "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                            }}
+                            placeholder="Enter your full name"
+                            placeholderTextColor={"#B87C4C80"}
+                            value={username}
+                            onChangeText={setUsername}
+                            autoCapitalize="words"
+                        />
+                    </View>
+
+                    {/* Email Field */}
+                    <View className="mb-4">
+                        <Text className="text-secondary font-semibold mb-2 text-base">
+                            Email Address
+                        </Text>
+                        <TextInput
+                            className="w-full h-12 px-4 text-lg rounded-2xl bg-secondary text-primary"
+                            style={{
+                                boxShadow:
+                                    "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                            }}
+                            placeholder="Enter your email"
+                            placeholderTextColor={"#B87C4C80"}
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                    </View>
+
+                    {/* Password Field */}
+                    <View className="mb-6">
+                        <Text className="text-secondary font-semibold mb-2 text-base">
+                            Password
+                        </Text>
+                        <TextInput
+                            className="w-full h-12 px-4 text-lg rounded-2xl bg-secondary text-primary"
+                            style={{
+                                boxShadow:
+                                    "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                            }}
+                            placeholder="Create a secure password"
+                            placeholderTextColor={"#B87C4C80"}
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={true}
+                        />
+                    </View>
+
+                    {/* Submit Button */}
+                    <View className="w-full">
+                        {isSubmitting ? (
+                            <View className="py-4 items-center">
+                                <ActivityIndicator
+                                    size="small"
+                                    color="#F7F4EA"
+                                />
+                            </View>
+                        ) : (
+                            <Pressable
+                                onPress={handleSignUpButton}
+                                className="py-4 rounded-2xl items-center bg-secondary"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
+                                <Text className="font-bold text-lg text-primary">
+                                    Create Account
+                                </Text>
+                            </Pressable>
+                        )}
+                    </View>
+                </View>
+
+                {/* Login Link */}
+                <View className="items-center mt-8">
+                    <Text className="text-primary/70 text-center text-base">
+                        Already have an account?{" "}
+                        <Text
+                            onPress={() => router.push("/login")}
+                            className="text-primary font-bold underline"
+                        >
+                            Sign In
+                        </Text>
+                    </Text>
+                </View>
             </View>
         </SafeAreaView>
     );

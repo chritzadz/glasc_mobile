@@ -5,11 +5,11 @@ import { UsersRound, Camera } from "lucide-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ProcessPhoto from "./scan/process_photo";
-import { Dropdown } from "../../components/Dropdown";
-import { Settings } from "./scan/settings-dropdown";
+import { ProcessPhoto } from "./components/process-photo";
+import { Dropdown } from "../../../../components/Dropdown";
+import { Settings } from "../settings-dropdown";
 
-export default function App() {
+export function Scan() {
     const [facing, setFacing] = useState<CameraType>("back");
     const [permission, requestPermission] = useCameraPermissions();
     const [showCamera, setShowCamera] = useState(true);
@@ -74,36 +74,16 @@ export default function App() {
                             />
                         )}
                     </View>
-
-                    <TouchableOpacity
-                        onPress={() => setSettingOpen(!settingOpen)}
-                        className="absolute bg-[#F7F4EA] rounded-full p-3 self-center top-8 shadow z-10"
-                        style={{
-                            zIndex: 10,
-                            boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
-                        }}
-                    >
-                        <UsersRound size={24} color="#B87C4C" />
-                    </TouchableOpacity>
-
-                    <Dropdown
-                        open={settingOpen}
-                        setOpen={setSettingOpen}
-                        trigger={<></>}
-                        heading="Settings"
-                    >
-                        <Settings />
-                    </Dropdown>
                 </View>
             )}
 
             {!capturedPhoto && (
                 <TouchableOpacity
                     onPress={handleTakePhoto}
-                    className="absolute z-[0] w-16 flex justify-center items-center self-center bottom-24 bg-[#F7F4EA] rounded-full p-3 "
+                    className="absolute z-[0] w-24 flex justify-center items-center self-center bottom-28 bg-[#F7F4EA] rounded-full p-3 "
                     style={{ boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)" }}
                 >
-                    <Camera size={24} color="#B87C4C" />
+                    <Camera size={32} color="#B87C4C" />
                 </TouchableOpacity>
             )}
         </>

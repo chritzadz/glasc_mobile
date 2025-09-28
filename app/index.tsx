@@ -5,30 +5,30 @@ import { useAuth } from "../contexts/AuthContext";
 import CurrentUser from "../model/CurrentUser";
 
 export default function Root() {
-  const router = useRouter();
-  const { isAuthenticated, isLoading, user } = useAuth();
+    const router = useRouter();
+    const { isAuthenticated, isLoading, user } = useAuth();
 
-  useEffect(() => {
-    if (isLoading) return;
+    useEffect(() => {
+        if (isLoading) return;
 
-    const timeout = setTimeout(() => {
-      if (isAuthenticated) {
-        if (user != null){
-            console.log("set user id tp: " + user.id);
-            CurrentUser.getInstance().setId(user.id);
-          }
-        router.replace("/scan");
-      } else {
-        router.replace("/login");
-      }
-    }, 100);
+        const timeout = setTimeout(() => {
+            if (isAuthenticated) {
+                if (user != null) {
+                    console.log("set user id tp: " + user.id);
+                    CurrentUser.getInstance().setId(user.id);
+                }
+                router.replace("/home");
+            } else {
+                router.replace("/login");
+            }
+        }, 100);
 
-    return () => clearTimeout(timeout);
-  }, [isAuthenticated, isLoading]);
+        return () => clearTimeout(timeout);
+    }, [isAuthenticated, isLoading]);
 
-  return (
-    <View className="flex-1 justify-center items-center bg-[#B87C4C]">
-      <ActivityIndicator size="large" color="#ffffff" />
-    </View>
-  );
+    return (
+        <View className="flex-1 justify-center items-center bg-[#B87C4C]">
+            <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+    );
 }

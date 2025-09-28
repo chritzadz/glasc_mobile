@@ -1,14 +1,26 @@
-import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { TouchableWithoutFeedback, Keyboard, StyleSheet, Text, View, Pressable, TextInput, Alert, ActivityIndicator } from 'react-native';
-import { CheckBox } from 'react-native-elements';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { ScrollView } from 'react-native';
+import { useRouter } from "expo-router";
+import React, { useState, useEffect } from "react";
+import {
+    TouchableWithoutFeedback,
+    Keyboard,
+    StyleSheet,
+    Text,
+    View,
+    Pressable,
+    TextInput,
+    Alert,
+    ActivityIndicator,
+} from "react-native";
+import { CheckBox } from "react-native-elements";
+import { Picker } from "@react-native-picker/picker";
+import DateTimePicker, {
+    DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { ScrollView } from "react-native";
 
-import CurrentUser from '../../model/CurrentUser';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronLeft } from 'lucide-react-native';
+import CurrentUser from "../../../model/CurrentUser";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ChevronLeft } from "lucide-react-native";
 
 type SkinConcerns = {
     acne: boolean;
@@ -19,15 +31,15 @@ type SkinConcerns = {
 };
 
 type SkinGoals = {
-    clear_skin: boolean,
-    even_skin_tone: boolean,
-    hydration: boolean,
-    anti_aging: boolean,
-    firmness: boolean,
-    radiance: boolean,
-    minimized_pores: boolean,
-    sun_protection: boolean,
-    soothing_sensitivity: boolean,
+    clear_skin: boolean;
+    even_skin_tone: boolean;
+    hydration: boolean;
+    anti_aging: boolean;
+    firmness: boolean;
+    radiance: boolean;
+    minimized_pores: boolean;
+    sun_protection: boolean;
+    soothing_sensitivity: boolean;
 };
 
 const EditPersonalForm = () => {
@@ -69,17 +81,25 @@ const EditPersonalForm = () => {
     const fetchPersonalDetails = async () => {
         try {
             const userId = CurrentUser.getInstance().getId();
-            const response = await fetch(`/api/personalDetails?user_id=${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await fetch(
+                `/api/personalDetails?user_id=${userId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 }
-            });
+            );
             console.log(response);
             const data = await response.json();
             console.log(data);
-            
-            if (response.ok && data.task && data.task.rows && data.task.rows[0]) {
+
+            if (
+                response.ok &&
+                data.task &&
+                data.task.rows &&
+                data.task.rows[0]
+            ) {
                 const personalData = data.task.rows[0];
                 setBirthDate(new Date(personalData.birth_date));
                 setGender(personalData.gender || "");
@@ -105,7 +125,8 @@ const EditPersonalForm = () => {
                     radiance: personalData.radiance ?? false,
                     minimized_pores: personalData.minimized_pores ?? false,
                     sun_protection: personalData.sun_protection ?? false,
-                    soothing_sensitivity: personalData.soothing_sensitivity ?? false,
+                    soothing_sensitivity:
+                        personalData.soothing_sensitivity ?? false,
                 });
             }
         } catch (error) {
@@ -117,7 +138,7 @@ const EditPersonalForm = () => {
     };
 
     const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-        if (event.type === 'set') {
+        if (event.type === "set") {
             const currentDate = selectedDate || birthDate;
             setBirthDate(currentDate);
         }
@@ -143,7 +164,7 @@ const EditPersonalForm = () => {
 
         setLoading(true);
         const success = await updatePersonalInfo();
-        
+
         if (success) {
             Alert.alert("Success", "Your skin information has been updated.");
             router.back();
@@ -159,14 +180,14 @@ const EditPersonalForm = () => {
 
     const updatePersonalInfo = async () => {
         try {
-            const response = await fetch('/api/personalDetails', {
-                method: 'POST',
+            const response = await fetch("/api/personalDetails", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     user_id: CurrentUser.getInstance().getId(),
-                    birth_date: birthDate.toISOString().split('T')[0],
+                    birth_date: birthDate.toISOString().split("T")[0],
                     gender: gender,
                     skin_type: skinType,
                     skin_concerns: skinConcerns,
@@ -176,7 +197,7 @@ const EditPersonalForm = () => {
                     climate: climate,
                     sun_exposure: sunExposure,
                     skin_goals: skinGoals,
-                })
+                }),
             });
             return response.ok;
         } catch (error) {
@@ -188,34 +209,46 @@ const EditPersonalForm = () => {
         return (
             <View className="bg-[#F7F4EA] flex-1 justify-center items-center">
                 <ActivityIndicator size="large" color="#B87C4C" />
-                <Text className="text-[#B87C4C] mt-4">Loading your information...</Text>
+                <Text className="text-[#B87C4C] mt-4">
+                    Loading your information...
+                </Text>
             </View>
         );
     }
 
     const onClose = () => {
         router.back();
-    }
+    };
 
     return (
-        <View className='bg-[#F7F4EA]'>
+        <View className="bg-[#F7F4EA]">
             <SafeAreaView>
-                <TouchableWithoutFeedback onPress={() => { setShow(false); Keyboard.dismiss(); }}>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        setShow(false);
+                        Keyboard.dismiss();
+                    }}
+                >
                     <ScrollView className="w-full flex flex-col px-5">
                         <View className="flex1 flex-row mt-5">
                             <View className="items-center w-[20px] flex justify-center">
-                                <ChevronLeft color="#B87C4C" onPress={onClose}></ChevronLeft>
+                                <ChevronLeft
+                                    color="#B87C4C"
+                                    onPress={onClose}
+                                ></ChevronLeft>
                             </View>
                             <View className="flex-1 items-center justify-center">
-                                <Text className="text-2xl flex-1 font-bold text-[#B87C4C]">Update your skin information</Text>
+                                <Text className="text-2xl flex-1 font-bold text-[#B87C4C]">
+                                    Update your skin information
+                                </Text>
                             </View>
-                            
                         </View>
-                        
-                        
+
                         <View className="flex flex-col gap-8 my-10">
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">*Birth Date</Text>
+                                <Text className="text-xl text-[#B87C4C]">
+                                    *Birth Date
+                                </Text>
                                 <DateTimePicker
                                     value={birthDate}
                                     mode="date"
@@ -223,111 +256,416 @@ const EditPersonalForm = () => {
                                     onChange={onChange}
                                 />
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">*Gender</Text>
-                                <Picker selectedValue={gender} onValueChange={(itemValue) => setGender(itemValue)}>
-                                    <Picker.Item label="Select Gender" value="" />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    *Gender
+                                </Text>
+                                <Picker
+                                    selectedValue={gender}
+                                    onValueChange={(itemValue) =>
+                                        setGender(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Select Gender"
+                                        value=""
+                                    />
                                     <Picker.Item label="Male" value="male" />
-                                    <Picker.Item label="Female" value="female" />
+                                    <Picker.Item
+                                        label="Female"
+                                        value="female"
+                                    />
                                 </Picker>
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">*Skin Type</Text>
-                                <Picker selectedValue={skinType} onValueChange={(itemValue) => setSkinType(itemValue)}>
-                                    <Picker.Item label="Select Skin Type" value="" />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    *Skin Type
+                                </Text>
+                                <Picker
+                                    selectedValue={skinType}
+                                    onValueChange={(itemValue) =>
+                                        setSkinType(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Select Skin Type"
+                                        value=""
+                                    />
                                     <Picker.Item label="Oily" value="oily" />
                                     <Picker.Item label="Dry" value="dry" />
-                                    <Picker.Item label="Combination" value="combination" />
-                                    <Picker.Item label="Sensitive" value="sensitive" />
+                                    <Picker.Item
+                                        label="Combination"
+                                        value="combination"
+                                    />
+                                    <Picker.Item
+                                        label="Sensitive"
+                                        value="sensitive"
+                                    />
                                 </Picker>
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">Specific Skin Concerns</Text>
-                                <CheckBox containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} checkedColor="#B87C4C" title="Acne" checked={skinConcerns.acne} onPress={() => handleSkinConcernChange('acne')} />
-                                <CheckBox containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Wrinkles" checkedColor="#B87C4C" checked={skinConcerns.wrinkles} onPress={() => handleSkinConcernChange('wrinkles')} />
-                                <CheckBox containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Sensitivity" checkedColor="#B87C4C" checked={skinConcerns.sensitivity} onPress={() => handleSkinConcernChange('sensitivity')} />
-                                <CheckBox containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Dryness" checkedColor="#B87C4C" checked={skinConcerns.dryness} onPress={() => handleSkinConcernChange('dryness')} />
-                                <CheckBox containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Dark spots" checkedColor="#B87C4C" checked={skinConcerns.dark_spots} onPress={() => handleSkinConcernChange('dark_spots')} />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Specific Skin Concerns
+                                </Text>
+                                <CheckBox
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    checkedColor="#B87C4C"
+                                    title="Acne"
+                                    checked={skinConcerns.acne}
+                                    onPress={() =>
+                                        handleSkinConcernChange("acne")
+                                    }
+                                />
+                                <CheckBox
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Wrinkles"
+                                    checkedColor="#B87C4C"
+                                    checked={skinConcerns.wrinkles}
+                                    onPress={() =>
+                                        handleSkinConcernChange("wrinkles")
+                                    }
+                                />
+                                <CheckBox
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Sensitivity"
+                                    checkedColor="#B87C4C"
+                                    checked={skinConcerns.sensitivity}
+                                    onPress={() =>
+                                        handleSkinConcernChange("sensitivity")
+                                    }
+                                />
+                                <CheckBox
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Dryness"
+                                    checkedColor="#B87C4C"
+                                    checked={skinConcerns.dryness}
+                                    onPress={() =>
+                                        handleSkinConcernChange("dryness")
+                                    }
+                                />
+                                <CheckBox
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Dark spots"
+                                    checkedColor="#B87C4C"
+                                    checked={skinConcerns.dark_spots}
+                                    onPress={() =>
+                                        handleSkinConcernChange("dark_spots")
+                                    }
+                                />
                             </View>
-                            
-                            <View className='flex flex-col gap-3'>
-                                <Text className="text-xl text-[#B87C4C]">Allergies</Text>
+
+                            <View className="flex flex-col gap-3">
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Allergies
+                                </Text>
                                 <TextInput
                                     className="w-full border-b-2 border-[#B87C4C] text-lg pb-2 px-1"
                                     placeholder="e.g alcohol, lanolin"
-                                    placeholderTextColor={'#6A7E97'}
+                                    placeholderTextColor={"#6A7E97"}
                                     value={allergies}
                                     onChangeText={setAllergies}
                                 />
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">Exercise Frequency</Text>
-                                <Picker selectedValue={exerciseFreq} onValueChange={(itemValue) => setExerciseFreq(itemValue)}>
-                                    <Picker.Item label="Select Exercise Frequency" value="" />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Exercise Frequency
+                                </Text>
+                                <Picker
+                                    selectedValue={exerciseFreq}
+                                    onValueChange={(itemValue) =>
+                                        setExerciseFreq(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Select Exercise Frequency"
+                                        value=""
+                                    />
                                     <Picker.Item label="Daily" value="daily" />
-                                    <Picker.Item label="Several times a week" value="several" />
-                                    <Picker.Item label="Weekly" value="weekly" />
-                                    <Picker.Item label="Monthly" value="monthly" />
-                                    <Picker.Item label="Rarely" value="rarely" />
+                                    <Picker.Item
+                                        label="Several times a week"
+                                        value="several"
+                                    />
+                                    <Picker.Item
+                                        label="Weekly"
+                                        value="weekly"
+                                    />
+                                    <Picker.Item
+                                        label="Monthly"
+                                        value="monthly"
+                                    />
+                                    <Picker.Item
+                                        label="Rarely"
+                                        value="rarely"
+                                    />
                                     <Picker.Item label="Never" value="never" />
                                 </Picker>
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">Average Sleep Duration</Text>
-                                <Picker selectedValue={sleepDuration} onValueChange={(itemValue) => setSleepDuration(itemValue)}>
-                                    <Picker.Item label="Select Sleep Duration" value="" />
-                                    <Picker.Item label="Less than 4 hours" value="less_than_4" />
-                                    <Picker.Item label="4-5 hours" value="4_to_5" />
-                                    <Picker.Item label="6-7 hours" value="6_to_7" />
-                                    <Picker.Item label="7-8 hours" value="7_to_8" />
-                                    <Picker.Item label="8-9 hours" value="8_to_9" />
-                                    <Picker.Item label="More than 9 hours" value="more_than_9" />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Average Sleep Duration
+                                </Text>
+                                <Picker
+                                    selectedValue={sleepDuration}
+                                    onValueChange={(itemValue) =>
+                                        setSleepDuration(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Select Sleep Duration"
+                                        value=""
+                                    />
+                                    <Picker.Item
+                                        label="Less than 4 hours"
+                                        value="less_than_4"
+                                    />
+                                    <Picker.Item
+                                        label="4-5 hours"
+                                        value="4_to_5"
+                                    />
+                                    <Picker.Item
+                                        label="6-7 hours"
+                                        value="6_to_7"
+                                    />
+                                    <Picker.Item
+                                        label="7-8 hours"
+                                        value="7_to_8"
+                                    />
+                                    <Picker.Item
+                                        label="8-9 hours"
+                                        value="8_to_9"
+                                    />
+                                    <Picker.Item
+                                        label="More than 9 hours"
+                                        value="more_than_9"
+                                    />
                                 </Picker>
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">Climate</Text>
-                                <Picker selectedValue={climate} onValueChange={(itemValue) => setClimate(itemValue)}>
-                                    <Picker.Item label="Select Climate" value="" />
-                                    <Picker.Item label="Tropical" value="tropical" />
-                                    <Picker.Item label="Temperate" value="temperate" />
-                                    <Picker.Item label="Continental" value="continental" />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Climate
+                                </Text>
+                                <Picker
+                                    selectedValue={climate}
+                                    onValueChange={(itemValue) =>
+                                        setClimate(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Select Climate"
+                                        value=""
+                                    />
+                                    <Picker.Item
+                                        label="Tropical"
+                                        value="tropical"
+                                    />
+                                    <Picker.Item
+                                        label="Temperate"
+                                        value="temperate"
+                                    />
+                                    <Picker.Item
+                                        label="Continental"
+                                        value="continental"
+                                    />
                                     <Picker.Item label="Polar" value="polar" />
-                                    <Picker.Item label="Subtropical" value="subtropical" />
-                                    <Picker.Item label="Oceanic" value="oceanic" />
-                                    <Picker.Item label="Mediterranean" value="mediterranean" />
-                                    <Picker.Item label="Highland" value="highland" />
+                                    <Picker.Item
+                                        label="Subtropical"
+                                        value="subtropical"
+                                    />
+                                    <Picker.Item
+                                        label="Oceanic"
+                                        value="oceanic"
+                                    />
+                                    <Picker.Item
+                                        label="Mediterranean"
+                                        value="mediterranean"
+                                    />
+                                    <Picker.Item
+                                        label="Highland"
+                                        value="highland"
+                                    />
                                 </Picker>
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">Direct sunlight exposure</Text>
-                                <Picker selectedValue={sunExposure} onValueChange={(itemValue) => setSunExposure(itemValue)}>
-                                    <Picker.Item label="Select Sun Exposure" value="" />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Direct sunlight exposure
+                                </Text>
+                                <Picker
+                                    selectedValue={sunExposure}
+                                    onValueChange={(itemValue) =>
+                                        setSunExposure(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Select Sun Exposure"
+                                        value=""
+                                    />
                                     <Picker.Item label="Daily" value="daily" />
-                                    <Picker.Item label="Several times a week" value="several" />
-                                    <Picker.Item label="Occasionally" value="occasionally" />
-                                    <Picker.Item label="Rarely" value="rarely" />
+                                    <Picker.Item
+                                        label="Several times a week"
+                                        value="several"
+                                    />
+                                    <Picker.Item
+                                        label="Occasionally"
+                                        value="occasionally"
+                                    />
+                                    <Picker.Item
+                                        label="Rarely"
+                                        value="rarely"
+                                    />
                                     <Picker.Item label="Never" value="never" />
                                 </Picker>
                             </View>
-                            
+
                             <View>
-                                <Text className="text-xl text-[#B87C4C]">Skin Goals</Text>
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Clear skin" checked={skinGoals.clear_skin} onPress={() => handleSkinGoalsChange('clear_skin')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Even skin tone" checked={skinGoals.even_skin_tone} onPress={() => handleSkinGoalsChange('even_skin_tone')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Hydration" checked={skinGoals.hydration} onPress={() => handleSkinGoalsChange('hydration')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Anti-aging" checked={skinGoals.anti_aging} onPress={() => handleSkinGoalsChange('anti_aging')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Firmness" checked={skinGoals.firmness} onPress={() => handleSkinGoalsChange('firmness')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Radiance" checked={skinGoals.radiance} onPress={() => handleSkinGoalsChange('radiance')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Minimized pores" checked={skinGoals.minimized_pores} onPress={() => handleSkinGoalsChange('minimized_pores')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Sun protection" checked={skinGoals.sun_protection} onPress={() => handleSkinGoalsChange('sun_protection')} />
-                                <CheckBox checkedColor="#B87C4C" containerStyle={{backgroundColor: '#F7F4EA', borderWidth: 0, marginVertical: 0}} title="Soothing sensitivity" checked={skinGoals.soothing_sensitivity} onPress={() => handleSkinGoalsChange('soothing_sensitivity')} />
+                                <Text className="text-xl text-[#B87C4C]">
+                                    Skin Goals
+                                </Text>
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Clear skin"
+                                    checked={skinGoals.clear_skin}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("clear_skin")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Even skin tone"
+                                    checked={skinGoals.even_skin_tone}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("even_skin_tone")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Hydration"
+                                    checked={skinGoals.hydration}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("hydration")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Anti-aging"
+                                    checked={skinGoals.anti_aging}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("anti_aging")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Firmness"
+                                    checked={skinGoals.firmness}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("firmness")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Radiance"
+                                    checked={skinGoals.radiance}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("radiance")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Minimized pores"
+                                    checked={skinGoals.minimized_pores}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("minimized_pores")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Sun protection"
+                                    checked={skinGoals.sun_protection}
+                                    onPress={() =>
+                                        handleSkinGoalsChange("sun_protection")
+                                    }
+                                />
+                                <CheckBox
+                                    checkedColor="#B87C4C"
+                                    containerStyle={{
+                                        backgroundColor: "#F7F4EA",
+                                        borderWidth: 0,
+                                        marginVertical: 0,
+                                    }}
+                                    title="Soothing sensitivity"
+                                    checked={skinGoals.soothing_sensitivity}
+                                    onPress={() =>
+                                        handleSkinGoalsChange(
+                                            "soothing_sensitivity"
+                                        )
+                                    }
+                                />
                             </View>
                         </View>
 
@@ -346,25 +684,23 @@ const EditPersonalForm = () => {
                 </TouchableWithoutFeedback>
             </SafeAreaView>
         </View>
-        
-        
     );
 };
 
 const styles = StyleSheet.create({
     submitButton: {
-        width: '100%',
+        width: "100%",
         height: 55,
         borderRadius: 20,
         marginBottom: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#bf7641',
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#bf7641",
     },
     buttonText: {
-        fontWeight: 'bold',
+        fontWeight: "bold",
         fontSize: 20,
-        color: 'white',
+        color: "white",
     },
 });
 

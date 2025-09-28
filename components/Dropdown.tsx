@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import { type Dispatch, type SetStateAction } from "react";
 import { ChevronUp } from "lucide-react-native";
+import { BlurView } from "expo-blur";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -104,16 +105,38 @@ export const Dropdown = ({
                                 left: 0,
                                 right: 0,
                                 bottom: 0,
-                                backgroundColor: "rgba(0,0,0,0.3)",
                                 zIndex: 9999,
                             },
                         ]}
                         onPress={handleClose}
                         activeOpacity={1}
-                        className="backdrop-blur-xl"
-                    />
+                    >
+                        <BlurView
+                            intensity={80}
+                            tint="dark"
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                zIndex: 9999,
+                            }}
+                        />
+                        <View
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                backgroundColor: "rgba(0,0,0,0.7)",
+                            }}
+                        />
+                    </TouchableOpacity>
 
                     <Animated.View
+                        className="bg-primary border-b-4                                                                             3 border-secondary rounded-b-2xl"
                         style={[
                             dropdownStyle,
                             {
@@ -122,11 +145,6 @@ export const Dropdown = ({
                                 left: 0,
                                 right: 0,
                                 minHeight: "70%",
-                                backgroundColor: "#B87C4C",
-                                borderBottomLeftRadius: 16,
-                                borderBottomRightRadius: 16,
-                                borderBottomWidth: 4,
-                                borderBottomColor: "#F7F4EA",
                                 zIndex: 10000,
                                 boxShadow: "inset 0 2 0 rgb(153 96 50 100)",
                             },
@@ -134,13 +152,12 @@ export const Dropdown = ({
                     >
                         <SafeAreaView style={{ flex: 1 }}>
                             {heading && (
-                                <Text className="text-2xl font-bold text-[#B87C4C] px-6 pt-4">
+                                <Text className="text-2xl font-bold text-secondary px-6 pt-4">
                                     {heading}
                                 </Text>
                             )}
                             <View style={{ flex: 1 }}>{children}</View>
 
-                            {/* Close button at bottom */}
                             <View
                                 style={{
                                     alignItems: "center",
@@ -149,12 +166,7 @@ export const Dropdown = ({
                             >
                                 <TouchableOpacity
                                     onPress={handleClose}
-                                    style={{
-                                        backgroundColor: "#B87C4C",
-                                        borderRadius: 20,
-                                        padding: 8,
-                                        paddingHorizontal: 16,
-                                    }}
+                                    className="bg-primary rounded-full p-2 px-4"
                                 >
                                     <ChevronUp size={24} color="#F7F4EA" />
                                 </TouchableOpacity>

@@ -11,14 +11,14 @@ import { Alert, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { Routine } from "../../model/Routine";
-import CurrentUser from "../../model/CurrentUser";
+import { Routine } from "../../../../model/Routine";
+import CurrentUser from "../../../../model/CurrentUser";
 
-import CustomAlertBox from "../../components/CustomAlertBox";
+import CustomAlertBox from "../../../../components/CustomAlertBox";
 import { ScrollView } from "react-native";
-import RoutineProduct from "../../components/RoutineProduct";
-import EditRoutineProduct from "../../components/EditRoutineProduct";
-import SkincareRoutineSearch from "../(protected)/routine/skincare_routine_search";
+import RoutineProduct from "../../../../components/RoutineProduct";
+import EditRoutineProduct from "../../../../components/EditRoutineProduct";
+import SkincareRoutineSearch from "../skincare_routine_search";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SkincareRoutine() {

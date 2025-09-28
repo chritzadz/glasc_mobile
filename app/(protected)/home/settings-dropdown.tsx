@@ -21,7 +21,7 @@ export function Settings() {
         }
     };
 
-    const SettingsItems: { component: React.ReactNode; route: string }[] = [
+    const SettingsItems: { component: React.ReactNode }[] = [
         {
             component: (
                 <Pressable
@@ -39,7 +39,6 @@ export function Settings() {
                     </View>
                 </Pressable>
             ),
-            route: "/edit_personal_form",
         },
         {
             component: (
@@ -55,7 +54,6 @@ export function Settings() {
                     </View>
                 </Pressable>
             ),
-            route: "/routine",
         },
         {
             component: (
@@ -71,7 +69,6 @@ export function Settings() {
                     </View>
                 </Pressable>
             ),
-            route: "/api/logout",
         },
     ];
 
