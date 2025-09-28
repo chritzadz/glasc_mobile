@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { SearchIcon, ChevronLeft } from 'lucide-react-native';
 import { TextInput, Alert, ScrollView } from 'react-native';
@@ -8,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../../model/Product';
 
 const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -30,6 +32,13 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
 
         setFilteredProducts(newFilteredProducts);
     };
+
+    const handleProductPress = (product_name: string) => {
+        router.push({
+            pathname: 'product_details',
+            params: { product_name }, // Pass the product name as a parameter
+        });
+    }
 
     useEffect(() => {
         const getProduct = async () => {
@@ -82,6 +91,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                     imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
                                     name={filteredProducts[rowIdx * 2]?.product_name}
                                     description={"tthis"}
+                                    onPress={() => handleProductPress(filteredProducts[rowIdx * 2]?.product_name)}
                                     />
                                 </View>
                                 {filteredProducts[rowIdx * 2 + 1] && (
@@ -90,6 +100,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                         imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
                                         name={filteredProducts[rowIdx * 2 + 1]?.product_name}
                                         description={"tthis"}
+                                        onPress={() => handleProductPress(filteredProducts[rowIdx * 2 + 1]?.product_name)}
                                     />
                                     </View>
                                 )}
