@@ -413,8 +413,3 @@ def find_similar_skincare_products_with_category_fixed(product_name: str, min_sh
     return similar_products
 
 print("🎉 Product similarity system is ready!")
-
-
-print(find_similar_skincare_products_with_category_fixed(
-    "The Ordinary Hyaluronic Acid 2% + B5 Hydration Support Formula 30ml" 
-))
