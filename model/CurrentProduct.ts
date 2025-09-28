@@ -1,6 +1,7 @@
 export default class CurrentProduct {
     private static instance: CurrentProduct | null = null;
     private product_name: string | null = null;
+    private product_id: string | null = null;
 
     private constructor(){}
 
@@ -15,7 +16,15 @@ export default class CurrentProduct {
         this.product_name = product_name;
     }
 
+    public setProductId(product_id: string): void {
+        this.product_id = product_id;
+    }
+
     public getProductName(): string | null {
         return this.product_name;
+    }
+
+    public getProductId(): string | null {
+        return this.product_id;
     }
 };

@@ -27,16 +27,18 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     ];
 
     const router = useRouter();
+    const [ingredients, setIngredients] = useState([]);
     const [productName, setProductName] = useState<string | null>(null);
+    const [productId, setProductId] = useState<string | null>(null);
     const maxLength = 30;
 
     const handleBack = () => {
         router.back();
     };
 
-    const fetchIngredients = async (productName: string) => {
+    const fetchIngredients = async () => {
         console.log("FETCH INGREDIENTS:\n");
-        const response = await fetch(`/api/ingredient?product_name=${productName}`, {
+        const response = await fetch(`/api/ingredient?product_id=${productId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +46,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         });
         
         const data = await response.json();
-
+        console.log(data);
         const temp: string[] = data;
         console.log(temp);
         return temp;
@@ -53,8 +55,12 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     useEffect(() => {
         const productInstance = CurrentProduct.getInstance(); // Type is CurrentProduct
         const product_name = productInstance.getProductName();
+        const product_id = productInstance.getProductId();
         console.log(product_name);
+        console.log(product_id);
         setProductName(product_name);
+        setProductId(product_id);
+        fetchIngredients();
     })
     return (
         <View className="flex-1 bg-[#B87C4C] shadow-md">
@@ -97,7 +103,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                                 <Text className="text-white font-semibold">{item}</Text>
                             </TouchableOpacity>
                             ))} */}
-                            {items.map((item, index) => (
+                            {ingredients.map((item, index) => (
                             <IngredientItem key={index} name={item} />
                         ))}
                         </View>

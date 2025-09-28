@@ -34,8 +34,9 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
         setFilteredProducts(newFilteredProducts);
     };
 
-    const handleProductPress = (product_name: string) => {
+    const handleProductPress = (product_name: string, product_id: string) => {
         CurrentProduct.getInstance().setProductName(product_name);
+        CurrentProduct.getInstance().setProductId(product_id);
         router.push("product_details");
     }
 
@@ -90,7 +91,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                     imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
                                     name={filteredProducts[rowIdx * 2]?.product_name}
                                     description={"tthis"}
-                                    onPress={() => handleProductPress(filteredProducts[rowIdx * 2]?.product_name)}
+                                    onPress={() => handleProductPress(filteredProducts[rowIdx * 2]?.product_name, filteredProducts[rowIdx * 2]?.product_id)}
                                     />
                                 </View>
                                 {filteredProducts[rowIdx * 2 + 1] && (
@@ -99,7 +100,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                         imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
                                         name={filteredProducts[rowIdx * 2 + 1]?.product_name}
                                         description={"tthis"}
-                                        onPress={() => handleProductPress(filteredProducts[rowIdx * 2 + 1]?.product_name)}
+                                        onPress={() => handleProductPress(filteredProducts[rowIdx * 2 + 1]?.product_name, filteredProducts[rowIdx * 2]?.product_id)}
                                     />
                                     </View>
                                 )}
