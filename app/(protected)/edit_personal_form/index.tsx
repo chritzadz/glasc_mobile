@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
     TouchableWithoutFeedback,
     Keyboard,
-    StyleSheet,
     Text,
     View,
     Pressable,
@@ -221,100 +220,171 @@ const EditPersonalForm = () => {
     };
 
     return (
-        <View className="bg-[#F7F4EA]">
-            <SafeAreaView>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        setShow(false);
-                        Keyboard.dismiss();
-                    }}
+        <SafeAreaView className="flex-1 bg-secondary">
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    setShow(false);
+                    Keyboard.dismiss();
+                }}
+            >
+                <ScrollView
+                    className="flex-1 px-6 pt-8"
+                    showsVerticalScrollIndicator={false}
                 >
-                    <ScrollView className="w-full flex flex-col px-5">
-                        <View className="flex1 flex-row mt-5">
-                            <View className="items-center w-[20px] flex justify-center">
-                                <ChevronLeft
-                                    color="#B87C4C"
-                                    onPress={onClose}
-                                ></ChevronLeft>
-                            </View>
-                            <View className="flex-1 items-center justify-center">
-                                <Text className="text-2xl flex-1 font-bold text-[#B87C4C]">
-                                    Update your skin information
-                                </Text>
-                            </View>
+                    {/* Header */}
+                    <View className="flex-row items-center mb-8">
+                        <View className="items-center w-[40px] flex justify-center">
+                            <ChevronLeft
+                                color="#B87C4C"
+                                size={24}
+                                onPress={onClose}
+                            />
                         </View>
+                        <View className="flex-1 items-center justify-center">
+                            <Text className="text-3xl font-bold text-primary">
+                                Update your skin information
+                            </Text>
+                        </View>
+                        <View className="w-[40px]" />
+                    </View>
 
-                        <View className="flex flex-col gap-8 my-10">
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    *Birth Date
-                                </Text>
+                    {/* Form Container */}
+                    <View
+                        className="bg-primary rounded-3xl p-6 mb-6"
+                        style={{
+                            boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                        }}
+                    >
+                        {/* Birth Date */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Birth Date *
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl p-3"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <DateTimePicker
                                     value={birthDate}
                                     mode="date"
                                     display="spinner"
                                     onChange={onChange}
+                                    textColor="#B87C4C"
                                 />
                             </View>
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    *Gender
-                                </Text>
+                        {/* Gender */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Gender *
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <Picker
                                     selectedValue={gender}
                                     onValueChange={(itemValue) =>
                                         setGender(itemValue)
                                     }
+                                    style={{ color: "#B87C4C" }}
                                 >
                                     <Picker.Item
                                         label="Select Gender"
                                         value=""
+                                        color="#B87C4C80"
                                     />
-                                    <Picker.Item label="Male" value="male" />
+                                    <Picker.Item
+                                        label="Male"
+                                        value="male"
+                                        color="#B87C4C"
+                                    />
                                     <Picker.Item
                                         label="Female"
                                         value="female"
+                                        color="#B87C4C"
                                     />
                                 </Picker>
                             </View>
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    *Skin Type
-                                </Text>
+                        {/* Skin Type */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Skin Type *
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <Picker
                                     selectedValue={skinType}
                                     onValueChange={(itemValue) =>
                                         setSkinType(itemValue)
                                     }
+                                    style={{ color: "#B87C4C" }}
                                 >
                                     <Picker.Item
                                         label="Select Skin Type"
                                         value=""
+                                        color="#B87C4C80"
                                     />
-                                    <Picker.Item label="Oily" value="oily" />
-                                    <Picker.Item label="Dry" value="dry" />
+                                    <Picker.Item
+                                        label="Oily"
+                                        value="oily"
+                                        color="#B87C4C"
+                                    />
+                                    <Picker.Item
+                                        label="Dry"
+                                        value="dry"
+                                        color="#B87C4C"
+                                    />
                                     <Picker.Item
                                         label="Combination"
                                         value="combination"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Sensitive"
                                         value="sensitive"
+                                        color="#B87C4C"
                                     />
                                 </Picker>
                             </View>
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Specific Skin Concerns
-                                </Text>
+                        {/* Skin Concerns */}
+                        <View className="mb-0">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Skin Concerns
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl p-4"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <CheckBox
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     checkedColor="#B87C4C"
                                     title="Acne"
@@ -325,9 +395,14 @@ const EditPersonalForm = () => {
                                 />
                                 <CheckBox
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Wrinkles"
                                     checkedColor="#B87C4C"
@@ -338,9 +413,14 @@ const EditPersonalForm = () => {
                                 />
                                 <CheckBox
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Sensitivity"
                                     checkedColor="#B87C4C"
@@ -351,9 +431,14 @@ const EditPersonalForm = () => {
                                 />
                                 <CheckBox
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Dryness"
                                     checkedColor="#B87C4C"
@@ -364,9 +449,14 @@ const EditPersonalForm = () => {
                                 />
                                 <CheckBox
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Dark spots"
                                     checkedColor="#B87C4C"
@@ -376,183 +466,301 @@ const EditPersonalForm = () => {
                                     }
                                 />
                             </View>
+                        </View>
+                    </View>
 
-                            <View className="flex flex-col gap-3">
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Allergies
-                                </Text>
-                                <TextInput
-                                    className="w-full border-b-2 border-[#B87C4C] text-lg pb-2 px-1"
-                                    placeholder="e.g alcohol, lanolin"
-                                    placeholderTextColor={"#6A7E97"}
-                                    value={allergies}
-                                    onChangeText={setAllergies}
-                                />
-                            </View>
+                    {/* Lifestyle & Health Container */}
+                    <View
+                        className="bg-primary rounded-3xl p-6 mb-6"
+                        style={{
+                            boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                        }}
+                    >
+                        {/* Allergies */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Allergies
+                            </Text>
+                            <TextInput
+                                className="w-full h-12 px-4 text-lg rounded-2xl bg-secondary text-primary"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                                placeholder="e.g. alcohol, lanolin"
+                                placeholderTextColor={"#B87C4C80"}
+                                value={allergies}
+                                onChangeText={setAllergies}
+                            />
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Exercise Frequency
-                                </Text>
+                        {/* Exercise Frequency */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Exercise Frequency
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <Picker
                                     selectedValue={exerciseFreq}
                                     onValueChange={(itemValue) =>
                                         setExerciseFreq(itemValue)
                                     }
+                                    style={{ color: "#B87C4C" }}
                                 >
                                     <Picker.Item
                                         label="Select Exercise Frequency"
                                         value=""
+                                        color="#B87C4C80"
                                     />
-                                    <Picker.Item label="Daily" value="daily" />
+                                    <Picker.Item
+                                        label="Daily"
+                                        value="daily"
+                                        color="#B87C4C"
+                                    />
                                     <Picker.Item
                                         label="Several times a week"
                                         value="several"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Weekly"
                                         value="weekly"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Monthly"
                                         value="monthly"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Rarely"
                                         value="rarely"
+                                        color="#B87C4C"
                                     />
-                                    <Picker.Item label="Never" value="never" />
+                                    <Picker.Item
+                                        label="Never"
+                                        value="never"
+                                        color="#B87C4C"
+                                    />
                                 </Picker>
                             </View>
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Average Sleep Duration
-                                </Text>
+                        {/* Sleep Duration */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Average Sleep Duration
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <Picker
                                     selectedValue={sleepDuration}
                                     onValueChange={(itemValue) =>
                                         setSleepDuration(itemValue)
                                     }
+                                    style={{ color: "#B87C4C" }}
                                 >
                                     <Picker.Item
                                         label="Select Sleep Duration"
                                         value=""
+                                        color="#B87C4C80"
                                     />
                                     <Picker.Item
                                         label="Less than 4 hours"
                                         value="less_than_4"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="4-5 hours"
                                         value="4_to_5"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="6-7 hours"
                                         value="6_to_7"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="7-8 hours"
                                         value="7_to_8"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="8-9 hours"
                                         value="8_to_9"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="More than 9 hours"
                                         value="more_than_9"
+                                        color="#B87C4C"
                                     />
                                 </Picker>
                             </View>
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Climate
-                                </Text>
+                        {/* Climate */}
+                        <View className="mb-6">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Climate
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <Picker
                                     selectedValue={climate}
                                     onValueChange={(itemValue) =>
                                         setClimate(itemValue)
                                     }
+                                    style={{ color: "#B87C4C" }}
                                 >
                                     <Picker.Item
                                         label="Select Climate"
                                         value=""
+                                        color="#B87C4C80"
                                     />
                                     <Picker.Item
                                         label="Tropical"
                                         value="tropical"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Temperate"
                                         value="temperate"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Continental"
                                         value="continental"
+                                        color="#B87C4C"
                                     />
-                                    <Picker.Item label="Polar" value="polar" />
+                                    <Picker.Item
+                                        label="Polar"
+                                        value="polar"
+                                        color="#B87C4C"
+                                    />
                                     <Picker.Item
                                         label="Subtropical"
                                         value="subtropical"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Oceanic"
                                         value="oceanic"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Mediterranean"
                                         value="mediterranean"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Highland"
                                         value="highland"
+                                        color="#B87C4C"
                                     />
                                 </Picker>
                             </View>
+                        </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Direct sunlight exposure
-                                </Text>
+                        {/* Sun Exposure */}
+                        <View className="mb-0">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Direct Sunlight Exposure
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <Picker
                                     selectedValue={sunExposure}
                                     onValueChange={(itemValue) =>
                                         setSunExposure(itemValue)
                                     }
+                                    style={{ color: "#B87C4C" }}
                                 >
                                     <Picker.Item
                                         label="Select Sun Exposure"
                                         value=""
+                                        color="#B87C4C80"
                                     />
-                                    <Picker.Item label="Daily" value="daily" />
+                                    <Picker.Item
+                                        label="Daily"
+                                        value="daily"
+                                        color="#B87C4C"
+                                    />
                                     <Picker.Item
                                         label="Several times a week"
                                         value="several"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Occasionally"
                                         value="occasionally"
+                                        color="#B87C4C"
                                     />
                                     <Picker.Item
                                         label="Rarely"
                                         value="rarely"
+                                        color="#B87C4C"
                                     />
-                                    <Picker.Item label="Never" value="never" />
+                                    <Picker.Item
+                                        label="Never"
+                                        value="never"
+                                        color="#B87C4C"
+                                    />
                                 </Picker>
                             </View>
+                        </View>
+                    </View>
 
-                            <View>
-                                <Text className="text-xl text-[#B87C4C]">
-                                    Skin Goals
-                                </Text>
+                    {/* Skin Goals Container */}
+                    <View
+                        className="bg-primary rounded-3xl p-6 mb-6"
+                        style={{
+                            boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                        }}
+                    >
+                        <View className="mb-0">
+                            <Text className="text-lg font-semibold text-secondary mb-3">
+                                Skin Goals
+                            </Text>
+                            <View
+                                className="bg-secondary rounded-2xl p-4"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Clear skin"
                                     checked={skinGoals.clear_skin}
@@ -563,9 +771,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Even skin tone"
                                     checked={skinGoals.even_skin_tone}
@@ -576,9 +789,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Hydration"
                                     checked={skinGoals.hydration}
@@ -589,9 +807,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Anti-aging"
                                     checked={skinGoals.anti_aging}
@@ -602,9 +825,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Firmness"
                                     checked={skinGoals.firmness}
@@ -615,9 +843,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Radiance"
                                     checked={skinGoals.radiance}
@@ -628,9 +861,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Minimized pores"
                                     checked={skinGoals.minimized_pores}
@@ -641,9 +879,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Sun protection"
                                     checked={skinGoals.sun_protection}
@@ -654,9 +897,14 @@ const EditPersonalForm = () => {
                                 <CheckBox
                                     checkedColor="#B87C4C"
                                     containerStyle={{
-                                        backgroundColor: "#F7F4EA",
+                                        backgroundColor: "transparent",
                                         borderWidth: 0,
-                                        marginVertical: 0,
+                                        marginVertical: 2,
+                                        paddingHorizontal: 0,
+                                    }}
+                                    textStyle={{
+                                        color: "#B87C4C",
+                                        fontSize: 16,
                                     }}
                                     title="Soothing sensitivity"
                                     checked={skinGoals.soothing_sensitivity}
@@ -668,40 +916,39 @@ const EditPersonalForm = () => {
                                 />
                             </View>
                         </View>
+                    </View>
 
+                    {/* Submit Button */}
+                    <View className="mb-8">
                         {loading ? (
-                            <ActivityIndicator size="large" color="#B87C4C" />
+                            <View className="py-4 items-center">
+                                <ActivityIndicator
+                                    size="large"
+                                    color="#B87C4C"
+                                />
+                            </View>
                         ) : (
                             <Pressable
                                 onPress={handleSubmitButton}
-                                style={styles.submitButton}
+                                className="py-4 rounded-2xl items-center bg-primary"
+                                style={{
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                                }}
                                 disabled={loading}
                             >
-                                <Text style={styles.buttonText}>Update</Text>
+                                <Text className="font-bold text-lg text-secondary">
+                                    Update
+                                </Text>
                             </Pressable>
                         )}
-                    </ScrollView>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
-        </View>
+                    </View>
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({
-    submitButton: {
-        width: "100%",
-        height: 55,
-        borderRadius: 20,
-        marginBottom: 20,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#bf7641",
-    },
-    buttonText: {
-        fontWeight: "bold",
-        fontSize: 20,
-        color: "white",
-    },
-});
+// Styles now handled by Tailwind CSS classes
 
 export default EditPersonalForm;

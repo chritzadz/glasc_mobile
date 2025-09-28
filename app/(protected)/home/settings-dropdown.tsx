@@ -75,21 +75,6 @@ export function Settings() {
                 </Pressable>
             ),
         },
-        {
-            component: (
-                <Pressable
-                    className="w-full flex-row gap-4 items-center rounded-2xl p-4"
-                    onPress={() => router.push("/routine/skincare_routine")}
-                >
-                    <FlaskConical size={28} color="#FFFFFF" />
-                    <View className="flex flex-col justify-start ">
-                        <Text className="text-lg font-semibold text-white">
-                            Routine
-                        </Text>
-                    </View>
-                </Pressable>
-            ),
-        },
     ];
 
     return (
