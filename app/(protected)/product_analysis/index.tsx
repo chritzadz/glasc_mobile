@@ -42,14 +42,12 @@ export default function ProductAnalysisPage() {
 
     const [skincareProducts, setSkincareProducts] = useState<Product[]>([]);
 
-    const defaultImageURL =
-        "https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover";
+    const [defaultImageURL, setDefaultImageURL] = useState("https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover")
+        
 
     const handleBack = () => {
         router.back();
     };
-
-    const handlePress = () => {};
 
     const fetchIngredients = async () => {
         if (!productId) {
@@ -98,7 +96,21 @@ export default function ProductAnalysisPage() {
                 console.error("Error fetching skincare products:", error);
             }
         };
+        const fetchImageUrl = async () => {
+            try {
+                const response = await fetch(`/api/skincare?product_id=${productId}`);
+                const data = await response.json();
+                
+                if (data && data.length > 0 && data[0].image_url && data[0].image_url.endsWith('.jpg')){
+                    setDefaultImageURL(data[0].image_url);
+                }
+
+            } catch (error) {
+                console.error("Error fetching skincare products:", error);
+            }
+        };
         fetchSkincareProducts();
+        fetchImageUrl();
     }, []);
 
     return (
