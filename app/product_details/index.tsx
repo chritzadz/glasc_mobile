@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Text, View, StyleSheet, Dimensions } from 'react-native';
-import { SearchIcon, ArrowLeft, Flag } from 'lucide-react-native';
+import { ArrowLeft, Flag, ShoppingCart, CirclePlus} from 'lucide-react-native';
 import { TextInput, Alert, ScrollView, TouchableOpacity, Image } from 'react-native';
 import ProductItemBox from '../../components/ProductItemBox';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -178,6 +178,62 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                         ))}
                     </View>
                 </ScrollView>
+                {/* <View className="absolute self-center bottom-16 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2 shadow-black shadow-lg">
+                        <View className="bg-[#B87C4CCC] rounded-full px-4 py-2">
+                            <View className="flex flex-row items-center justify-center gap-2">
+                                <ShoppingCart
+                                    className="text-[#B87C4C]"
+                                    size={24}
+                                    color="white"
+                                />
+                                <Text className="font-bold text-2xl m-0 text-white">
+                                    Buy
+                                </Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity>
+                            <View className="bg-transparent z-[0] rounded-full px-4 py-2">
+                                <View className="flex flex-row items-center justify-center gap-2">
+                                    <CirclePlus
+                                        className="text-[#F7F4EA]"
+                                        size={24}
+                                        color="#F7F4EA"
+                                    />
+                                    <Text className="font-bold text-2xl m-0 text-[#F7F4EA]">
+                                        Add
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                </View> */}
+                <View style={styles.buttonContainer}> {/* Added elevation */}
+                    <View className="px-4 py-2">
+                        <View className="flex flex-row items-center justify-center gap-2">
+                            <ShoppingCart
+                                className="text-[#B87C4C]"
+                                size={22}
+                                color="white"
+                            />
+                            <Text className="font-bold text-xl m-0 text-white">
+                                Buy
+                            </Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity>
+                        <View className="px-4 py-2">
+                            <View className="flex flex-row items-center justify-center gap-2">
+                                <CirclePlus
+                                    className="text-[#F7F4EA]"
+                                    size={22}
+                                    color="#F7F4EA"
+                                />
+                                <Text className="font-bold text-xl m-0 text-[#F7F4EA]">
+                                    Add
+                                </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
             </SafeAreaView>
         </View>
         
@@ -199,6 +255,27 @@ const styles = StyleSheet.create({
         paddingRight: 16,
         justifyContent: 'space-between',
     },
+    buttonContainer: {
+        height: 48,
+        width: 220,
+        position: 'absolute',
+        alignSelf: 'center',
+        bottom: 64, // Adjusted to match bottom-16 (16 * 4 = 64)
+        flexDirection: 'row',
+        borderRadius: 50, // For rounded-full
+        backgroundColor: '#B87C4C',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 8, // Adjusted to match p-2 (2 * 4 = 8)
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 4,
+        elevation: 4, // For Android shadow
+    }
 });
 
 export default ProductDetailScreen;
