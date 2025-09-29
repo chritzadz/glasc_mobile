@@ -66,6 +66,43 @@ export default function RoutineEdit({
         setIsAlertVisible(true);
     };
 
+    const getProductNameById = async (id: number): Promise<string> => {
+        try {
+            console.log(`Fetching product name for ID: ${id}`);
+            
+            const response = await fetch(`/api/skincare?product_id=${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            console.log(`Product fetch response status: ${response.status}`);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Product fetch error:', errorData);
+                
+                if (response.status === 404) {
+                    return 'Product Not Found';
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Product data:', data);
+            
+            if (data && data.length > 0) {
+                return data[0].product_name || data[0].name || 'Unknown Product';
+            } else {
+                return 'No Product Data';
+            }
+        } catch (error) {
+            console.error('Error fetching product name:', error);
+            return 'Error Loading Product';
+        }
+    };
+    
     const handleDeleteConfirm = async () => {
         if (selectedProduct) {
             try {
@@ -76,7 +113,7 @@ export default function RoutineEdit({
                     },
                     body: JSON.stringify({
                         user_id: CurrentUser.getInstance().getId(),
-                        product: selectedProduct.product,
+                        product_id: selectedProduct.product_id,
                         type: selectedProduct.type,
                     }),
                 });
@@ -163,7 +200,7 @@ export default function RoutineEdit({
 
             <View className="flex-1">
                 <Text className="text-primary font-semibold text-base">
-                    {item.product}
+                    {item.product_name}
                 </Text>
                 <Text className="text-primary/70 text-sm">
                     Step {item.index}
@@ -278,9 +315,9 @@ export default function RoutineEdit({
                         style={
                             activeTab === "evening"
                                 ? {
-                                      boxShadow:
-                                          "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
-                                  }
+                                    boxShadow:
+                                        "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
+                                }
                                 : {}
                         }
                         activeOpacity={1}
@@ -327,7 +364,7 @@ export default function RoutineEdit({
                                     })
                                 )}
                                 keyExtractor={(item, index) =>
-                                    `${item.product}-${index}`
+                                    `${getProductNameById(item.product_id)}-${index}`
                                 }
                                 renderItem={renderProduct}
                                 scrollEnabled={false}
@@ -372,7 +409,7 @@ export default function RoutineEdit({
             {isAlertVisible && selectedProduct && (
                 <CustomAlertBox
                     title="Confirm Delete"
-                    message={`Are you sure you want to remove ${selectedProduct.product} from your ${selectedProduct.type} routine?`}
+                    message={`Are you sure you want to remove ${selectedProduct.product_name} from your ${selectedProduct.type} routine?`}
                     onYes={handleDeleteConfirm}
                     onNo={handleDeleteCancel}
                 />

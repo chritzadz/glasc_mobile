@@ -29,11 +29,12 @@ export default function ProductSearch({
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [isAlertVisible, setAlertVisible] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState(-1);
     const [isLoading, setIsLoading] = useState(false);
 
-    const showAlert = (productName: string) => {
-        setSelectedProduct(productName);
+    const showAlert = (product_id: string) => {
+        setSelectedProduct(parseInt(product_id));
+        console.log("product " + product_id);
         setAlertVisible(true);
     };
 
@@ -106,9 +107,9 @@ export default function ProductSearch({
         setFilteredProducts(newFilteredProducts);
     };
 
-    const addProduct = async (productName: string): Promise<boolean> => {
+    const addProduct = async (product_id: number): Promise<boolean> => {
         try {
-            console.log(productName);
+            console.log(product_id);
             const response = await fetch("/api/skincareRoutine", {
                 method: "POST",
                 headers: {
@@ -116,7 +117,7 @@ export default function ProductSearch({
                 },
                 body: JSON.stringify({
                     user_id: CurrentUser.getInstance().getId(),
-                    product: productName,
+                    product_id: product_id,
                     type: type,
                 }),
             });
@@ -191,7 +192,7 @@ export default function ProductSearch({
                                             onPress={() =>
                                                 showAlert(
                                                     filteredProducts[rowIdx * 2]
-                                                        ?.product_name
+                                                        ?.product_id
                                                 )
                                             }
                                         >
@@ -206,7 +207,12 @@ export default function ProductSearch({
                                                         ?.product_name
                                                 }
                                                 description=""
-                                                onPress={() => {}}
+                                                onPress={() => {
+                                                    showAlert(
+                                                        filteredProducts[rowIdx * 2]
+                                                            ?.product_id
+                                                    )
+                                                }}
                                             />
                                         </TouchableOpacity>
                                     </View>
@@ -217,7 +223,7 @@ export default function ProductSearch({
                                                     showAlert(
                                                         filteredProducts[
                                                             rowIdx * 2 + 1
-                                                        ]?.product_name
+                                                        ]?.product_id
                                                     )
                                                 }
                                             >
@@ -234,7 +240,12 @@ export default function ProductSearch({
                                                         ]?.product_name
                                                     }
                                                     description=""
-                                                    onPress={() => {}}
+                                                    onPress={() => {
+                                                        showAlert(
+                                                            filteredProducts[rowIdx * 2]
+                                                                ?.product_id
+                                                        )
+                                                    }}
                                                 />
                                             </TouchableOpacity>
                                         </View>

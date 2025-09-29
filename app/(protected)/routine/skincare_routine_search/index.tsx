@@ -35,7 +35,24 @@ export default function SkincareRoutineSearch({
 
     const showAlert = (productName: string) => {
         setSelectedProduct(productName);
-        setAlertVisible(true);
+        console.log("clicked" + productName);
+        Alert.alert(
+            "Confirm Action", // Title
+            `Are you sure you want to add ${productName} to your ${type} routine?`, // Message
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                    onPress: () => console.log("User selected Cancel")
+                },
+                {
+                    text: "Add",
+                    style: "default",
+                    onPress: handleYes
+                }
+            ],
+            { cancelable: true }
+        );
     };
 
     const handleYes = async () => {
@@ -127,7 +144,7 @@ export default function SkincareRoutineSearch({
     }, []);
 
     return (
-        <View className="flex-1 bg-[#F7F4EA]">
+        <View className="flex-1 bg-[#F7F4EA] relative">
             <SafeAreaView>
                 <View className="gap-2">
                     <View className="px-5 pt-4 h-full">
@@ -223,14 +240,16 @@ export default function SkincareRoutineSearch({
                     </View>
                 </View>
             </SafeAreaView>
-            {isAlertVisible && (
-                <CustomAlertBox
-                    title="Confirm Action"
-                    message={`Are you sure you want to add ${selectedProduct} to your ${type} routine?`}
-                    onYes={handleYes}
-                    onNo={handleNo}
-                />
-            )}
+            {/* {true && (
+                <View className="flex-1 bg-[#F7F4EA] absolute top-0">
+                    <CustomAlertBox
+                        title="Confirm Action"
+                        message={`Are you sure you want to add ${selectedProduct} to your ${type} routine?`}
+                        onYes={handleYes}
+                        onNo={handleNo}
+                    />
+                </View>
+            )} */}
         </View>
     );
 }

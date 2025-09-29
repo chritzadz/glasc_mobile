@@ -42,13 +42,9 @@ export default function Routine() {
             );
 
             const data = await response.json();
-            console.log("routines:" + data);
 
-            const routineObjects: RoutineType[] = data.map((item: any) => ({
-                user_id: item.user_id,
-                product: item.product,
-                type: item.type,
-            }));
+            const routineObjects: RoutineType[] = data;
+            console.log("routines:" + data);
 
             return routineObjects;
         } catch (error) {
@@ -69,7 +65,7 @@ export default function Routine() {
                 },
                 body: JSON.stringify({
                     user_id: CurrentUser.getInstance().getId(),
-                    product: product.product,
+                    product_id: product.product_id,
                     type: product.type,
                 }),
             });
@@ -234,7 +230,7 @@ export default function Routine() {
                                         /> */}
                                             <View className="flex-1">
                                                 <Text className="text-primary font-semibold text-base">
-                                                    {step.product}
+                                                    {step.product_name}
                                                 </Text>
                                                 <Text className="text-primary/70 text-sm">
                                                     Step {step.type}
@@ -275,7 +271,7 @@ export default function Routine() {
                                         /> */}
                                         <View className="flex-1">
                                             <Text className="text-primary font-semibold text-base">
-                                                {step.product}
+                                                {step.product_name}
                                             </Text>
                                             <Text className="text-primary/70 text-sm">
                                                 Step {step.type}
