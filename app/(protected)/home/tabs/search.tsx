@@ -18,7 +18,7 @@ import { Product } from "../../../../model/Product";
 import { useRouter } from "expo-router";
 import CurrentProduct from "../../../../model/CurrentProduct";
 
-export const Search = () => {
+export default function Search() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
@@ -370,4 +370,4 @@ export const Search = () => {
             )}
         </View>
     );
-};
+}

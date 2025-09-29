@@ -1,9 +1,9 @@
 import { useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Search } from "./tabs/search";
-import { Routine } from "./tabs/routine";
-import { Scan } from "./tabs/scan";
+import Search from "./tabs/search";
+import Routine from "./tabs/routine";
+import Scan from "./tabs/scan";
 import {
     QrCode,
     SearchIcon,
@@ -11,11 +11,11 @@ import {
     UsersRound,
     Sparkles,
 } from "lucide-react-native";
-import { Navbar } from "./tabs/components/Navbar";
+import Navbar from "./tabs/components/Navbar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import { Dropdown } from "../../../components/Dropdown";
-import { Settings } from "./settings-dropdown";
+import Settings from "./settings-dropdown";
 import { useRouter } from "expo-router";
 
 export enum Tabs {

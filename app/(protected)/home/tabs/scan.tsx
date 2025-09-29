@@ -5,9 +5,9 @@ import { Camera } from "lucide-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ProcessPhoto } from "./components/process-photo";
+import ProcessPhoto from "./components/process-photo";
 
-export function Scan() {
+export default function Scan() {
     const [facing, setFacing] = useState<CameraType>("back");
     const [permission, requestPermission] = useCameraPermissions();
     const [showCamera, setShowCamera] = useState(true);

@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { Sun, Moon, Sparkles, Edit } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { Dropdown } from "../../../../components/Dropdown";
-import { RoutineEdit } from "./components/routine-edit";
+import RoutineEdit from "./components/routine-edit";
 import { useQuery } from "@tanstack/react-query";
 import { Routine as RoutineType } from "../../../../model/Routine";
 import CurrentUser from "../../../../model/CurrentUser";
 import { Alert } from "react-native";
 import { Loader } from "lucide-react-native";
 
-export const Routine = () => {
+export default function Routine() {
     const [AMRoutineProducts, setAMRoutineProducts] = useState<RoutineType[]>(
         []
     );
@@ -28,7 +28,6 @@ export const Routine = () => {
         return "night";
     };
 
-    const days = [1, 2, 3, 4];
     const fetchSkincareRoutine = async () => {
         try {
             const userId = CurrentUser.getInstance().getId();
@@ -122,6 +121,7 @@ export const Routine = () => {
                 <RoutineEdit
                     morning={AMRoutineProducts}
                     evening={PMRoutineProducts}
+                    onRoutineUpdated={refetchRoutineProducts}
                 />
             </Dropdown>
 
@@ -307,4 +307,4 @@ export const Routine = () => {
             </View>
         </SafeAreaView>
     );
-};
+}

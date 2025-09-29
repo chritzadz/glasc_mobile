@@ -8,23 +8,34 @@ import {
     Trash2,
     ChevronUp,
     ChevronDown,
-    ChevronLeft,
-    Edit3,
     Save,
 } from "lucide-react-native";
-import { useRouter } from "expo-router";
 import { FlatList } from "react-native";
 import { Routine as RoutineType } from "../../../../../model/Routine";
 import CurrentUser from "../../../../../model/CurrentUser";
+import ProductSearch from "./product-search";
+import CustomAlertBox from "../../../../../components/CustomAlertBox";
 
 interface RoutineEditProps {
     morning: RoutineType[];
     evening: RoutineType[];
+    onRoutineUpdated?: () => void;
 }
 
-export const RoutineEdit = ({ morning, evening }: RoutineEditProps) => {
-    const router = useRouter();
+export default function RoutineEdit({
+    morning,
+    evening,
+    onRoutineUpdated,
+}: RoutineEditProps) {
     const currentUser = CurrentUser.getInstance();
+    const [showProductSearch, setShowProductSearch] = useState(false);
+    const [searchType, setSearchType] = useState<"morning" | "evening">(
+        "morning"
+    );
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<RoutineType | null>(
+        null
+    );
     const [activeTab, setActiveTab] = useState<"morning" | "evening">(
         "morning"
     );
@@ -34,28 +45,64 @@ export const RoutineEdit = ({ morning, evening }: RoutineEditProps) => {
         evening,
     });
 
-    const handleAddProduct = (type: "morning" | "evening", product: string) => {
-        const newProduct: RoutineType = {
-            user_id: currentUser.getId(),
-            product: product,
-            type: type,
-        };
-        setRoutineData((prev) => ({
-            ...prev,
-            [type]: [...prev[type], newProduct],
-        }));
+    const handleShowProductSearch = (type: "morning" | "evening") => {
+        setSearchType(type);
+        setShowProductSearch(true);
     };
 
-    const handleDeleteProduct = (
-        tab: "morning" | "evening",
-        productName: string
-    ) => {
-        setRoutineData((prev) => ({
-            ...prev,
-            [tab]: prev[tab].filter(
-                (product) => product.product !== productName
-            ),
-        }));
+    const handleProductAdded = () => {
+        // Refresh the routine data after adding a product
+        if (onRoutineUpdated) {
+            onRoutineUpdated();
+        }
+    };
+
+    const handleCloseProductSearch = () => {
+        setShowProductSearch(false);
+    };
+
+    const showDeleteAlert = (product: RoutineType) => {
+        setSelectedProduct(product);
+        setIsAlertVisible(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (selectedProduct) {
+            try {
+                const response = await fetch("/api/skincareRoutine", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        user_id: CurrentUser.getInstance().getId(),
+                        product: selectedProduct.product,
+                        type: selectedProduct.type,
+                    }),
+                });
+
+                if (response.ok) {
+                    Alert.alert("Success", "Product removed from routine.");
+                    if (onRoutineUpdated) {
+                        onRoutineUpdated();
+                    }
+                } else {
+                    Alert.alert("Error", "Failed to remove product.");
+                }
+            } catch (error) {
+                Alert.alert(
+                    "Error",
+                    "Failed to remove product. Please try again."
+                );
+            }
+        }
+        setIsAlertVisible(false);
+        setSelectedProduct(null);
+    };
+
+    const handleDeleteCancel = () => {
+        setIsAlertVisible(false);
+        setSelectedProduct(null);
     };
 
     const handleMoveUp = (tab: "morning" | "evening", index: number) => {
@@ -124,9 +171,7 @@ export const RoutineEdit = ({ morning, evening }: RoutineEditProps) => {
             </View>
 
             <TouchableOpacity
-                onPress={() =>
-                    handleDeleteProduct(item.activeTab, item.product)
-                }
+                onPress={() => showDeleteAlert(item)}
                 className="p-2"
             >
                 <Trash2 size={16} color="#B87C4C" />
@@ -174,11 +219,12 @@ export const RoutineEdit = ({ morning, evening }: RoutineEditProps) => {
                     </View>
                     <TouchableOpacity
                         onPress={handleSaveChanges}
-                        className="bg-secondary px-4 py-2 rounded-full"
+                        className="bg-secondary flex flex-row items-center justify-center gap-2 px-4 py-2 rounded-full"
                         style={{
                             boxShadow: "inset 0 0 10px 0 rgba(0, 0, 0, 0.3)",
                         }}
                     >
+                        <Save size={16} color="#B87C4C" />
                         <Text className="text-primary font-semibold">Save</Text>
                     </TouchableOpacity>
                 </View>
@@ -298,9 +344,7 @@ export const RoutineEdit = ({ morning, evening }: RoutineEditProps) => {
 
                         {/* Add Product Button */}
                         <TouchableOpacity
-                            onPress={() =>
-                                handleAddProduct(activeTab, "New Product")
-                            }
+                            onPress={() => handleShowProductSearch(activeTab)}
                             activeOpacity={1}
                             className="flex-row items-center justify-center py-3 mt-2 border-2 border-dashed border-primary/30 rounded-2xl"
                         >
@@ -312,6 +356,27 @@ export const RoutineEdit = ({ morning, evening }: RoutineEditProps) => {
                     </View>
                 </View>
             </ScrollView>
+
+            {/* Product Search Modal */}
+            {showProductSearch && (
+                <View className="absolute inset-0 bg-white z-50">
+                    <ProductSearch
+                        type={searchType}
+                        onProductAdded={handleProductAdded}
+                        onClose={handleCloseProductSearch}
+                    />
+                </View>
+            )}
+
+            {/* Delete Confirmation Alert */}
+            {isAlertVisible && selectedProduct && (
+                <CustomAlertBox
+                    title="Confirm Delete"
+                    message={`Are you sure you want to remove ${selectedProduct.product} from your ${selectedProduct.type} routine?`}
+                    onYes={handleDeleteConfirm}
+                    onNo={handleDeleteCancel}
+                />
+            )}
         </>
     );
-};
+}

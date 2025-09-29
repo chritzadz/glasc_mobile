@@ -18,7 +18,7 @@ export interface OcrProduct {
     sim: number;
 }
 
-export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
+export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
     const router = useRouter();
     const [productIngredients, setProductIngredients] = useState<string[]>([]);
     const [analysis, setAnalysis] = useState(null);

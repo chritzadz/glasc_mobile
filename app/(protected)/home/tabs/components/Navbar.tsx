@@ -16,7 +16,7 @@ import Animated, {
 import { type Dispatch, type SetStateAction } from "react";
 import { Tabs, NavItems } from "../..";
 
-export const Navbar = ({
+export default function Navbar({
     tabs,
     setTabs,
     navItems,
@@ -24,7 +24,7 @@ export const Navbar = ({
     tabs: Tabs;
     setTabs: Dispatch<SetStateAction<Tabs>>;
     navItems: typeof NavItems;
-}) => {
+}) {
     const slidePosition = useSharedValue(0);
     const getActiveTabIndex = () => {
         const tabKeys = Object.keys(navItems);
@@ -124,4 +124,4 @@ export const Navbar = ({
             </BlurView>
         </View>
     );
-};
+}

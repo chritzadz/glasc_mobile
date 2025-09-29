@@ -1,37 +1,36 @@
-import { useRouter } from "expo-router";
 import {
     View,
     ScrollView,
     TouchableOpacity,
     TextInput,
     Alert,
+    Text,
 } from "react-native";
-import { SearchIcon, ChevronLeft } from "lucide-react-native";
+import { SearchIcon, X } from "lucide-react-native";
 import React, { useState, useEffect } from "react";
 
-import { Product } from "../../../../model/Product";
-import CurrentUser from "../../../../model/CurrentUser";
-import CustomAlertBox from "../../../../components/CustomAlertBox";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ProductItemBox } from "../../../../components/ProductItemBox";
+import { Product } from "../../../../../model/Product";
+import CurrentUser from "../../../../../model/CurrentUser";
+import CustomAlertBox from "../../../../../components/CustomAlertBox";
+import { ProductItemBox } from "../../../../../components/ProductItemBox";
 
-interface SkincareRoutineSearchProp {
-    type: string; //AM or PM only
+interface ProductSearchProps {
+    type: "morning" | "evening";
+    onProductAdded: () => void;
+    onClose: () => void;
 }
 
-export default function SkincareRoutineSearch({
+export default function ProductSearch({
     type,
-}: SkincareRoutineSearchProp) {
-    const router = useRouter();
+    onProductAdded,
+    onClose,
+}: ProductSearchProps) {
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [isAlertVisible, setAlertVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState("");
-
-    const handleBack = () => {
-        router.push("/skincare_routine");
-    };
+    const [isLoading, setIsLoading] = useState(false);
 
     const showAlert = (productName: string) => {
         setSelectedProduct(productName);
@@ -40,9 +39,14 @@ export default function SkincareRoutineSearch({
 
     const handleYes = async () => {
         console.log("User selected Yes");
-        await addProduct(selectedProduct);
+        setIsLoading(true);
+        const success = await addProduct(selectedProduct);
+        setIsLoading(false);
         setAlertVisible(false);
-        handleBack();
+        if (success) {
+            onProductAdded();
+            onClose();
+        }
     };
 
     const handleNo = () => {
@@ -50,8 +54,9 @@ export default function SkincareRoutineSearch({
         setAlertVisible(false);
     };
 
-    const getProduct = async (): Promise<void> => {
+    const getProducts = async (): Promise<void> => {
         try {
+            setIsLoading(true);
             const response = await fetch("/api/skincare", {
                 method: "GET",
                 headers: {
@@ -62,9 +67,12 @@ export default function SkincareRoutineSearch({
             const data = await response.json();
 
             const productObjects: Product[] = data.map((item: any) => ({
-                name: item.product_name,
-                url: item.product_url,
-                ingredients: item.ingredients || "",
+                product_name: item.product_name,
+                product_url: item.product_url,
+                price: item.price || "",
+                product_id: item.product_id || "",
+                image_url: item.image_url || "",
+                category: item.category || "",
             }));
             setFilteredProducts(productObjects);
             setProducts(productObjects);
@@ -73,10 +81,12 @@ export default function SkincareRoutineSearch({
                 "Error",
                 "Failed to fetch products. Please try again later."
             );
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const filterProduct = () => {
+    const filterProducts = () => {
         if (!Array.isArray(products) || products.length === 0) {
             setFilteredProducts(products);
             return;
@@ -96,62 +106,79 @@ export default function SkincareRoutineSearch({
         setFilteredProducts(newFilteredProducts);
     };
 
-    const addProduct = async (name: String) => {
-        console.log(name);
-        const response = await fetch("/api/skincareRoutine", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                user_id: CurrentUser.getInstance().getId(),
-                product: name,
-                type: type === "AM" ? "morning" : "evening",
-            }),
-        });
+    const addProduct = async (productName: string): Promise<boolean> => {
+        try {
+            console.log(productName);
+            const response = await fetch("/api/skincareRoutine", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user_id: CurrentUser.getInstance().getId(),
+                    product: productName,
+                    type: type,
+                }),
+            });
 
-        console.log("Response status:", response.status);
+            console.log("Response status:", response.status);
 
-        if (response.ok) {
-            Alert.alert(`Success", "Product added to ${type} routine.`);
-            return true;
-        } else {
-            Alert.alert("Error", `Fail to add ${type} routine.`);
+            if (response.ok) {
+                Alert.alert("Success", `Product added to ${type} routine.`);
+                return true;
+            } else {
+                Alert.alert("Error", `Failed to add ${type} routine.`);
+                return false;
+            }
+        } catch (error) {
+            Alert.alert("Error", "Failed to add product. Please try again.");
             return false;
         }
     };
 
     useEffect(() => {
-        console.log(type);
-        getProduct();
+        getProducts();
     }, []);
+
+    useEffect(() => {
+        filterProducts();
+    }, [searchTerm, products]);
 
     return (
         <View className="flex-1 bg-[#F7F4EA]">
-            <SafeAreaView>
-                <View className="gap-2">
-                    <View className="px-5 pt-4 h-full">
-                        <View className="w-full flex flex-row gap-2">
-                            <View className="items-center w-[20px] p-2 flex justify-center">
-                                <ChevronLeft
-                                    color="#B87C4C"
-                                    onPress={handleBack}
-                                ></ChevronLeft>
-                            </View>
-                            <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] bg-[#F7F4EA] flex-1 px-2 flex flex-row gap-2">
-                                <SearchIcon
-                                    color="#B87C4C"
-                                    onPress={filterProduct}
-                                />
-                                <TextInput
-                                    placeholder="Search your products here..."
-                                    value={searchTerm}
-                                    onChangeText={setSearchTerm}
-                                    className="text-[#b69982] w-full text-lg border-0"
-                                />
-                            </View>
+            <View className="px-5 pt-4 h-full">
+                {/* Header with close and search */}
+                <View className="w-full flex flex-row gap-2 mb-4">
+                    <TouchableOpacity
+                        onPress={onClose}
+                        className="items-center w-[40px] p-2 flex justify-center"
+                    >
+                        <X color="#B87C4C" size={24} />
+                    </TouchableOpacity>
+                    <View className="rounded-2xl p-1 border-2 items-center border-[#B87C4C] bg-[#F7F4EA] flex-1 px-2 flex flex-row gap-2">
+                        <SearchIcon color="#B87C4C" />
+                        <TextInput
+                            placeholder="Search your products here..."
+                            value={searchTerm}
+                            onChangeText={setSearchTerm}
+                            className="text-[#b69982] w-full text-lg border-0"
+                        />
+                    </View>
+                </View>
+
+                {/* Products Grid */}
+                <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                >
+                    {isLoading ? (
+                        <View className="flex-1 items-center justify-center py-8">
+                            <Text className="text-[#B87C4C] text-lg">
+                                Loading products...
+                            </Text>
                         </View>
-                        <ScrollView className="flex flex-col gap-2 mt-2 w-full">
+                    ) : filteredProducts.length > 0 ? (
+                        <View className="flex flex-col gap-2 w-full">
                             {Array.from({
                                 length: Math.ceil(filteredProducts.length / 2),
                             }).map((_, rowIdx) => (
@@ -170,13 +197,15 @@ export default function SkincareRoutineSearch({
                                         >
                                             <ProductItemBox
                                                 imageUrl={
+                                                    filteredProducts[rowIdx * 2]
+                                                        ?.image_url ||
                                                     "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
                                                 }
                                                 name={
                                                     filteredProducts[rowIdx * 2]
                                                         ?.product_name
                                                 }
-                                                description={"desc"}
+                                                description=""
                                                 onPress={() => {}}
                                             />
                                         </TouchableOpacity>
@@ -194,6 +223,9 @@ export default function SkincareRoutineSearch({
                                             >
                                                 <ProductItemBox
                                                     imageUrl={
+                                                        filteredProducts[
+                                                            rowIdx * 2 + 1
+                                                        ]?.image_url ||
                                                         "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
                                                     }
                                                     name={
@@ -201,7 +233,7 @@ export default function SkincareRoutineSearch({
                                                             rowIdx * 2 + 1
                                                         ]?.product_name
                                                     }
-                                                    description={"desc"}
+                                                    description=""
                                                     onPress={() => {}}
                                                 />
                                             </TouchableOpacity>
@@ -209,20 +241,19 @@ export default function SkincareRoutineSearch({
                                     )}
                                 </View>
                             ))}
-                        </ScrollView>
-                        {/* <FlatList
-                            data={filteredProducts}
-                            keyExtractor={(item) => item.name}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => showAlert(item.name)}>
-                                    <Text className="p-2 text-lg">{item.name}</Text>
-                                </TouchableOpacity>
-                            )}
-                            className="mt-0 w-full" // Apply any Tailwind classes here
-                        /> */}
-                    </View>
-                </View>
-            </SafeAreaView>
+                        </View>
+                    ) : (
+                        <View className="flex-1 items-center justify-center py-8">
+                            <Text className="text-[#B87C4C] text-lg text-center">
+                                {searchTerm
+                                    ? `No products found for "${searchTerm}"`
+                                    : "No products available"}
+                            </Text>
+                        </View>
+                    )}
+                </ScrollView>
+            </View>
+
             {isAlertVisible && (
                 <CustomAlertBox
                     title="Confirm Action"

@@ -10,7 +10,7 @@ import { ScrollView, Alert } from "react-native";
 import CurrentUser from "../../../model/CurrentUser";
 import { useAuth } from "../../../contexts/AuthContext";
 
-export function Settings() {
+export default function Settings() {
     const router = useRouter();
     const { logout, user } = useAuth();
 
