@@ -1,5 +1,6 @@
 export interface Routine {
     user_id: number;
-    product: string;
+    product_id: number;
+    product_name: string;
     type: string;
 }
