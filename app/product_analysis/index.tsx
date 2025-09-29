@@ -31,6 +31,8 @@ export default function ProductAnalysisPage() {
 
     const [skincareProducts, setSkincareProducts] = useState<Product[]>([]);
 
+    const defaultImageURL ="https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover";
+
     const ingredients = [
         "Aqua",
         "Zinc Oxide",
@@ -175,7 +177,7 @@ export default function ProductAnalysisPage() {
                             <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                             <View className="flex-1">
                                 <ProductCard
-                                    productImage="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
+                                    productImage= {skincareProducts[rowIdx * 2]?.image_url || defaultImageURL}
                                     productName= {skincareProducts[rowIdx * 2]?.product_name}
                                     similarPercentage={'86'}
                                     matchPercentage={'96'}

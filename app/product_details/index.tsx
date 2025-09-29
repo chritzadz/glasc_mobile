@@ -167,7 +167,8 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                             <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                             <View className="flex-1">
                                 <ProductCard
-                                    productImage="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
+                                    //productImage="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
+                                    productImage= {skincareProducts[rowIdx * 2]?.image_url || defaultImageURL}
                                     productName= {skincareProducts[rowIdx * 2]?.product_name}
                                     similarPercentage={'86'}
                                     matchPercentage={'96'}
@@ -178,35 +179,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                         ))}
                     </View>
                 </ScrollView>
-                {/* <View className="absolute self-center bottom-16 flex flex-row rounded-full bg-[#B87C4C] justify-center items-center p-2 shadow-black shadow-lg">
-                        <View className="bg-[#B87C4CCC] rounded-full px-4 py-2">
-                            <View className="flex flex-row items-center justify-center gap-2">
-                                <ShoppingCart
-                                    className="text-[#B87C4C]"
-                                    size={24}
-                                    color="white"
-                                />
-                                <Text className="font-bold text-2xl m-0 text-white">
-                                    Buy
-                                </Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity>
-                            <View className="bg-transparent z-[0] rounded-full px-4 py-2">
-                                <View className="flex flex-row items-center justify-center gap-2">
-                                    <CirclePlus
-                                        className="text-[#F7F4EA]"
-                                        size={24}
-                                        color="#F7F4EA"
-                                    />
-                                    <Text className="font-bold text-2xl m-0 text-[#F7F4EA]">
-                                        Add
-                                    </Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                </View> */}
-                <View style={styles.buttonContainer}> {/* Added elevation */}
+                <View style={styles.buttonContainer}>
                     <View className="px-4 py-2">
                         <View className="flex flex-row items-center justify-center gap-2">
                             <ShoppingCart

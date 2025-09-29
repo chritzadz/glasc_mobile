@@ -16,6 +16,8 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [isFetchingFromDb, setIsFetchingFromDb] = useState(true);
 
+    const defaultImageURL ="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80";
+
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
             setFilteredProducts(products); // Reset if products array is empty or not an array
@@ -89,7 +91,8 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                 <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                                 <View className="flex-1 shadow">
                                     <ProductItemBox
-                                    imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
+                                    //imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
+                                    imageUrl={filteredProducts[rowIdx * 2]?.image_url || defaultImageURL}
                                     name={filteredProducts[rowIdx * 2]?.product_name}
                                     description={"tthis"}
                                     onPress={() => handleProductPress(filteredProducts[rowIdx * 2]?.product_name, filteredProducts[rowIdx * 2]?.product_id, filteredProducts[rowIdx * 2]?.image_url)}
@@ -98,7 +101,8 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                 {filteredProducts[rowIdx * 2 + 1] && (
                                     <View className="flex-1 shadow">
                                     <ProductItemBox
-                                        imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
+                                        //imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
+                                        imageUrl={filteredProducts[rowIdx * 2 + 1]?.image_url || defaultImageURL}
                                         name={filteredProducts[rowIdx * 2 + 1]?.product_name}
                                         description={"tthis"}
                                         onPress={() => handleProductPress(filteredProducts[rowIdx * 2 + 1]?.product_name, filteredProducts[rowIdx * 2 + 1]?.product_id, filteredProducts[rowIdx * 2 + 1]?.image_url)}
