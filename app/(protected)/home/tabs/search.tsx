@@ -15,8 +15,11 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Product } from "../../../../model/Product";
+import { useRouter } from "expo-router";
+import CurrentProduct from "../../../../model/CurrentProduct";
 
 export const Search = () => {
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -26,6 +29,9 @@ export const Search = () => {
     const searchInputRef = useRef<TextInput>(null);
 
     const searchBarPosition = useSharedValue(0);
+
+    const defaultImageURL =
+        "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80";
 
     const filterProduct = () => {
         if (!Array.isArray(products) || products.length === 0) {
@@ -164,6 +170,17 @@ export const Search = () => {
         };
     });
 
+    const handleProductPress = (
+        product_name: string,
+        product_id: string,
+        image_url: string
+    ) => {
+        CurrentProduct.getInstance().setProductName(product_name);
+        CurrentProduct.getInstance().setProductId(product_id);
+        CurrentProduct.getInstance().setProductUrl(image_url);
+        router.push("product_details");
+    };
+
     return (
         <View className="relative flex flex-col w-full h-screen items-center px-5">
             {/* Animated Search Bar */}
@@ -294,19 +311,34 @@ export const Search = () => {
                                     >
                                         <ProductItemBox
                                             imageUrl={
-                                                "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80"
+                                                filteredProducts[rowIdx * 2]
+                                                    ?.image_url ||
+                                                defaultImageURL
                                             }
                                             name={
                                                 filteredProducts[rowIdx * 2]
                                                     ?.product_name
                                             }
                                             description={"tthis"}
+                                            onPress={() =>
+                                                handleProductPress(
+                                                    filteredProducts[rowIdx * 2]
+                                                        ?.product_name,
+                                                    filteredProducts[rowIdx * 2]
+                                                        ?.product_id,
+                                                    filteredProducts[rowIdx * 2]
+                                                        ?.image_url
+                                                )
+                                            }
                                         />
 
                                         {filteredProducts[rowIdx * 2 + 1] && (
                                             <ProductItemBox
                                                 imageUrl={
-                                                    "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80"
+                                                    filteredProducts[
+                                                        rowIdx * 2 + 1
+                                                    ]?.image_url ||
+                                                    defaultImageURL
                                                 }
                                                 name={
                                                     filteredProducts[
@@ -314,6 +346,19 @@ export const Search = () => {
                                                     ]?.product_name
                                                 }
                                                 description={"tthis"}
+                                                onPress={() =>
+                                                    handleProductPress(
+                                                        filteredProducts[
+                                                            rowIdx * 2 + 1
+                                                        ]?.product_name,
+                                                        filteredProducts[
+                                                            rowIdx * 2 + 1
+                                                        ]?.product_id,
+                                                        filteredProducts[
+                                                            rowIdx * 2 + 1
+                                                        ]?.image_url
+                                                    )
+                                                }
                                             />
                                         )}
                                     </View>

@@ -1,19 +1,23 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 
 interface ProductItemBoxProps {
     imageUrl: string;
     name: string;
     description: string;
+    onPress: () => void; // Add onPress prop
 }
 
 export const ProductItemBox = ({
     imageUrl,
     name,
     description,
+    onPress,
 }: ProductItemBoxProps) => (
-    <View
+    <TouchableOpacity
+        onPress={onPress}
         style={{ boxShadow: "inset 0px 0px 10px 0px rgba(0, 0, 0, 0.3)" }}
         className="flex-1 shadow w-full h-[220px] flex-col items-center justify-center rounded-2xl bg-[#B87C4C]"
+        activeOpacity={1}
     >
         <Image
             source={{ uri: imageUrl }}
@@ -29,5 +33,5 @@ export const ProductItemBox = ({
                 {name}
             </Text>
         </View>
-    </View>
+    </TouchableOpacity>
 );

@@ -1,13 +1,11 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
-import { UsersRound, Camera } from "lucide-react-native";
+import { Camera } from "lucide-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProcessPhoto } from "./components/process-photo";
-import { Dropdown } from "../../../../components/Dropdown";
-import { Settings } from "../settings-dropdown";
 
 export function Scan() {
     const [facing, setFacing] = useState<CameraType>("back");

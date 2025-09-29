@@ -14,13 +14,16 @@ interface ProcessPhotoProps {
 
 export interface OcrProduct {
     product_name: string;
+    product_id: number;
     sim: number;
 }
 
 export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
     const router = useRouter();
+    const [productIngredients, setProductIngredients] = useState<string[]>([]);
     const [analysis, setAnalysis] = useState(null);
     const [productName, setProductName] = useState("");
+    const [productId, setProductId] = useState("");
 
     //intermediate steps:
     //1. process data using the api idk.
@@ -61,14 +64,21 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
             const data = await response.json();
             const temp: OcrProduct[] = data.simProducts;
             const detectedProductName = temp[0].product_name; // Get the actual value
+            const detectedProductId = temp[0].product_id;
+            const detectedProductIdStr = detectedProductId.toString();
+            setProductId(detectedProductIdStr);
             setProductName(detectedProductName); // Update state for UI
             return detectedProductName; // Return the value for immediate use
         };
 
         const fetchIngredients = async (productName: string) => {
-            console.log("FETCH INGREDIENTS:\n");
+            if (!productId) {
+                console.error("No product ID available");
+                return;
+            }
+
             const response = await fetch(
-                `/api/ingredient?product_name=${productName}`,
+                `https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${productId}`,
                 {
                     method: "GET",
                     headers: {
@@ -77,10 +87,15 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
                 }
             );
 
+            if (!response.ok) {
+                console.error(`HTTP error! Status: ${response.status}`);
+            }
+
             const data = await response.json();
+            const ingredientsArray = data;
+            setProductIngredients(ingredientsArray);
 
             const temp: string[] = data;
-            console.log(temp);
             return temp;
         };
 
@@ -130,7 +145,7 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
         //here assuming it always exist in the db
         //got the product name and ingredients
         try {
-            const ingredients = await fetchIngredients(detectedProductName);
+            const ingredients = await fetchIngredients(productId);
             const details = await fetchPersonalDetails();
             if (ingredients && details) {
                 await fetchAnalysis(ingredients, details);
@@ -188,6 +203,7 @@ export function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
                             pathname: "/product_analysis",
                             params: {
                                 productName,
+                                productId,
                                 analysis: JSON.stringify(analysis),
                             },
                         });
