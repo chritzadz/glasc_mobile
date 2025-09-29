@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --primary-color: #b87c4c;
+    --secondary-color: #f7f4ea;
+    --tertiary-color: #996032;
+}
+
+/* Global font family for Expo fonts */
+* {
+    font-family: "Lexend_400Regular";
+}
