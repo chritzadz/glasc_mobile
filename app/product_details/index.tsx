@@ -16,10 +16,11 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     const [ingredients, setIngredients] = useState<string[]>([]);
     const [productName, setProductName] = useState<string | null>(null);
     const [productId, setProductId] = useState<string | null>(null);
-    const [productURL, setProductUrl] = useState<string | null>(null);
+    const [imageURL, setImageUrl] = useState<string | null>(null);
     const [skincareProducts, setSkincareProducts] = useState<Product[]>([]);
 
     const maxLength = 30;
+    const defaultImageURL ="https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover";
 
     const handleBack = () => {
         router.back();
@@ -70,16 +71,17 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         const productInstance = CurrentProduct.getInstance(); // Type is CurrentProduct
         const product_name = productInstance.getProductName();
         const product_id = productInstance.getProductId();
-        const product_url = productInstance.getProductUrl();
+        const image_url = productInstance.getProductUrl();
 
         console.log(product_name);
         console.log(product_id);
+        console.log(image_url);
 
         setProductName(product_name);
         setProductId(product_id);
-        setProductUrl(product_url);
+        setImageUrl(image_url);
         if (product_id) {
-            fetchIngredients();  // Call fetchIngredients only if productId is available
+            fetchIngredients();
         }
     }, [productId]);
 
@@ -104,7 +106,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                     </View>
                     <View className="flex flex-row items-center px-5 mb-2">
                         <Image
-                            source={{uri: "https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover"}}
+                            source={{ uri: imageURL || defaultImageURL }}
                             className="w-full h-[370px] rounded-[16px]"
                             resizeMode="cover"
                         />
