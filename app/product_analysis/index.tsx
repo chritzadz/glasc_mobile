@@ -23,9 +23,9 @@ interface Analysis {
 export default function ProductAnalysisPage() {
     const router = useRouter();
     const params = useLocalSearchParams();
-    const [ingredient, setIngredients] = useState<string[]>([]);
-    const [productId, setProductId] = useState<string | null>(null);
+    const [ingredients, setIngredients] = useState<string[]>([]);
     const productName = Array.isArray(params.productName) ? params.productName[0] : params.productName;
+    const productId = Array.isArray(params.productId) ? params.productId[0] : params.productId;
     const analysisStr = Array.isArray(params.analysis) ? params.analysis[0] : params.analysis;
     const analysis: Analysis = JSON.parse(analysisStr);
 
@@ -33,22 +33,8 @@ export default function ProductAnalysisPage() {
 
     const defaultImageURL ="https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover";
 
-    const ingredients = [
-        "Aqua",
-        "Zinc Oxide",
-        "C12-15 Alky Benzoate",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol"
-    ];
-
     useEffect(() => {
+        fetchIngredients();
         const fetchSkincareProducts = async () => {
             try {
                 const response = await fetch('/api/skincare');
