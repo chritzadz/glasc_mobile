@@ -81,6 +81,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 			return temp;
 		};
 
+
 		const fetchPersonalDetails = async () => {
 			console.log("FETCH PERSONAL DETAILS:\n");
 			const userId = CurrentUser.getInstance().getId();

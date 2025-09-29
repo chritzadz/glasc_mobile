@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Text, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, Text, View, StyleSheet, Dimensions } from 'react-native';
 import { SearchIcon, ArrowLeft, Flag } from 'lucide-react-native';
 import { TextInput, Alert, ScrollView, TouchableOpacity, Image } from 'react-native';
 import ProductItemBox from '../../components/ProductItemBox';
@@ -11,6 +11,12 @@ import  IngredientItem from '../../components/SingleIngredientBox';
 import ProductCard from '../../components/ProductCard';
 import CurrentProduct from "../../model/CurrentProduct";
 
+import Animated, {
+    useSharedValue,
+    withTiming,
+    useAnimatedStyle,
+} from "react-native-reanimated";
+
 const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     const router = useRouter();
     const [ingredients, setIngredients] = useState<string[]>([]);
@@ -18,13 +24,42 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     const [productId, setProductId] = useState<string | null>(null);
     const [imageURL, setImageUrl] = useState<string | null>(null);
     const [skincareProducts, setSkincareProducts] = useState<Product[]>([]);
+    const [IngredientDetailsOpen, setIngredientDetailsOpen] = useState(false);
 
-    const maxLength = 30;
+    const screenHeight = Dimensions.get("window").height - 50;
+    const slideAnim = useSharedValue(-screenHeight);
+
     const defaultImageURL ="https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover";
+
+    const slideStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateY: withTiming(slideAnim.value, { duration: 600 }) },
+        ],
+    }));
+
+    const showIngredientDetails = () => {
+        setIngredientDetailsOpen(true);
+        slideAnim.value = 0;
+    };
+
+    const hideIngredientDetails = () => {
+        setIngredientDetailsOpen(false);
+        slideAnim.value = -screenHeight;
+    };
 
     const handleBack = () => {
         router.back();
     };
+
+    const handleIngredientClick = () => {
+        router.push({
+            pathname: '/ingredient_details',
+            params: {
+                productName,
+                ingredients: JSON.stringify(ingredients),
+            },
+        })
+    }
 
     const fetchIngredients = async () => {
         if (!productId) {
@@ -48,6 +83,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
     
             const data = await response.text();  
             console.log("Fetched data:", data); 
+            
 
             const ingredientsArray = JSON.parse(data);  
             setIngredients(ingredientsArray); 
@@ -116,7 +152,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                         <Text className="font-semibold text-white text-xs">Physical sunscreen with green tint color corrector to help cover face with redness.</Text>
                     </View>
                     <View className="gap-2 mb-2 px-5">
-                        <Text className="font-bold text-white text-base">Ingredients</Text>
+                        <Text className="font-bold text-white text-base" onPress={handleIngredientClick}>Ingredients</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex flex-row gap-1">
                             {ingredients.map((item, index) => (
                                 <IngredientItem key={index} name={item} />
