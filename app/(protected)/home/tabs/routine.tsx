@@ -206,14 +206,14 @@ export default function Routine() {
                                     AMRoutineProducts.map((step, index) => (
                                         <View
                                             key={index}
-                                            className="flex-1 shadow bg-secondary rounded-2xl p-4 flex-row items-center"
+                                            className="bg-secondary rounded-2xl p-4 mb-3 flex-row items-center"
                                             style={{
                                                 boxShadow:
                                                     "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
                                             }}
                                         >
                                             <View
-                                                className="w-8 h-8 rounded-full bg-secondary items-center justify-center mr-4"
+                                                className="w-8 h-8 rounded-full bg-secondary items-center justify-center mr-3"
                                                 style={{
                                                     boxShadow:
                                                         "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
@@ -224,16 +224,12 @@ export default function Routine() {
                                                 </Text>
                                             </View>
 
-                                            {/* <Image
-                                            source={{ uri:  }}
-                                            className="w-12 h-12 rounded-xl mr-3"
-                                        /> */}
                                             <View className="flex-1">
                                                 <Text className="text-primary font-semibold text-base">
                                                     {step.product_name}
                                                 </Text>
                                                 <Text className="text-primary/70 text-sm">
-                                                    Step {step.type}
+                                                    {step.type}
                                                 </Text>
                                             </View>
                                         </View>
