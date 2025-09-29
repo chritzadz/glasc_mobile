@@ -1,11 +1,11 @@
 export async function GET(request: Request) {
     try {
         const url = new URL(request.url);
-        const product_name = url.searchParams.get('product_name');
+        const product_id = url.searchParams.get('product_id');
             
-        console.log(`https://glasc-api.netlify.app/api/skincare/ingredient?product_name=${product_name}`);
+        console.log(`https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${product_id}`);
 
-        const response = await fetch(`https://glasc-api.netlify.app/api/skincare/ingredient?product_name=${product_name}`, {
+        const response = await fetch(`https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${product_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
