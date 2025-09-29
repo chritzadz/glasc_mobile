@@ -21,6 +21,15 @@ export default function Settings({ onClose }: { onClose?: () => void }) {
         }
     };
 
+    const handleTest = () => {router.push({
+        pathname: '/product_analysis',
+        params: {
+            productName: "LABORE Acne Oil Product Skincare",
+            analysis: JSON.stringify("this is the analysis"),
+        },
+        })}
+
+
     return (
         <>
             <View className="absolute h-screen w-screen z-10 bg-black/30 backdrop-blur-xl" />
@@ -83,6 +92,17 @@ export default function Settings({ onClose }: { onClose?: () => void }) {
                             <LogOut size={28} color="#fff" />
                             <Text className="ml-4 text-lg font-semibold text-white">
                                 Logout
+                            </Text>
+                        </Pressable>
+                    </View>
+                    <View className="mb-4">
+                        <Pressable
+                            className="flex-row items-center rounded-2xl bg-[#B87C4C] p-4 justify-start"
+                            onPress={handleTest}
+                        >
+                            <LogOut size={28} color="#fff" />
+                            <Text className="ml-4 text-lg font-semibold text-white">
+                                Test
                             </Text>
                         </Pressable>
                     </View>

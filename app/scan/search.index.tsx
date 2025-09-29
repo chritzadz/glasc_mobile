@@ -34,9 +34,10 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
         setFilteredProducts(newFilteredProducts);
     };
 
-    const handleProductPress = (product_name: string, product_id: string) => {
+    const handleProductPress = (product_name: string, product_id: string, product_url: string) => {
         CurrentProduct.getInstance().setProductName(product_name);
         CurrentProduct.getInstance().setProductId(product_id);
+        CurrentProduct.getInstance().setProductUrl(product_url);
         router.push("product_details");
     }
 
@@ -91,7 +92,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                     imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
                                     name={filteredProducts[rowIdx * 2]?.product_name}
                                     description={"tthis"}
-                                    onPress={() => handleProductPress(filteredProducts[rowIdx * 2]?.product_name, filteredProducts[rowIdx * 2]?.product_id)}
+                                    onPress={() => handleProductPress(filteredProducts[rowIdx * 2]?.product_name, filteredProducts[rowIdx * 2]?.product_id, filteredProducts[rowIdx * 2]?.product_url)}
                                     />
                                 </View>
                                 {filteredProducts[rowIdx * 2 + 1] && (
@@ -100,7 +101,7 @@ const SearchScreen = ({ onClose }: { onClose?: () => void }) => {
                                         imageUrl={'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80'}
                                         name={filteredProducts[rowIdx * 2 + 1]?.product_name}
                                         description={"tthis"}
-                                        onPress={() => handleProductPress(filteredProducts[rowIdx * 2 + 1]?.product_name, filteredProducts[rowIdx * 2]?.product_id)}
+                                        onPress={() => handleProductPress(filteredProducts[rowIdx * 2 + 1]?.product_name, filteredProducts[rowIdx * 2 + 1]?.product_id, filteredProducts[rowIdx * 2 + 1]?.product_url)}
                                     />
                                     </View>
                                 )}

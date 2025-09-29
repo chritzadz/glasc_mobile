@@ -11,47 +11,17 @@ import  IngredientItem from '../../components/SingleIngredientBox';
 import CurrentProduct from "../../model/CurrentProduct";
 
 const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
-    const items = [
-        "Aqua",
-        "Zinc Oxide",
-        "C12-15 Alky Benzoate",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol",
-        "Propanediol"
-    ];
-
     const router = useRouter();
     const [ingredients, setIngredients] = useState<string[]>([]);
     const [productName, setProductName] = useState<string | null>(null);
     const [productId, setProductId] = useState<string | null>(null);
+    const [productURL, setProductUrl] = useState<string | null>(null);
     const maxLength = 30;
 
     const handleBack = () => {
         router.back();
     };
 
-    // const fetchIngredients = async () => {
-    //     console.log("FETCH INGREDIENTS:\n");
-    //     const response = await fetch(`/api/ingredient?product_id=${productId}`, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         }
-    //     });
-        
-    //     console.log("in");
-    //     const data = await response.json();
-    //     console.log("Fetched data:", data);
-    //     console.log(data);
-    //     const temp: string[] = data.split(',');
-    //     return temp;
-    // };
     const fetchIngredients = async () => {
         if (!productId) {
             console.log("No product ID available");
@@ -89,10 +59,14 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         const productInstance = CurrentProduct.getInstance(); // Type is CurrentProduct
         const product_name = productInstance.getProductName();
         const product_id = productInstance.getProductId();
+        const product_url = productInstance.getProductUrl();
+
         console.log(product_name);
         console.log(product_id);
+
         setProductName(product_name);
         setProductId(product_id);
+        setProductUrl(product_url);
         if (product_id) {
             fetchIngredients();  // Call fetchIngredients only if productId is available
         }
@@ -144,7 +118,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                         ))}
                         </View>
                     </View>
-                    <View style={styles.similarProducts}>
+                    <View>
                         <Text className="font-semibold text-white text-base">Similar Products</Text>
                     </View>
                 </ScrollView>
@@ -180,11 +154,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     ingredients: {
-        marginHorizontal: 20,
-        gap: 8,
-        marginBottom: 10,
-    },
-    similarProducts: {
         marginHorizontal: 20,
         gap: 8,
     },

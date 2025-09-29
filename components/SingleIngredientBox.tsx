@@ -5,7 +5,7 @@ interface SingleIngredientBox {
 }
 
 const IngredientItem = ({ name }: SingleIngredientBox) => (
-    <View className="bg-[#996032] rounded-full px-4 py-2 m-1">
+    <View className="bg-[#996032] rounded-full px-4 py-2 m-1 shadow-md shadow-black">
         <Text className="text-white font-semibold">{name}</Text>
     </View>
 );

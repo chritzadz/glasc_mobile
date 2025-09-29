@@ -1,9 +1,11 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AlertTriangle, ChevronLeft, Lightbulb } from 'lucide-react-native';
+import { AlertTriangle, ChevronLeft, Lightbulb, Flag, ArrowLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import ProductItemBox from '../../components/ProductItemBox';
+
+import IngredientItem from '../../components/SingleIngredientBox';
+import ProductCard from '../../components/ProductCard';
 import { Product } from '../../model/Product';
 
 interface HarmfulIngredient {
@@ -27,6 +29,21 @@ export default function ProductAnalysisPage() {
 
     const [skincareProducts, setSkincareProducts] = useState<Product[]>([]);
 
+    const ingredients = [
+        "Aqua",
+        "Zinc Oxide",
+        "C12-15 Alky Benzoate",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol",
+        "Propanediol"
+    ];
+
     useEffect(() => {
         const fetchSkincareProducts = async () => {
             try {
@@ -40,27 +57,48 @@ export default function ProductAnalysisPage() {
         fetchSkincareProducts();
     }, []);
 
+    const handleBack = () => {
+        router.back();
+    };
+
+    const handlePress = () => {
+    }
+
     return (
-        <View className="bg-[#F7F4EA] flex-1">
-            <SafeAreaView className="flex-1 px-5">
-                <ScrollView className="flex-1">
-                    <View className="flex-col flex gap-4">
-                        <View className="flex flex-row justify-center items-center p-2">
-                            <ChevronLeft onPress={() => {router.back();}}></ChevronLeft>
-                            <Text className="font-bold text-2xl flex w-full justify-center items-center">
-                                {productName}
+        <View className="flex-1 bg-[#B87C4C] shadow-md">
+            <SafeAreaView>
+                <ScrollView>
+                    <View style={styles.headerContainer}>
+                        <View className="bg-[#FFFFFF] rounded-full p-2">
+                            <TouchableOpacity onPress={handleBack}>
+                                <ArrowLeft color="#B87C4C" />
+                            </TouchableOpacity>
+                        </View>
+                        <View className="w-56">
+                            <Text className="font-semibold text-white text-base ml-4 overflow-hidden" 
+                                numberOfLines={1} 
+                                ellipsizeMode="tail">
+                                {productName || 'Loading...'}
                             </Text>
                         </View>
-                        
-                        <View className="flex-row flex-wrap flex items-center mb-2 gap-2">
-                            <View className="flex-row items-center bg-[#5078a7] border-[#B87C4C] border-2 px-2 py-1 rounded-full gap-1">
-                                <Lightbulb size={14} color={"white"}/>
-                                <Text className="text-white font-bold text-sm ">{analysis.type}</Text>
-                            </View>
-                            
-                            <View className="flex-row items-center bg-green-600 border-[#B87C4C] border-2 px-2 py-1 rounded-full gap-1">
+                        <Flag color="white" size={16}></Flag>
+                    </View>
+                    <View className="flex flex-row items-center px-5 mb-2">
+                        <Image
+                            source={{uri: "https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover"}}
+                            className="w-full h-[370px] rounded-[16px]"
+                            resizeMode="cover"
+                        />
+                    </View>
+                    <View className="flex-col flex gap-4 px-5">
+                        <View className="flex-row flex-wrap flex items-center mb-2 gap-2 justify-center">
+                            <View className="flex-row items-center bg-[#6AB778] border-[#B87C4C] border-2 px-2 py-1 rounded-full gap-1 w-40 justify-center">
                                 <Text className="text-white font-bold text-sm">{analysis.match_percentage}%</Text>
                                 <Text className="text-white text-sm font-bold">Match</Text>
+                            </View>
+                            <View className="flex-row items-center bg-[#6A7CB7] border-[#B87C4C] border-2 px-2 py-1 rounded-full gap-1 w-40 justify-center">
+                                <Lightbulb size={14} color={"white"}/>
+                                <Text className="text-white font-bold text-sm ">{analysis.type}</Text>
                             </View>
                         </View>
 
@@ -68,21 +106,32 @@ export default function ProductAnalysisPage() {
                             analysis.harmful_ingredients.map((item, idx) => (
                             <View
                                 key={idx}
-                                className="bg-[#ffe5e5] rounded-lg flex flex-row gap-3 items-center p-2"
+                                className="bg-[#ffe5e5] rounded-lg flex flex-row gap-3 items-center p-2 mx-5"
                             >
                                 <AlertTriangle></AlertTriangle>
                                 <View>
-                                    <Text className="font-bold">{item.ingredient}</Text>
-                                    <Text className="text-sm">{item.why}</Text>
+                                    <Text className="font-bold text-white">{item.ingredient}</Text>
+                                    <Text className="text-sm text-white">{item.why}</Text>
                                 </View>
                             </View>
                             ))
                         ) : (
-                            <Text style={{ marginTop: 8 }}>None detected.</Text>
+                            <Text style={{ marginTop: 8, color: 'white', fontSize: 12, fontWeight: 'bold' }}>None detected.</Text>
                         )}
-
-                        <View className="w-full">
-                            <Text className="font-bold text-2xl flex w-full justify-center items-center">
+                        <View className="gap-2 mb-2">
+                            <Text className="font-bold text-white text-base">Overview</Text>
+                            <Text className="font-semibold text-white text-xs">Physical sunscreen with green tint color corrector to help cover face with redness.</Text>
+                        </View>
+                        <View className="gap-2 mb-2">
+                            <Text className="font-bold text-white text-base">Ingredients</Text>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex flex-row gap-1">
+                                {ingredients.map((item, index) => (
+                                    <IngredientItem key={index} name={item} />
+                                ))}
+                            </ScrollView>
+                        </View>
+                        <View className="gap-2 mb-2">
+                            <Text className="font-bold text-white text-base flex w-full justify-center items-center">
                                 {"Similar Products"}
                             </Text>
                         </View>
@@ -90,28 +139,43 @@ export default function ProductAnalysisPage() {
                         {Array.from({ length: Math.ceil(skincareProducts.length / 2) }).map((_, rowIdx) => (
                             <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                             <View className="flex-1">
-                                <ProductItemBox
+                                {/* <ProductItemBox 
                                     imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
                                     name={skincareProducts[rowIdx * 2]?.product_name}
                                     description=''
+                                    onPress = {() => handlePress()}
+                                /> */}
+                                <ProductCard
+                                    productImage="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
+                                    productName= {skincareProducts[rowIdx * 2]?.product_name}
+                                    similarPercentage={'86'}
+                                    matchPercentage={'96'}
+                                    productType="Sunscreen"
                                 />
                             </View>
-                            {skincareProducts[rowIdx * 2 + 1] && (
-                                <View className="flex-1">
-                                <ProductItemBox
-                                    imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                    name={skincareProducts[rowIdx * 2 + 1]?.product_name}
-                                    description=''
-                                />
-                                </View>
-                            )}
                             </View>
                         ))}
                     </View>
                 </ScrollView>
             </SafeAreaView>
         </View>
-        
-        
     );
-}
+};
+
+const styles = StyleSheet.create({
+    headerContainer: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        marginHorizontal: 20,
+        marginBottom: 8, 
+        backgroundColor: '#996032',
+        borderRadius: 999,
+        height: 48,
+        paddingTop: 4,
+        paddingBottom: 4,
+        paddingLeft: 4, 
+        paddingRight: 16,
+        justifyContent: 'space-between',
+    },
+});
+
