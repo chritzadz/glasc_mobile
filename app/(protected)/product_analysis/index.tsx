@@ -154,14 +154,14 @@ export default function ProductAnalysisPage() {
                             analysis.harmful_ingredients.map((item, idx) => (
                                 <View
                                     key={idx}
-                                    className="bg-[#ffe5e5] rounded-lg flex flex-row gap-3 items-center p-2 mx-5"
+                                    className="bg-[rgb(247,215,215)] flex-1 rounded-lg flex flex-row gap-3 items-center p-2"
                                 >
-                                    <AlertTriangle></AlertTriangle>
-                                    <View>
-                                        <Text className="font-bold text-white">
+                                    <AlertTriangle color={"#b91c1c"}></AlertTriangle>
+                                    <View className="flex-1">
+                                        <Text className="font-bold text-black px-2">
                                             {item.ingredient}
                                         </Text>
-                                        <Text className="text-sm text-white">
+                                        <Text className="text-sm text-black px-2">
                                             {item.why}
                                         </Text>
                                     </View>
