@@ -23,6 +23,8 @@ interface Analysis {
 export default function ProductAnalysisPage() {
     const router = useRouter();
     const params = useLocalSearchParams();
+    const [ingredient, setIngredients] = useState<string[]>([]);
+    const [productId, setProductId] = useState<string | null>(null);
     const productName = Array.isArray(params.productName) ? params.productName[0] : params.productName;
     const analysisStr = Array.isArray(params.analysis) ? params.analysis[0] : params.analysis;
     const analysis: Analysis = JSON.parse(analysisStr);
@@ -63,6 +65,39 @@ export default function ProductAnalysisPage() {
 
     const handlePress = () => {
     }
+
+    const fetchIngredients = async () => {
+        if (!productId) {
+            console.log("No product ID available");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            console.log("succesful");
+    
+            const data = await response.text();  // Use .text() since the API returns a plain string
+            console.log("Fetched data:", data);  // Log the raw string
+    
+            // Split the string into an array
+            //const ingredientsArray = data.split(',').map(item => item.trim());  // Trim whitespace from each item
+            //setIngredients(ingredientsArray);  // Set the state with the array of ingredients
+            const ingredientsArray = JSON.parse(data);  // Convert string to array
+            setIngredients(ingredientsArray); 
+        } catch (error) {
+            console.error("Error fetching ingredients:", error);
+        }
+    };
 
     return (
         <View className="flex-1 bg-[#B87C4C] shadow-md">
@@ -139,12 +174,6 @@ export default function ProductAnalysisPage() {
                         {Array.from({ length: Math.ceil(skincareProducts.length / 2) }).map((_, rowIdx) => (
                             <View key={rowIdx} className="flex flex-row gap-2 mb-2">
                             <View className="flex-1">
-                                {/* <ProductItemBox 
-                                    imageUrl={'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80'}
-                                    name={skincareProducts[rowIdx * 2]?.product_name}
-                                    description=''
-                                    onPress = {() => handlePress()}
-                                /> */}
                                 <ProductCard
                                     productImage="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80"
                                     productName= {skincareProducts[rowIdx * 2]?.product_name}
