@@ -63,22 +63,23 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
             const data = await response.json();
             const temp: OcrProduct[] = data.simProducts;
+            console.log("process-photo:" + temp[0].product_name);
             const detectedProductName = temp[0].product_name; // Get the actual value
             const detectedProductId = temp[0].product_id;
             const detectedProductIdStr = detectedProductId.toString();
-            setProductId(detectedProductIdStr);
-            setProductName(detectedProductName); // Update state for UI
-            return detectedProductName; // Return the value for immediate use
+            await setProductId(detectedProductIdStr);
+            await setProductName(detectedProductName);
+            return detectedProductIdStr;
         };
 
-        const fetchIngredients = async (productName: string) => {
-            if (!productId) {
+        const fetchIngredients = async (productIdExtract: string) => {
+            if (!productIdExtract) {
                 console.error("No product ID available");
                 return;
             }
 
             const response = await fetch(
-                `https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${productId}`,
+                `https://glasc-api.netlify.app/api/skincare/ingredient?product_id=${productIdExtract}`,
                 {
                     method: "GET",
                     headers: {
@@ -137,15 +138,15 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
         };
 
         //process image
-        const detectedProductName = await processImg2Text();
-        console.log("GET PRODUCT NAME: " + detectedProductName);
+        const detectedProductId = await processImg2Text();
+        console.log("GET PRODUCT NAME: " + detectedProductId);
 
         //get the name of the product from the db (if not exist then idk...)
 
         //here assuming it always exist in the db
         //got the product name and ingredients
         try {
-            const ingredients = await fetchIngredients(productId);
+            const ingredients = await fetchIngredients(detectedProductId);
             const details = await fetchPersonalDetails();
             if (ingredients && details) {
                 await fetchAnalysis(ingredients, details);
