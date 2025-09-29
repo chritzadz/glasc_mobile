@@ -137,7 +137,7 @@ export default function ProductAnalysisPage() {
                     <View className="flex flex-row items-center px-5 mb-2">
                         <Image
                             source={{
-                                uri: "https://guardianindonesia.co.id/media/catalog/product/3/1/3117507.png?auto=webp&format=png&width=640&height=800&fit=cover",
+                                uri: defaultImageURL,
                             }}
                             className="w-full h-[370px] rounded-[16px]"
                             resizeMode="cover"
