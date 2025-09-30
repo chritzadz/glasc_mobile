@@ -1,6 +1,7 @@
 # Glasc Mobile 🧴✨
 
 A personalized skincare companion app that helps users make informed decisions about their skincare routine through AI-powered analysis, product scanning, and personalized recommendations.
+Web: https://glasc-api.netlify.app/
 
 ## 🌟 Features
 
