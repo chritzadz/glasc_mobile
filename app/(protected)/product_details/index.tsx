@@ -75,7 +75,6 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
 
     const fetchIngredients = async () => {
         if (!productId) {
-            console.log("No product ID available");
             return;
         }
 
@@ -94,10 +93,7 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            console.log("succesful");
-
             const data = await response.text();
-            console.log("Fetched data:", data);
 
             const ingredientsArray = JSON.parse(data);
             setIngredients(ingredientsArray);
@@ -122,10 +118,6 @@ const ProductDetailScreen = ({ onClose }: { onClose?: () => void }) => {
         const product_name = productInstance.getProductName();
         const product_id = productInstance.getProductId();
         const image_url = productInstance.getProductUrl();
-
-        console.log(product_name);
-        console.log(product_id);
-        console.log(image_url);
 
         setProductName(product_name);
         setProductId(product_id);

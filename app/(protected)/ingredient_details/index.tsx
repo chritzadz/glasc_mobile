@@ -25,7 +25,6 @@ export default function IngredientsDetails() {
         } else if (Array.isArray(ingredients)) {
             setIngredientList(ingredients);
         }
-        console.log(ingredientList);
     }, [ingredients]);
 
     const handleBack = () => {

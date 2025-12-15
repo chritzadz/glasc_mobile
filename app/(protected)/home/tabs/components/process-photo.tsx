@@ -46,7 +46,6 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
     const processPhoto = async () => {
         const processImg2Text = async () => {
-            console.log("uri: " + uri);
             const base64Img = await FileSystem.readAsStringAsync(uri!, {
                 encoding: FileSystem.EncodingType.Base64,
             });
@@ -63,7 +62,6 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
             const data = await response.json();
             const temp: OcrProduct[] = data.simProducts;
-            console.log("process-photo:" + temp[0].product_name);
             const detectedProductName = temp[0].product_name; // Get the actual value
             const detectedProductId = temp[0].product_id;
             const detectedProductIdStr = detectedProductId.toString();
@@ -100,8 +98,7 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
             return temp;
         };
 
-        const fetchPersonalDetails = async () => {
-            console.log("FETCH PERSONAL DETAILS:\n");
+        const fetchPersonalDetails = async () => {;
             const userId = CurrentUser.getInstance().getId();
             const response = await fetch(
                 `/api/personalDetails?user_id=${userId}`,
@@ -113,7 +110,6 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
                 }
             );
             const data = await response.json();
-            console.log(data.task.rows[0]);
             return data.task.rows[0];
         };
 
@@ -121,7 +117,6 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
             ingredients: string[],
             personalDetails: any
         ) => {
-            console.log("FETCH ANALYSUIS:\n");
             const response = await fetch("/api/analyzeProduct", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -133,13 +128,11 @@ export default function ProcessPhoto({ uri, onBack }: ProcessPhotoProps) {
 
             const data = await response.json();
 
-            console.log(data.analysis);
             setAnalysis(data.analysis);
         };
 
         //process image
         const detectedProductId = await processImg2Text();
-        console.log("GET PRODUCT NAME: " + detectedProductId);
 
         //get the name of the product from the db (if not exist then idk...)
 

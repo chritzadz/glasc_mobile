@@ -9,17 +9,12 @@ export async function GET(request: Request) {
             apiUrl += `?product_id=${productId}`;
         }
 
-        console.log(`Fetching from: ${apiUrl}`);
-
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
-
-        console.log(`Response status: ${response.status}`);
-        console.log(`Response ok: ${response.ok}`);
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -28,7 +23,6 @@ export async function GET(request: Request) {
         }
 
         const data = await response.json();
-        console.log("Data received from API:", data);
         
         return Response.json(data);
 

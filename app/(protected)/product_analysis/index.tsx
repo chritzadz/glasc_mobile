@@ -51,7 +51,6 @@ export default function ProductAnalysisPage() {
 
     const fetchIngredients = async () => {
         if (!productId) {
-            console.log("No product ID available");
             return;
         }
 
@@ -70,10 +69,8 @@ export default function ProductAnalysisPage() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            console.log("succesful");
 
             const data = await response.text(); // Use .text() since the API returns a plain string
-            console.log("Fetched data:", data); // Log the raw string
 
             // Split the string into an array
             //const ingredientsArray = data.split(',').map(item => item.trim());  // Trim whitespace from each item

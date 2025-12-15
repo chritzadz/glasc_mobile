@@ -68,7 +68,6 @@ export default function RoutineEdit({
 
     const getProductNameById = async (id: number): Promise<string> => {
         try {
-            console.log(`Fetching product name for ID: ${id}`);
             
             const response = await fetch(`/api/skincare?product_id=${id}`, {
                 method: "GET",
@@ -76,8 +75,6 @@ export default function RoutineEdit({
                     "Content-Type": "application/json",
                 },
             });
-
-            console.log(`Product fetch response status: ${response.status}`);
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -90,7 +87,6 @@ export default function RoutineEdit({
             }
 
             const data = await response.json();
-            console.log('Product data:', data);
             
             if (data && data.length > 0) {
                 return data[0].product_name || data[0].name || 'Unknown Product';

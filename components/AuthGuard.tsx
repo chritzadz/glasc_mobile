@@ -20,9 +20,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
         if (!isAuthenticated && !inAuthGroup) {
             router.replace("/(public)/login");
         } else if (isAuthenticated && inAuthGroup) {
-            console.log("set user id tp: " + user?.id);
             if (user != null) {
-                console.log("set user id tp: " + user.id);
                 CurrentUser.getInstance().setId(user.id);
             }
             router.replace("/(protected)/home");

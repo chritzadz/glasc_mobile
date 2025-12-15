@@ -39,7 +39,6 @@ export async function POST(request: Request) {
         },
     });
     
-    console.log("DOWANOD");
     const prompt = `
         So, since I cannot maintain a session connection, assume that you just need to answer the current message given.
         You will act as a character, a fairy to be exact. You will be assisting in skincare related questions. So do not
@@ -80,9 +79,7 @@ export async function POST(request: Request) {
 
     const jsonString = result.output.message.content[0].text;
 
-    const analysisText = JSON.parse(jsonString);
-    console.log("analysis text: " + analysisText.message + analysisText.from);
-    
+    const analysisText = JSON.parse(jsonString);    
     try {
         const analysis = analysisText;
         return Response.json({ analysis });

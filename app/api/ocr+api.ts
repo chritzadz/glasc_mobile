@@ -11,22 +11,18 @@ export async function POST(request: Request) {
         },
     });
 
-    console.log("texractClient SETTED UP");
     try {
         // Use the base64 data we read from the file
         const imageBytes = Buffer.from(base64Img, 'base64');
 
-        console.log("analyze data");
         const command = new AnalyzeDocumentCommand({
             Document: {
                 Bytes: imageBytes,
             },
             FeatureTypes: [FeatureType.TABLES, FeatureType.FORMS],
         });
-        console.log("process done analyuzing, send command");
         const response = await textractClient.send(command);
 
-        console.log("got data from aws textract");
         const textLines: string[] = [];
         
         if (response.Blocks) {
@@ -39,7 +35,6 @@ export async function POST(request: Request) {
 
         // Join all lines into a single string
         const extractedText = textLines.join('\n');
-        console.log("GET DATA the text = " + extractedText);
 
         //process to db
         const responseDb = await fetch(`https://glasc-api.netlify.app/api/productSim?text=${extractedText}`, {
@@ -50,7 +45,6 @@ export async function POST(request: Request) {
         });
 
         const data = await responseDb.json();
-        console.log(data);
         return Response.json(data);
 
     } catch (error) {

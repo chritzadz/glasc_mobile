@@ -47,7 +47,6 @@ const Signup = () => {
         setIsSubmitting(true);
 
         const success = await saveCredential();
-        console.log(success);
         await handleSignUpResponse(success);
     };
 
@@ -111,9 +110,6 @@ const Signup = () => {
         });
         const data = await response.json();
 
-        console.log(data);
-        console.log(response.status);
-
         if (response.ok) {
             return true;
         } else {
@@ -135,7 +131,6 @@ const Signup = () => {
 
             const currUser: User | null = userExist(users);
             if (currUser != null) {
-                console.log(`Current user id signup is: ${currUser.id}`);
                 return currUser;
             }
             return currUser;

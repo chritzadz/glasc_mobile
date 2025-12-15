@@ -114,7 +114,6 @@ export default function Chatbot() {
                 const botMessage: Message = data.analysis;
                 setMessages((prev) => [botMessage, ...prev]);
                 setIsFetching(false);
-                console.log(messages);
             } catch (error) {
                 console.error("Error calling chatbot API:", error);
                 throw error;

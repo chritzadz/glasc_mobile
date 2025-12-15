@@ -84,7 +84,6 @@ export async function POST(request: Request) {
     const cleanedJson = cleanJsonResponse(jsonString);
 
     const analysisText = JSON.parse(cleanedJson);
-    console.log("analysis text: " + analysisText);
     
     try {
         const analysis = analysisText;

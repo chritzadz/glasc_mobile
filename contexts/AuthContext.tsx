@@ -34,8 +34,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const generateToken = async (userData: User): Promise<string> => {
     try {
-      console.log("Generating token for user:", userData.id);
-
       const tokenData = {
         userId: userData.id,
         email: userData.email,
@@ -45,7 +43,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const token = btoa(JSON.stringify(tokenData));
 
-      console.log("Token generated successfully");
       return token;
     } catch (error) {
       console.error("Token generation error:", error);

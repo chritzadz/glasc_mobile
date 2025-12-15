@@ -89,7 +89,6 @@ const Home = () => {
         // Check if the event is a change event and we have a selected date
         if (event.type === "set" && selectedDate) {
             setBirthDate(selectedDate);
-            console.log("Birth date updated:", selectedDate);
         }
     };
 
@@ -150,7 +149,6 @@ const Home = () => {
     };
 
     const savePersonalInfo = async () => {
-        console.log("currUser id: " + CurrentUser.getInstance().getId());
         const response = await fetch("/api/personalDetails", {
             method: "POST",
             headers: {
@@ -171,9 +169,6 @@ const Home = () => {
             }),
         });
         const data = await response.json();
-
-        console.log(data);
-        console.log(response.status);
 
         if (response.ok) {
             return true;

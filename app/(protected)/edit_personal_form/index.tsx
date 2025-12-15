@@ -89,9 +89,7 @@ const EditPersonalForm = () => {
                     },
                 }
             );
-            console.log(response);
             const data = await response.json();
-            console.log(data);
 
             if (
                 response.ok &&
@@ -129,7 +127,6 @@ const EditPersonalForm = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
             Alert.alert("Error", "Failed to fetch personal details");
         } finally {
             setFetchLoading(false);

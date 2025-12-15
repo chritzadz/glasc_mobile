@@ -44,7 +44,6 @@ export default function Routine() {
             const data = await response.json();
 
             const routineObjects: RoutineType[] = data;
-            console.log("routines:" + data);
 
             return routineObjects;
         } catch (error) {
@@ -71,7 +70,6 @@ export default function Routine() {
             });
 
             const data = await response.json();
-            console.log(data);
         } catch (error) {
             Alert.alert(
                 "Error",
@@ -105,7 +103,6 @@ export default function Routine() {
             setPMRoutineProducts(routineProductsData.evening);
         }
     }, [routineProductsData, isRoutineLoading]);
-    console.log(isRoutineLoading);
 
     return (
         <SafeAreaView className="flex-1 bg-secondary">

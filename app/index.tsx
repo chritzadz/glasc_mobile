@@ -14,7 +14,6 @@ export default function Root() {
         const timeout = setTimeout(() => {
             if (isAuthenticated) {
                 if (user != null) {
-                    console.log("set user id tp: " + user.id);
                     CurrentUser.getInstance().setId(user.id);
                 }
                 router.replace("/home");

@@ -34,12 +34,10 @@ export default function ProductSearch({
 
     const showAlert = (product_id: string) => {
         setSelectedProduct(parseInt(product_id));
-        console.log("product " + product_id);
         setAlertVisible(true);
     };
 
     const handleYes = async () => {
-        console.log("User selected Yes");
         setIsLoading(true);
         const success = await addProduct(selectedProduct);
         setIsLoading(false);
@@ -51,7 +49,6 @@ export default function ProductSearch({
     };
 
     const handleNo = () => {
-        console.log("User selected No");
         setAlertVisible(false);
     };
 
@@ -109,7 +106,6 @@ export default function ProductSearch({
 
     const addProduct = async (product_id: number): Promise<boolean> => {
         try {
-            console.log(product_id);
             const response = await fetch("/api/skincareRoutine", {
                 method: "POST",
                 headers: {
@@ -121,8 +117,6 @@ export default function ProductSearch({
                     type: type,
                 }),
             });
-
-            console.log("Response status:", response.status);
 
             if (response.ok) {
                 Alert.alert("Success", `Product added to ${type} routine.`);

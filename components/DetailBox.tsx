@@ -27,11 +27,6 @@ export default function DetailBox({ productName, analysis }: DetailBoxProps) {
 
     const warningCount = analysis.harmful_ingredients?.length || 0;
 
-    useEffect(() => {
-        console.log("DetailBox analysis:", analysis);
-        console.log(analysis.type);
-    }, []);
-
     return (
         <View
             className="bg-white border-primary border-2 rounded-2xl p-3 mx-5 mb-4 shadow flex flex-col gap-2"
