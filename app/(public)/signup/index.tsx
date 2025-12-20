@@ -10,7 +10,6 @@ import {
     ActivityIndicator,
 } from "react-native";
 import { z } from "zod";
-import { User } from "../../../model/User";
 import CurrentUser from "../../../model/CurrentUser";
 
 const signupSchema = z.object({
@@ -34,20 +33,42 @@ const Signup = () => {
     const [password, setPassword] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const userExist = (users: User[]): User | null => {
-        const found = users.find(
-            (user: User) => user.email === email && user.password === password
-        );
-        return found ? found : null;
-    };
-
     const handleSignUpButton = async () => {
         if (!validateForm()) return;
 
         setIsSubmitting(true);
 
-        const success = await saveCredential();
-        await handleSignUpResponse(success);
+        try {
+            const response = await fetch("/api/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: username,
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data) {
+                const currentUser = data;
+                CurrentUser.getInstance().setId(currentUser.id);
+                router.push("/personal_form");
+            } else {
+                Alert.alert("Error", "Failed to sign up. Please try again.");
+            }
+        } catch (error) {
+            Alert.alert(
+                "Error",
+                "Failed to complete signup. Please try again."
+            );
+            console.error("Signup completion error:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const validateForm = (): boolean => {
@@ -66,77 +87,6 @@ const Signup = () => {
                 Alert.alert("Error", "An unexpected error occurred");
             }
             return false;
-        }
-    };
-
-    const handleSignUpResponse = async (success: boolean): Promise<void> => {
-        if (success) {
-            try {
-                const currentUser = await getCurrentUser();
-                if (currentUser) {
-                    CurrentUser.getInstance().setId(currentUser.id);
-                    Alert.alert("Success", "User successfully signed up");
-                    router.push("/personal_form");
-                } else {
-                    Alert.alert(
-                        "Error",
-                        "Failed to retrieve user information after signup."
-                    );
-                }
-            } catch (error) {
-                Alert.alert(
-                    "Error",
-                    "Failed to complete signup. Please try again."
-                );
-                console.error("Signup completion error:", error);
-            }
-        } else {
-            Alert.alert("Error", "Failed to sign up. Please try again.");
-        }
-        setIsSubmitting(false);
-    };
-
-    const saveCredential = async () => {
-        const response = await fetch("/api/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name: username,
-                email: email,
-                password: password,
-            }),
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    const getCurrentUser = async (): Promise<User | null> => {
-        try {
-            const response = await fetch("/api/users", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            const data = await response.json();
-            const users: User[] = data;
-
-            const currUser: User | null = userExist(users);
-            if (currUser != null) {
-                return currUser;
-            }
-            return currUser;
-        } catch (error) {
-            console.error("Error fetching current user:", error);
-            return null;
         }
     };
 

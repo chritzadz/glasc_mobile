@@ -86,7 +86,6 @@ const Home = () => {
     const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShow(false); // Hide the picker
 
-        // Check if the event is a change event and we have a selected date
         if (event.type === "set" && selectedDate) {
             setBirthDate(selectedDate);
         }
@@ -217,14 +216,34 @@ const Home = () => {
                                         "inset 0 0 10px 0 rgba(0, 0, 0, 0.1)",
                                 }}
                             >
+                                {Platform.OS === "ios" ? (
+                                    <DateTimePicker
+                                        value={birthDate}
+                                        mode="date"
+                                        display="default"
+                                        onChange={onChange}
+                                        textColor="#B87C4C"
+                                    />
+                                ) : (
+                                    <Pressable onPress={showDatepicker}>
+                                        <Text
+                                            className="text-lg"
+                                            style={{ color: "#B87C4C" }}
+                                        >
+                                            {birthDate.toLocaleDateString()}
+                                        </Text>
+                                    </Pressable>
+                                )}
+                            </View>
+                            {Platform.OS === "android" && show && (
                                 <DateTimePicker
                                     value={birthDate}
                                     mode="date"
-                                    display="spinner"
+                                    display="default"
                                     onChange={onChange}
                                     textColor="#B87C4C"
                                 />
-                            </View>
+                            )}
                         </View>
 
                         {/* Gender */}

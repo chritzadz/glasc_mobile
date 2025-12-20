@@ -61,23 +61,24 @@ const Login = () => {
 
     const getUser = async (): Promise<User | null> => {
         try {
-            const response = await fetch("/api/users", {
-                method: "GET",
+            const response = await fetch("/api/login", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
-            const users: User[] = data;
 
-            return userExist(users); // Return the current user or null
+            const data = await response.json();
+
+            return data;
         } catch (error) {
             Alert.alert(
                 "Error",
                 "Failed to fetch users. Please try again later."
             );
-            return null; // Return null in case of an error
+            return null;
         }
     };
 
